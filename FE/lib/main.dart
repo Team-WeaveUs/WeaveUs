@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:weave_us/screens/signin_screen.dart';
+import 'package:weave_us/screens/main_screen.dart';
+import 'package:weave_us/screens/owner_screen.dart';
 
 // fe/dev(아무개) Branch 생성
 // fe/dev 에서 작업 및 커밋
@@ -16,7 +19,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo22'
+      debugShowCheckedModeBanner: false, // 배너 제거
+      home: SigninScreen(), // SigninScreen 먼저 보여주기
     );
   }
 }
