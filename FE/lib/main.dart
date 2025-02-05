@@ -18,9 +18,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false, // 배너 제거
-      home: SigninScreen(), // SigninScreen 먼저 보여주기
+      //home: SigninScreen(), // SigninScreen 먼저 보여주기,
+      home: MainScreen(), //Sign in api 안돼서 main먼저 보여주기
     );
   }
 }
