@@ -121,13 +121,26 @@ class _MainScreenState extends State<MainScreen>
           showUnselectedLabels: false,
           items: const [
           // 추후 로고 디자인 다 변경할 예정
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.add_circle), label: 'Plus'),
+                icon: Icon(Icons.home),
+                label: 'Home'
+            ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_bag), label: 'Shopping'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'person'),
+                icon: Icon(Icons.search),
+                label: 'Search'
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.add_circle),
+                label: 'Plus'
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_bag),
+                label: 'Shopping'
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'person'
+            ),
           ],
         ),
       ),
