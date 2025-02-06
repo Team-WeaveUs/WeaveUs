@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'post_screen.dart';
-import 'post.dart'; // Post 모델 분리
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'post_screen/post_screen.dart';
+import 'post_screen/post.dart'; // Post 모델 분리
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final headers = {
       'Content-Type': 'application/json; charset=utf-8',
-      'x-api-key': '4ckQxZOZt68Xa7kYVoAg43vsy3W5f2631KjqYMpP',
+      'x-api-key': dotenv.env['AWS_API_KEY'] ?? '',
     };
 
     try {

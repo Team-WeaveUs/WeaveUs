@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weave_us/screens/home_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -105,8 +106,8 @@ class _MainScreenState extends State<MainScreen>
         body: TabBarView(
           controller: tabController,
           physics: const NeverScrollableScrollPhysics(),
-          children: const [
-            Center(child: Text('홈 화면')),
+          children: [
+            HomeScreen(),
             Center(child: Text('돋보기 화면')),
             Center(child: Text('+ 화면')),
             Center(child: Text('크레딧 화면')),
