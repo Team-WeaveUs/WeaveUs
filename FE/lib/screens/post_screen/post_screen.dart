@@ -1,6 +1,4 @@
-import 'dart:convert'; // JSON 변환에 필요
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'post.dart';
 
 class PostScreen extends StatefulWidget {
