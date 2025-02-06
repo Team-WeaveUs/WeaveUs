@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weave_us/screens/home_screen.dart';
+import 'package:weave_us/screens/profile_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -116,7 +117,7 @@ class _MainScreenState extends State<MainScreen>
             Center(child: Text('돋보기 화면')),
             Center(child: Text('+ 화면')),
             Center(child: Text('크레딧 화면')),
-            Center(child: Text('내 정보 화면')),
+            ProfileScreen(),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
