@@ -64,9 +64,13 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop,result) {
         // false를 반환하여 뒤로가기 동작을 차단합니다.
-        if(didPop) return;
+        if(didPop) {
+          print('뒤로가기 실행됨, result : $result');
+          return;
+        }
+        print('뒤로가기 시도했으나 실행되지 않음.');
       },
       child: Scaffold(
         appBar: AppBar(
