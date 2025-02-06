@@ -62,10 +62,11 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
         // false를 반환하여 뒤로가기 동작을 차단합니다.
-        return false;
+        if(didPop) return;
       },
       child: Scaffold(
         appBar: AppBar(
