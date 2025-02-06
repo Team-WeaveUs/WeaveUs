@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:weave_us/screens/signin_screen.dart';
 import 'package:weave_us/screens/main_screen.dart';
 import 'package:weave_us/screens/owner_screen.dart';
@@ -8,7 +9,9 @@ import 'package:weave_us/screens/owner_screen.dart';
 // fe/dev 를 fe/main 으로 pr
 // fe/main 를 main 으로 pr
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
