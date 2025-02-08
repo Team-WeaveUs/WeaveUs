@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:weave_us/screens/post_screen/post_screen_physics.dart';
 import 'post_screen/post_screen.dart';
 import 'post_screen/post.dart'; // Post 모델 분리
 
@@ -13,7 +14,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final PageController _pageController = PageController();
   List<Post> _posts = [];
   int _currentIndex = 0;
 
@@ -67,7 +67,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
-        controller: _pageController,
+        controller: PageController(
+          viewportFraction: 1.0, // 한 번에 한 개의 페이지만 보이게 설정
+        ),
+        physics: HeavySwipePhysics(),
+        pageSnapping: true,
         itemCount: _posts.length + 1, // 다음 요청 공간 포함
         onPageChanged: (index) {
           if (index == _posts.length) {

@@ -113,11 +113,11 @@ class _MainScreenState extends State<MainScreen>
           controller: tabController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            HomeScreen(),
+            HomeScreen(), //home_screen.dart
             Center(child: Text('돋보기 화면')),
             Center(child: Text('+ 화면')),
             Center(child: Text('크레딧 화면')),
-            ProfileScreen(),
+            ProfileScreen(), //profile_screen.dart
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
