@@ -16,7 +16,7 @@ class _PostScreenState extends State<PostScreen> {
     return Container(
         margin: EdgeInsets.all(10),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: Colors.black,
           ),
@@ -30,12 +30,15 @@ class _PostScreenState extends State<PostScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                     Text(
                       widget.postData.weaveTitle,
-                      style: TextStyle(fontSize: 24),
+                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     //위브 타입 분류할거임.
+                    Text("weaveType")
                     //Text(widget.postData.weaveType)
                   ]),
                   Container(
@@ -43,7 +46,7 @@ class _PostScreenState extends State<PostScreen> {
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.black)),
                       child:
-                          IconButton(onPressed: null, icon: Icon(Icons.add))),
+                          IconButton(onPressed: null, icon: Icon(Icons.add, color: Colors.black,))),
                 ],
               ),
             ),
@@ -62,31 +65,33 @@ class _PostScreenState extends State<PostScreen> {
                   Row(
                     children: [
                       CircleAvatar(
+                        radius: 35/2,
                         backgroundImage: widget.postData.userProfile == '0'
                             ? null
                             : NetworkImage(widget.postData.userProfile),
+                        backgroundColor: Colors.grey,
                         child: widget.postData.userProfile == '0'
-                            ? Icon(Icons.person, color: Colors.white)
-                            : null,
-                        backgroundColor: Colors.grey, // 기본 배경색 설정 (선택 사항)
+                            ? const Icon(size: 35/2,Icons.person, color: Colors.white)
+                            : null, // 기본 배경색 설정 (선택 사항)
                       ),
-                      SizedBox(width: 10,),
-                      Text(widget.postData.name),
+                      const SizedBox(width: 10,),
+                      Text(widget.postData.name, style: const TextStyle(fontSize: 20),),
                     ],
                   ),
                   Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.black),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: TextButton(onPressed: null, child: Text("구독"))),
+                      child: TextButton(onPressed: null, child: Text("구독", style: TextStyle(fontSize: 18,color: Colors.black),))),
                 ],
               ),
             ),
             Container(
-              margin: EdgeInsets.all(15),
+              margin: const EdgeInsets.symmetric(horizontal: 15),
               width: size.width,
-              child: Text(widget.postData.content),
+              child: Text(widget.postData.content,style: const TextStyle(fontSize: 18),),
             ),
           ],
         ));
