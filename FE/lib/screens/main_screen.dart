@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:weave_us/screens/new_weave_screen.dart';
+import 'package:weave_us/screens/weave_upload_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -63,12 +65,10 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // false를 반환하여 뒤로가기 동작을 차단합니다.
-        return false;
+        return false; // 뒤로가기 버튼 비활성화
       },
       child: Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false, // 뒤로가기 아이콘 제거
           backgroundColor: Color(0xFFFF9800),
           title: Row(
             children: [
@@ -76,8 +76,8 @@ class _MainScreenState extends State<MainScreen>
               const Text(
                 'Weave Us',
                 style: TextStyle(
-                  fontWeight: FontWeight.bold, // 텍스트를 굵게 설정
-                  fontSize: 20.0, // 텍스트 크기 조정 (옵션)
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
                 ),
               ),
             ],
@@ -98,36 +98,71 @@ class _MainScreenState extends State<MainScreen>
                 const PopupMenuItem(value: "설정", child: Text("설정")),
                 const PopupMenuItem(value: "계정 전환", child: Text("계정 전환")),
               ],
-              icon: const Icon(Icons.more_vert), // 세로 점 3개 아이콘 (더보기)
+              icon: const Icon(Icons.more_vert),
             ),
           ],
         ),
         body: TabBarView(
           controller: tabController,
           physics: const NeverScrollableScrollPhysics(),
-          children: const [
-            Center(child: Text('홈 화면')),
-            Center(child: Text('돋보기 화면')),
-            Center(child: Text('+ 화면')),
-            Center(child: Text('크레딧 화면')),
-            Center(child: Text('내 정보 화면')),
+          children: [
+            const Center(child: Text('홈 화면')),
+            const Center(child: Text('돋보기 화면')),
+
+            // WeaveUploadScreen을 길게 누르면 NewWeaveScreen으로 이동 (긴 터치 이벤트 사용)
+            GestureDetector(
+              onLongPress: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NewWeaveScreen()),
+                );
+              },
+              child: WeaveUploadScreen(),
+            ),
+
+            const Center(child: Text('크레딧 화면')),
+            const Center(child: Text('내 정보 화면')),
           ],
         ),
+
+        // + 버튼: 짧게 누르면 WeaveUploadScreen, 길게 누르면 NewWeaveScreen으로 이동
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: tabController.index,
-          onTap: bottomNavigationItemOnTab,
+          onTap: (index) {
+            if (index == 2) {
+              // + 버튼을 짧게 누르면 NewWeaveScreen으로 이동
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => WeaveUploadScreen()),
+              );
+            } else {
+              bottomNavigationItemOnTab(index);
+            }
+          },
           showSelectedLabels: false,
           showUnselectedLabels: false,
-          items: const [
-          // 추후 로고 디자인 다 변경할 예정
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          items: [
+            const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            const BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+
+            // GestureDetector로 감싸서 + 버튼을 길게 눌렀을 때 이벤트 추가
             BottomNavigationBarItem(
-                icon: Icon(Icons.add_circle), label: 'Plus'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_bag), label: 'Shopping'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'person'),
+              icon: GestureDetector(
+                onLongPress: () {
+                  // + 버튼을 길게 누르면 WeaveUploadScreen으로 이동
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NewWeaveScreen()),
+                  );
+                },
+                child: const Icon(Icons.add_circle),
+              ),
+              label: 'Plus',
+            ),
+
+            const BottomNavigationBarItem(icon: Icon(Icons.shopping_bag), label: 'Shopping'),
+            const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Person'),
           ],
         ),
       ),
