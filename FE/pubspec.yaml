@@ -37,6 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   validators: ^3.0.0
   http: ^1.3.0
+  image_picker: ^1.0.7
+  file_picker: ^8.0.0
+  google_maps_flutter: ^2.2.0
 
 dev_dependencies:
   flutter_test:
