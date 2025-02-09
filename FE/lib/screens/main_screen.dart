@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:weave_us/screens/new_weave_screen.dart';
 import 'package:weave_us/screens/weave_upload_screen.dart';
+import 'package:weave_us/screens/home_screen.dart';
+import 'package:weave_us/screens/profile_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -63,9 +65,15 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false; // 뒤로가기 버튼 비활성화
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop,result) {
+        // false를 반환하여 뒤로가기 동작을 차단합니다.
+        if(didPop) {
+          print('뒤로가기 실행됨, result : $result');
+          return;
+        }
+        print('뒤로가기 시도했으나 실행되지 않음.');
       },
       child: Scaffold(
         appBar: AppBar(
@@ -106,9 +114,9 @@ class _MainScreenState extends State<MainScreen>
           controller: tabController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            const Center(child: Text('홈 화면')),
+            HomeScreen(), //home_screen.dart
             const Center(child: Text('돋보기 화면')),
-
+            
             // WeaveUploadScreen을 길게 누르면 NewWeaveScreen으로 이동 (긴 터치 이벤트 사용)
             GestureDetector(
               onLongPress: () {
@@ -119,9 +127,8 @@ class _MainScreenState extends State<MainScreen>
               },
               child: WeaveUploadScreen(),
             ),
-
             const Center(child: Text('크레딧 화면')),
-            const Center(child: Text('내 정보 화면')),
+            ProfileScreen(), //profile_screen.dart
           ],
         ),
 

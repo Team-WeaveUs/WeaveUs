@@ -110,3 +110,4 @@ linux/*.pdb
 *.key
 *.jks
 /.idea/
+assets/.env
