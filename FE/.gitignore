@@ -1,68 +1,113 @@
-# Created by https://www.toptal.com/developers/gitignore/api/flutter
-# Edit at https://www.toptal.com/developers/gitignore?templates=flutter
-
-### Flutter ###
-# Flutter/Dart/Pub related
-**/doc/api/
+# Flutter build artifacts
+build/
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
-.fvm/flutter_sdk
 .packages
 .pub-cache/
 .pub/
-build/
-coverage/
-lib/generated_plugin_registrant.dart
-# For library packages, don’t commit the pubspec.lock file.
-# Regenerating the pubspec.lock file lets you test your package against the latest compatible versions of its dependencies.
-# See https://dart.dev/guides/libraries/private-files#pubspeclock
-#pubspec.lock
+pubspec.lock
 
-# Android related
-**/android/**/gradle-wrapper.jar
-**/android/.gradle
-**/android/captures/
-**/android/gradlew
-**/android/gradlew.bat
-**/android/key.properties
-**/android/local.properties
-**/android/**/GeneratedPluginRegistrant.java
+# IntelliJ IDE files
+.idea/
 
-# iOS/XCode related
-**/ios/**/*.mode1v3
-**/ios/**/*.mode2v3
-**/ios/**/*.moved-aside
-**/ios/**/*.pbxuser
-**/ios/**/*.perspectivev3
-**/ios/**/*sync/
-**/ios/**/.sconsign.dblite
-**/ios/**/.tags*
-**/ios/**/.vagrant/
-**/ios/**/DerivedData/
-**/ios/**/Icon?
-**/ios/**/Pods/
-**/ios/**/.symlinks/
-**/ios/**/profile
-**/ios/**/xcuserdata
-**/ios/.generated/
-**/ios/Flutter/.last_build_id
-**/ios/Flutter/App.framework
-**/ios/Flutter/Flutter.framework
-**/ios/Flutter/Flutter.podspec
-**/ios/Flutter/Generated.xcconfig
-**/ios/Flutter/app.flx
-**/ios/Flutter/app.zip
-**/ios/Flutter/flutter_assets/
-**/ios/Flutter/flutter_export_environment.sh
-**/ios/ServiceDefinitions.json
-**/ios/Runner/GeneratedPluginRegistrant.*
+.idea/caches/
+.idea/libraries/
+.idea/shelf/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/.name
+.idea/compiler.xml
+.idea/copyright/profiles_settings.xml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/scopes/scope_settings.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+.idea/datasources.xml
+.idea/dataSources.ids
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+.idea/assetWizardSettings.xml
+.idea/gradle.xml
+.idea/jarRepositories.xml
+.idea/navEditor.xml
 
-# Exceptions to above rules.
-!**/ios/**/default.mode1v3
-!**/ios/**/default.mode2v3
-!**/ios/**/default.pbxuser
-!**/ios/**/default.perspectivev3
-!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+*.iml
+*.ipr
+*.iws
 
-# End of https://www.toptal.com/developers/gitignore/api/flutter
+# VS Code settings
+.vscode/
+
+# Android specific
+android/app/debug.keystore
+android/.gradle/
+android/key.properties
+android/local.properties
+android/app/google-services.json
+android/app/src/debug/
+android/app/src/profile/
+android/app/src/main/jniLibs/
+
+# iOS specific
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/App.framework/
+ios/Flutter/Flutter.framework/
+ios/Runner.xcworkspace/
+ios/.dart_tool/
+
+# Firebase and Google services
+*.firebase/
+*.firebaserc
+*.flutter-plugins-dependencies
+*.flutter-plugins
+
+# Web specific
+web/.dart_tool/
+
+# MacOS specific
+macos/Pods/
+macos/.dart_tool/
+macos/Flutter/ephemeral/
+macos/.symlinks/
+
+# Windows specific
+windows/.dart_tool/
+windows/flutter/ephemeral/
+windows/CMakeCache.txt
+windows/CMakeFiles/
+windows/Makefile
+windows/*.pdb
+
+# Linux specific
+linux/.dart_tool/
+linux/flutter/ephemeral/
+linux/CMakeCache.txt
+linux/CMakeFiles/
+linux/Makefile
+linux/*.pdb
+
+# Miscellaneous
+*.log
+*.lock
+*.tmp
+*.swp
+*.swo
+*.swn
+
+# User-generated files
+*.DS_Store
+*.p8
+*.pem
+*.crt
+*.key
+*.jks
+/.idea/
+assets/.env
