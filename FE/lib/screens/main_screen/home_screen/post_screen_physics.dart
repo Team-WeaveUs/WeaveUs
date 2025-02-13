@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class HeavySwipePhysics extends ScrollPhysics {
-  const HeavySwipePhysics({ScrollPhysics? parent}) : super(parent: parent);
+  const HeavySwipePhysics({super.parent});
 
   @override
   HeavySwipePhysics applyTo(ScrollPhysics? ancestor) {

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:weave_us/screens/post_screen/post_screen_physics.dart';
-import 'post_screen/post_screen.dart';
-import 'post_screen/post.dart'; // Post 모델 분리
+import 'package:weave_us/screens/main_screen/home_screen/post_screen_physics.dart';
+import '../main_screen/home_screen/post_screen.dart';
+import '../main_screen/home_screen/post.dart'; // Post 모델 분리
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -66,13 +66,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: PageView.builder(
         controller: PageController(
           viewportFraction: 1.0, // 한 번에 한 개의 페이지만 보이게 설정
         ),
         physics: HeavySwipePhysics(),
         pageSnapping: true,
-        itemCount: _posts.length + 1, // 다음 요청 공간 포함
+        itemCount: _posts.length + 1,
+        // 다음 요청 공간 포함
         onPageChanged: (index) {
           if (index == _posts.length) {
             _fetchPosts(); // 마지막 페이지에서 추가 요청
@@ -83,7 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
           if (index < _posts.length) {
             return PostScreen(postData: _posts[index]); // PostScreen에 데이터 전달
           } else {
-            return Center(child: CircularProgressIndicator()); // 로딩 인디케이터
+            return const Center(
+                child: CircularProgressIndicator(
+              color: Colors.orange,
+            )); // 로딩 인디케이터
           }
         },
       ),

@@ -24,7 +24,7 @@ class _SignpasswordScreenState extends State<SignpasswordScreen> {
               children: [
                 // 해당 로고
                 Image.asset(
-                  'assets/weave_us.JPG',
+                  '/image/weave_us.JPG',
                   height: 200,
                 ),
                 SizedBox(height: 50),

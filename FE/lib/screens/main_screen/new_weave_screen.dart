@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 class NewWeaveScreen extends StatelessWidget {
-  const NewWeaveScreen({Key? key}) : super(key: key);
+  const NewWeaveScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     String selectedWeaveType = "Local"; // 드롭다운 기본값
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           '새 위브',
@@ -17,7 +18,7 @@ class NewWeaveScreen extends StatelessWidget {
             letterSpacing: 2.0,
           ),
         ),
-        backgroundColor: Colors.amber[100],
+        backgroundColor: Colors.white,
         centerTitle: true,
       ),
       body: Padding(
@@ -26,8 +27,8 @@ class NewWeaveScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // 위브 이름 입력 필드
-            TextField(
-              decoration: const InputDecoration(
+            const TextField(
+              decoration: InputDecoration(
                 labelText: '위브 이름',
                 border: OutlineInputBorder(),
                 contentPadding: EdgeInsets.symmetric(
