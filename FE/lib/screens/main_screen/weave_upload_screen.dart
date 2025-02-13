@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-import '../dialog/weave_dialog.dart';
+import '../../dialog/weave_dialog.dart';
 
 class WeaveUploadScreen extends StatefulWidget {
   const WeaveUploadScreen({super.key});

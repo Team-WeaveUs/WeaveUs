@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NewWeaveScreen extends StatelessWidget {
-  const NewWeaveScreen({Key? key}) : super(key: key);
+  const NewWeaveScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +26,8 @@ class NewWeaveScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // 위브 이름 입력 필드
-            TextField(
-              decoration: const InputDecoration(
+            const TextField(
+              decoration: InputDecoration(
                 labelText: '위브 이름',
                 border: OutlineInputBorder(),
                 contentPadding: EdgeInsets.symmetric(

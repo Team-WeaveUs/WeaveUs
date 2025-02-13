@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weave_us/screens/elements/toggle_button.dart';
-import 'package:weave_us/screens/profile_screen/follower_tab.dart';
-import 'package:weave_us/screens/profile_screen/profile_tab.dart';
+import 'package:weave_us/screens/main_screen/profile_screen/follower_tab.dart';
+import 'package:weave_us/screens/main_screen/profile_screen/profile_tab.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

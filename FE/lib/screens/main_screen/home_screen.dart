@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:weave_us/screens/post_screen/post_screen_physics.dart';
-import 'post_screen/post_screen.dart';
-import 'post_screen/post.dart'; // Post 모델 분리
+import 'package:weave_us/screens/main_screen/home_screen/post_screen_physics.dart';
+import '../main_screen/home_screen/post_screen.dart';
+import '../main_screen/home_screen/post.dart'; // Post 모델 분리
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
