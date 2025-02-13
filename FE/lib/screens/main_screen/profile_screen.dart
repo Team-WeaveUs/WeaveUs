@@ -16,6 +16,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white,
       margin: const EdgeInsets.all(10),
       child: Column(
         children: [
@@ -23,50 +24,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                CircleAvatar(
-                  radius: 55.5,
-                  backgroundImage: null,
-                  //widget.postData.userProfile == '0'
-                  // ? null
-                  // : NetworkImage(widget.postData.userProfile),
-                  child: Icon(size: 60, Icons.person, color: Colors.white),
-                  //widget.postData.userProfile == '0'
-                  // ? Icon(Icons.person, color: Colors.white)
-                  // : null,
-                  backgroundColor: Colors.grey, // 기본 배경색 설정 (선택 사항)
-                ),
-                SizedBox(width: 10,),
-                Column(
+              const Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "이름",
-                      style: TextStyle(fontSize: 30),
+                    CircleAvatar(
+                      radius: 55.5,
+                      backgroundImage: null,
+                      //widget.postData.userProfile == '0'
+                      // ? null
+                      // : NetworkImage(widget.postData.userProfile),
+                      child: Icon(size: 60, Icons.person, color: Colors.white),
+                      //widget.postData.userProfile == '0'
+                      // ? Icon(Icons.person, color: Colors.white)
+                      // : null,
+                      backgroundColor: Colors.grey, // 기본 배경색 설정 (선택 사항)
                     ),
-                    SizedBox(height: 10,),
-                    Row(
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.favorite,
-                          color: Colors.red,
+                        Text(
+                          "이름",
+                          style: TextStyle(fontSize: 30),
                         ),
-                        SizedBox(width: 10,),
-                        Text("like",
-                        style: TextStyle(fontSize: 20),),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "like",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
+                        Row(children: [
+                          Icon(
+                            Icons.person_outlined,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "followers",
+                            style: TextStyle(fontSize: 20),
+                          )
+                        ]),
                       ],
                     ),
-                    Row(children: [
-                      Icon(
-                        Icons.person_outlined,
-                      ),
-                      SizedBox(width: 10,),
-                      Text("followers",
-                      style: TextStyle(fontSize: 20),)
-                    ]),
-                  ],
-                ),
-              ]),
+                  ]),
               ToggleButton(
                   selectedIndex: selectedIndex,
                   onToggle: (index) {
@@ -76,7 +91,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   })
             ],
           ),
-          const SizedBox(height: 20,),
+          const SizedBox(
+            height: 20,
+          ),
           Expanded(
             child: selectedIndex == 0 ? FollowerTab() : ProfileTab(),
           )

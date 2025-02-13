@@ -8,6 +8,7 @@ class NewWeaveScreen extends StatelessWidget {
     String selectedWeaveType = "Local"; // 드롭다운 기본값
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           '새 위브',
@@ -17,7 +18,7 @@ class NewWeaveScreen extends StatelessWidget {
             letterSpacing: 2.0,
           ),
         ),
-        backgroundColor: Colors.amber[100],
+        backgroundColor: Colors.white,
         centerTitle: true,
       ),
       body: Padding(

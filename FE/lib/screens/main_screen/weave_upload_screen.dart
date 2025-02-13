@@ -89,7 +89,6 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
   // 선택된 이미지 위젯
   Widget selectedImageWidget() {
     if (_selectedFile == null) return const SizedBox();
-
     return Stack(
       children: [
         ClipRRect(
@@ -139,6 +138,7 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           "새 게시물",
@@ -148,7 +148,7 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
             letterSpacing: 2.0,
           ),
         ),
-        backgroundColor: Colors.amber[100],
+        backgroundColor: Colors.white,
         centerTitle: true,
       ),
       body: SingleChildScrollView(
