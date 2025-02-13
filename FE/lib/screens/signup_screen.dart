@@ -18,7 +18,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: Colors.white,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -30,7 +30,7 @@ class _SignupScreenState extends State<SignupScreen> {
               children: [
                 // 팀 로고
                 Image.asset(
-                  'assets/weave_us.JPG',
+                  '/image/weave_us.JPG',
                   height: 200,
                 ),
                 SizedBox(height: 20),
