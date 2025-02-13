@@ -1,28 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:weave_us/screens/new_weave_screen.dart';
-import 'package:weave_us/screens/weave_upload_screen.dart';
-import 'package:weave_us/screens/home_screen.dart';
-import 'package:weave_us/screens/profile_screen.dart';
-
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Weave Us',
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: Colors.red,
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: MainScreen(), // 앱 실행 시 MainScreen 으로
-    );
-  }
-}
+import 'package:weave_us/screens/main_screen/bottom_navigation.dart';
+import 'package:weave_us/screens/main_screen/new_weave_screen.dart';
+import 'package:weave_us/screens/main_screen/weave_upload_screen.dart';
+import 'package:weave_us/screens/main_screen/home_screen.dart';
+import 'package:weave_us/screens/main_screen/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+  const MainScreen({super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -30,20 +14,32 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
-  late TabController tabController;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    // 탭 컨트롤러 (5개)
-    tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
   }
 
-  // 하단 네비게이션으로 탭 변경 시 호출되는 메서드
-  void bottomNavigationItemOnTab(int index) {
-    setState(() {
-      tabController.index = index;
-    });
+  void onItemTapped(int index) {
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const WeaveUploadScreen()),
+      );
+    } else {
+      setState(() {
+        _tabController.index = index;
+      });
+    }
+  }
+
+  void _onMiddleLongPress() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const NewWeaveScreen()),
+    );
   }
 
   // 상단에 있는 Alarm
@@ -67,22 +63,23 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop,result) {
+      onPopInvokedWithResult: (didPop, result) {
         // false를 반환하여 뒤로가기 동작을 차단합니다.
-        if(didPop) {
-          print('뒤로가기 실행됨, result : $result');
+        if (didPop) {
+          //print('뒤로가기 실행됨, result : $result');
           return;
         }
-        print('뒤로가기 시도했으나 실행되지 않음.');
+        //print('뒤로가기 시도했으나 실행되지 않음.');
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Color(0xFFFF9800),
-          title: Row(
+          backgroundColor: Colors.white,
+          title: const Row(
             children: [
-              const SizedBox(width: 8),
-              const Text(
-                'Weave Us',
+              SizedBox(width: 8),
+              Text(
+                '',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0,
@@ -99,7 +96,7 @@ class _MainScreenState extends State<MainScreen>
             PopupMenuButton<String>(
               position: PopupMenuPosition.under,
               onSelected: (value) {
-                print('$value 선택됨');
+                //print('$value 선택됨');
               },
               itemBuilder: (context) => [
                 const PopupMenuItem(value: "프로필 편집", child: Text("프로필 편집")),
@@ -111,66 +108,20 @@ class _MainScreenState extends State<MainScreen>
           ],
         ),
         body: TabBarView(
-          controller: tabController,
+          controller: _tabController,
           physics: const NeverScrollableScrollPhysics(),
-          children: [
+          children: const [
             HomeScreen(), //home_screen.dart
-            const Center(child: Text('돋보기 화면')),
-            
-            // WeaveUploadScreen을 길게 누르면 NewWeaveScreen으로 이동 (긴 터치 이벤트 사용)
-            GestureDetector(
-              onLongPress: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NewWeaveScreen()),
-                );
-              },
-              child: WeaveUploadScreen(),
-            ),
-            const Center(child: Text('크레딧 화면')),
+            Center(child: Text('돋보기 화면')),
+            WeaveUploadScreen(),
+            Center(child: Text('리워드 화면')),
             ProfileScreen(), //profile_screen.dart
           ],
         ),
-
-        // + 버튼: 짧게 누르면 WeaveUploadScreen, 길게 누르면 NewWeaveScreen으로 이동
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: tabController.index,
-          onTap: (index) {
-            if (index == 2) {
-              // + 버튼을 짧게 누르면 NewWeaveScreen으로 이동
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => WeaveUploadScreen()),
-              );
-            } else {
-              bottomNavigationItemOnTab(index);
-            }
-          },
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          items: [
-            const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            const BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-
-            // GestureDetector로 감싸서 + 버튼을 길게 눌렀을 때 이벤트 추가
-            BottomNavigationBarItem(
-              icon: GestureDetector(
-                onLongPress: () {
-                  // + 버튼을 길게 누르면 WeaveUploadScreen으로 이동
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NewWeaveScreen()),
-                  );
-                },
-                child: const Icon(Icons.add_circle),
-              ),
-              label: 'Plus',
-            ),
-
-            const BottomNavigationBarItem(icon: Icon(Icons.shopping_bag), label: 'Shopping'),
-            const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Person'),
-          ],
+        bottomNavigationBar: BottomNavigation(
+          currentIndex: _tabController.index,
+          onTap: onItemTapped,
+          onMiddleLongPress: _onMiddleLongPress,
         ),
       ),
     );
