@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:weave_us/add/profile_edit_screen.dart';
+import 'package:weave_us/add/setting_screen.dart';
 import 'package:weave_us/screens/main_screen/bottom_navigation.dart';
 import 'package:weave_us/screens/main_screen/new_weave_screen.dart';
 import 'package:weave_us/screens/main_screen/weave_upload_screen.dart';
 import 'package:weave_us/screens/main_screen/home_screen.dart';
 import 'package:weave_us/screens/main_screen/profile_screen.dart';
+import 'package:weave_us/screens/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -96,7 +99,19 @@ class _MainScreenState extends State<MainScreen>
             PopupMenuButton<String>(
               position: PopupMenuPosition.under,
               onSelected: (value) {
-                //print('$value 선택됨');
+                if (value == "프로필 편집") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfileEditScreen()), // profile_edit.dart 화면으로 이동
+                  );
+                } else if (value == "설정") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingScreen()), // setting.dart 화면으로 이동
+                  );
+                } else {
+                  print('$value 선택됨');
+                }
               },
               itemBuilder: (context) => [
                 const PopupMenuItem(value: "프로필 편집", child: Text("프로필 편집")),
@@ -105,6 +120,7 @@ class _MainScreenState extends State<MainScreen>
               ],
               icon: const Icon(Icons.more_vert),
             ),
+
           ],
         ),
         body: TabBarView(
@@ -112,7 +128,7 @@ class _MainScreenState extends State<MainScreen>
           physics: const NeverScrollableScrollPhysics(),
           children: const [
             HomeScreen(), //home_screen.dart
-            Center(child: Text('돋보기 화면')),
+            SearchScreen(),
             WeaveUploadScreen(),
             Center(child: Text('리워드 화면')),
             ProfileScreen(), //profile_screen.dart
