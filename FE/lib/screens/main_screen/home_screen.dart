@@ -15,6 +15,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Post> _posts = [];
+  bool _fetchFailed = false;
+  bool _isLoading = false;
   int _currentIndex = 0;
 
   @override
@@ -25,6 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // API에서 게시물 가져오기
   Future<void> _fetchPosts() async {
+    if (_isLoading) return;
+
+    setState(() => _isLoading = true);
     final url = Uri.parse(
         'https://v79h9dyx08.execute-api.ap-northeast-2.amazonaws.com/WeaveAPI/GetPostList');
 
@@ -41,9 +46,12 @@ class _HomeScreenState extends State<HomeScreen> {
     };
 
     try {
-      final response = await http.post(url, headers: headers, body: body);
+      final responseFuture = http.post(url, headers: headers, body: body);
+      final timeoutFuture = Future.delayed(const Duration(seconds: 3));
 
-      if (response.statusCode == 200) {
+      final response = await Future.any([responseFuture, timeoutFuture]);
+
+      if (response is http.Response && response.statusCode == 200) {
         final decodedBody = utf8.decode(response.bodyBytes);
         final data = jsonDecode(decodedBody);
         List<Post> newPosts = [];
@@ -54,12 +62,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
         setState(() {
           _posts.addAll(newPosts);
+          _fetchFailed = false; // 성공 시 에러 초기화
         });
       } else {
-        print('Error: ${response.statusCode}');
+        throw Exception("타임아웃 또는 API 오류");
       }
     } catch (e) {
-      print('API 요청 실패: $e');
+      setState(() => _fetchFailed = true); // 실패 시 에러 상태 true로 설정
+    } finally {
+      setState(() => _isLoading = false); // 로딩 상태 해제
     }
   }
 
@@ -68,13 +79,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: PageView.builder(
-        controller: PageController(
-          viewportFraction: 1.0, // 한 번에 한 개의 페이지만 보이게 설정
-        ),
-        physics: HeavySwipePhysics(),
+        controller: PageController(viewportFraction: 1.0),
+        physics: const BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
         pageSnapping: true,
-        itemCount: _posts.length + 1,
-        // 다음 요청 공간 포함
+        itemCount: _posts.length + 1, // 마지막 페이지는 로딩 or 에러
         onPageChanged: (index) {
           if (index == _posts.length) {
             _fetchPosts(); // 마지막 페이지에서 추가 요청
