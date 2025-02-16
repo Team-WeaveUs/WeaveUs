@@ -4,7 +4,7 @@ class ToggleButton extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onToggle;
 
-  const ToggleButton({required this.selectedIndex, required this.onToggle, Key? key}) : super(key: key);
+  const ToggleButton({required this.selectedIndex, required this.onToggle, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +21,15 @@ class ToggleButton extends StatelessWidget {
     return GestureDetector(
       onTap: () => onToggle(index),
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-        margin: EdgeInsets.all(5),
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+        margin: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           border: Border.all()
         ),
         child: Text(
           text,
-          style: TextStyle(
+          style: const TextStyle(
           ),
         ),
       ),
