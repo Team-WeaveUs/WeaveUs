@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _fetchPosts(); // 첫 번째 게시물 로드
   }
 
-  // API에서 게시물 가져오기
+  // API에서 게시물 가져오기 (타임아웃 추가)
   Future<void> _fetchPosts() async {
     if (_isLoading) return;
 
