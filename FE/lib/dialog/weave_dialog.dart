@@ -86,7 +86,7 @@ class WeaveDialog extends StatelessWidget {
                       child: Row(
                         children: [
                           // CircleAvatar로 배경 추가
-                          CircleAvatar(
+                          const CircleAvatar(
                             backgroundColor: Colors.blue, // 배경색
                             radius: 20, // 크기
                             child: Icon(
@@ -138,7 +138,7 @@ class WeaveDialog extends StatelessWidget {
                   return MapDialog(
                     onLocationSelected: (location) {
                       // 선택된 위치 데이터를 처리
-                      print("선택된 위치: $location");
+                      //print("선택된 위치: $location");
                     },
                   );
                 },
