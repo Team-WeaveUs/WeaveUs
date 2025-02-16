@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:weave_us/screens/main_screen.dart';
@@ -70,7 +71,7 @@ class _SigninScreenState extends State<SigninScreen> {
         "https://v79h9dyx08.execute-api.ap-northeast-2.amazonaws.com/WeaveAPI/Login";
     final Map<String, String> headers = {
       "Content-Type": "application/json",
-      "x-api-key": "4ckQxZOZt68Xa7kYVoAg43vsy3W5f2631KjqYMpP"
+      "x-api-key": dotenv.env['AWS_API_KEY'] ?? ''
     };
 
     final Map<String, dynamic> body = {
@@ -116,7 +117,7 @@ class _SigninScreenState extends State<SigninScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: Colors.white,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -124,7 +125,7 @@ class _SigninScreenState extends State<SigninScreen> {
             shrinkWrap: true,
             children: [
               Image.asset(
-                'assets/weave_us.JPG',
+                "/image/weave_us.JPG",
                 height: 200,
               ),
               const SizedBox(height: 20),
