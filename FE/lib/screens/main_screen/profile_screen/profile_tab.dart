@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'profile_tab/post_grid.dart';
-import 'profile_tab/reward_list.dart';
+import 'profile_tab/local_weave_list.dart';
 import 'profile_tab/weave_list.dart';
 
 class ProfileTab extends StatelessWidget {
@@ -13,8 +13,8 @@ class ProfileTab extends StatelessWidget {
           TabBar(
             tabs: [
               Tab(text: "게시물"),
-              Tab(text: "Weave"),
-              Tab(text: "리워드"),
+              Tab(text: "공유 위브"),
+              Tab(text: "비밀 위브"),
             ],
           ),
           Expanded(
@@ -22,7 +22,7 @@ class ProfileTab extends StatelessWidget {
               children: [
                 PostGrid(),
                 WeaveList(),
-                RewardList(),
+                LocalWeaveList(),
               ],
             ),
           ),

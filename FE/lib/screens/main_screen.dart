@@ -3,6 +3,7 @@ import 'package:weave_us/add/profile_edit_screen.dart';
 import 'package:weave_us/add/setting_screen.dart';
 import 'package:weave_us/screens/main_screen/bottom_navigation.dart';
 import 'package:weave_us/screens/main_screen/new_weave_screen.dart';
+import 'package:weave_us/screens/main_screen/reward_screen.dart';
 import 'package:weave_us/screens/main_screen/weave_upload_screen.dart';
 import 'package:weave_us/screens/main_screen/home_screen.dart';
 import 'package:weave_us/screens/main_screen/profile_screen.dart';
@@ -130,7 +131,7 @@ class _MainScreenState extends State<MainScreen>
             HomeScreen(), //home_screen.dart
             SearchScreen(),
             WeaveUploadScreen(),
-            Center(child: Text('리워드 화면')),
+            RewardScreen(),
             ProfileScreen(), //profile_screen.dart
           ],
         ),
