@@ -7,7 +7,7 @@ import '../main_screen/home_screen/post_screen.dart';
 import '../main_screen/home_screen/post.dart'; // Post 모델 분리
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
