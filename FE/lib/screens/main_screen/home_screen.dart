@@ -83,14 +83,42 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         itemBuilder: (context, index) {
           if (index < _posts.length) {
-            return PostScreen(postData: _posts[index]); // PostScreen에 데이터 전달
+            return PostScreen(postData: _posts[index]);
           } else {
-            return const Center(
-                child: CircularProgressIndicator(
-              color: Colors.orange,
-            )); // 로딩 인디케이터
+            if (_fetchFailed) {
+              return _buildErrorScreen(); // API 요청 실패 화면
+            }
+
+            return _buildLoadingScreen(); // 로딩 화면
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildLoadingScreen() {
+    return const Center(
+      child: CircularProgressIndicator(color: Colors.orange),
+    );
+  }
+
+  Widget _buildErrorScreen() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error, color: Colors.red, size: 48),
+          const SizedBox(height: 10),
+          const Text("게시물을 불러오지 못했습니다.", style: TextStyle(fontSize: 18)),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              setState(() => _fetchFailed = false);
+              _fetchPosts(); // 다시 시도
+            },
+            child: const Text("다시 시도"),
+          ),
+        ],
       ),
     );
   }
