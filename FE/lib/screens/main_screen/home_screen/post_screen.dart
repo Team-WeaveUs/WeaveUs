@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:weave_us/screens/main_screen/home_screen/comment_input_widget.dart';
 import 'package:weave_us/screens/main_screen/weave_upload_screen.dart';
 import 'post.dart';
 
 class PostScreen extends StatefulWidget {
-  final Post postData; // 초기 Post 데이터
+  final Post postData;
   const PostScreen({super.key, required this.postData});
 
   @override
@@ -12,19 +13,18 @@ class PostScreen extends StatefulWidget {
 
 class _PostScreenState extends State<PostScreen> {
   bool _isFetchingNewPosts = false;
-  List<Post> _posts = []; // 게시물 리스트
-  Set<String> _requestedPosts = {}; // 요청한 게시물 ID 저장 (중복 방지)
+  List<Post> _posts = [];
+  Set<String> _requestedPosts = {};
 
   @override
   void initState() {
     super.initState();
-    _posts.add(widget.postData); // 초기 게시물 추가
-    _requestedPosts.add(widget.postData.weaveTitle); // 요청한 게시물에 추가
+    _posts.add(widget.postData);
+    _requestedPosts.add(widget.postData.weaveTitle);
   }
 
-  // 새로운 게시물 요청
   Future<void> _fetchNewPost() async {
-    if (_isFetchingNewPosts) return; // 중복 요청 방지
+    if (_isFetchingNewPosts) return;
 
     setState(() => _isFetchingNewPosts = true);
 
@@ -50,12 +50,10 @@ class _PostScreenState extends State<PostScreen> {
     });
   }
 
-  // 게시물이 없을 때 나타나는 버튼
   Widget _buildCreateNewPostButton() {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          // 새 게시물 업로드 페이지로 이동
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => WeaveUploadScreen()),
@@ -71,7 +69,6 @@ class _PostScreenState extends State<PostScreen> {
     final Size size = MediaQuery.of(context).size;
     return Column(
       children: [
-        // Title과 Type은 고정
         Container(
           margin: const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0),
           padding: const EdgeInsets.all(10),
@@ -97,12 +94,9 @@ class _PostScreenState extends State<PostScreen> {
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.black),
                 ),
-                child: const IconButton(
-                  onPressed: null,
-                  icon: Icon(
-                    Icons.add,
-                    color: Colors.black,
-                  ),
+                child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.add, color: Colors.black),
                 ),
               ),
             ],
@@ -111,13 +105,12 @@ class _PostScreenState extends State<PostScreen> {
         Expanded(
           child: Stack(
             children: [
-              // 게시물 리스트 (수직 스크롤)
               PageView.builder(
-                itemCount: _posts.length + 1, // 마지막에 "새 게시물 생성" 버튼 추가
+                itemCount: _posts.length + 1,
                 scrollDirection: Axis.vertical,
                 onPageChanged: (index) {
                   if (index == _posts.length - 1) {
-                    _fetchNewPost(); // 마지막 게시물 도달 시 새로운 게시물 요청
+                    _fetchNewPost();
                   }
                 },
                 itemBuilder: (context, index) {
@@ -126,7 +119,11 @@ class _PostScreenState extends State<PostScreen> {
                     return Container(
                       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
                       decoration: const BoxDecoration(
-                        border: Border(left: BorderSide(color: Colors.black), right: BorderSide(color: Colors.black), bottom: BorderSide(color: Colors.black)),
+                        border: Border(
+                          left: BorderSide(color: Colors.black),
+                          right: BorderSide(color: Colors.black),
+                          bottom: BorderSide(color: Colors.black),
+                        ),
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
                       ),
                       child: Column(
@@ -148,17 +145,11 @@ class _PostScreenState extends State<PostScreen> {
                                 Row(
                                   children: [
                                     CircleAvatar(
-                                      radius: 35 / 2,
-                                      backgroundImage: post.userProfile == '0'
-                                          ? null
-                                          : NetworkImage(post.userProfile),
+                                      radius: 17.5,
+                                      backgroundImage: post.userProfile == '0' ? null : NetworkImage(post.userProfile),
                                       backgroundColor: Colors.grey,
                                       child: post.userProfile == '0'
-                                          ? const Icon(
-                                        size: 35 / 2,
-                                        Icons.person,
-                                        color: Colors.white,
-                                      )
+                                          ? const Icon(Icons.person, size: 17.5, color: Colors.white)
                                           : null,
                                     ),
                                     const SizedBox(width: 10),
@@ -188,20 +179,55 @@ class _PostScreenState extends State<PostScreen> {
                           Container(
                             margin: const EdgeInsets.symmetric(horizontal: 15),
                             width: size.width,
-                            child: Text(
-                              post.content,
-                              style: const TextStyle(fontSize: 18),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  post.content,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                                if (post.content.length > 50)
+                                  TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text('전체 내용'),
+                                          content: Text(post.content),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(context),
+                                              child: const Text('닫기'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                    child: const Text('더보기', style: TextStyle(color: Colors.blue)),
+                                  ),
+                                SizedBox(height: 10),
+                                CommentInputWidget(
+                                  username: post.name,
+                                  profileImageUrl: post.userProfile,
+                                  onCommentSubmit: (value) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text("댓글이 작성되었습니다: $value")),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     );
                   } else {
-                    return _buildCreateNewPostButton(); // 더 이상 게시물이 없을 때 버튼 표시
+                    return _buildCreateNewPostButton();
                   }
                 },
               ),
-              // 로딩 중이면 로딩 화면 표시
               if (_isFetchingNewPosts)
                 const Center(
                   child: CircularProgressIndicator(color: Colors.orange),
