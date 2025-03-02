@@ -7,25 +7,19 @@ const config = {
 };
 
 export function createAccessToken(payload) {
-  const accessPayload = { ...payload };
-  accessPayload.nonce = crypto.randomBytes(16).toString('hex');
-
-  return jwt.sign(accessPayload, config.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
+  return jwt.sign(payload, config.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
 };
 
 // 리프레시 토큰 생성 함수
 export function createRefreshToken(payload) {
-  const refreshPayload = { ...payload };
-  refreshPayload.nonce = crypto.randomBytes(16).toString('hex');
-
-  return jwt.sign(refreshPayload, config.REFRESH_TOKEN_SECRET, { expiresIn: '3d' });
+  return jwt.sign(payload, config.REFRESH_TOKEN_SECRET, { expiresIn: '3d' });
 };
 
 export function verifyAccessToken(event) {
   // 0 : access token 만료, 1 : 검증, -1 : userid 불일치, -2 : 토큰 없음
   try {
     const accessToken = event.headers.accessToken;
-    const userId = event.body.user_id;
+    const user_id = event.body.user_id;
 
     if (!accessToken) {
       return {
@@ -60,7 +54,7 @@ export function verifyRefreshToken(event) {
   // 0 : access token 만료, 1 : 검증, -1 : userid 불일치, -2 : 토큰 없음
   try {
     const refreshToken = event.headers.refreshToken;
-    const userId = event.body.user_id;
+    const user_id = event.body.user_id;
 
     if (!refreshToken) {
       return {
