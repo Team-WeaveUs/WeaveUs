@@ -11,8 +11,8 @@ export const handler = async (event) => {
     }
 
     try {
-        const accessToken = createAccessToken({ userId: verifyed.payload.userId });
-        const refreshToken = createRefreshToken({ userId: verifyed.payload.userId });
+        const accessToken = createAccessToken({ user_id: verifyed.payload.user_id });
+        const refreshToken = createRefreshToken({ user_id: verifyed.payload.user_id });
 
         return {
             statusCode: 200,
@@ -20,7 +20,7 @@ export const handler = async (event) => {
                 message: "인증 성공",
                 accessToken: accessToken,
                 refreshToken: refreshToken,
-                user_id: verifyed.payload.userId,
+                user_id: verifyed.payload.user_id,
             },
         };
 
