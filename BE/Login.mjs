@@ -29,7 +29,7 @@ export const handler = async (event) => {
         console.error('<Error> Login - same id is exist');
         await closeConnection();
         return {
-            statusCode: 404,
+            statusCode: 400,
             body: { message: "사용자를 특정할 수 없습니다." },
         };
       }
@@ -43,8 +43,8 @@ export const handler = async (event) => {
         if (isMatch || password === ret[0].account_pw) {
             // 비밀번호가 맞을 경우
 
-            const accessToken = createAccessToken({ userId : ret[0].id });
-            const refreshToken = createRefreshToken({ userId : ret[0].id });
+            const accessToken = createAccessToken({ user_id : ret[0].id });
+            const refreshToken = createRefreshToken({ user_id : ret[0].id });
             
 
             return {
