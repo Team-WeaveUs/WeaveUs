@@ -31,6 +31,7 @@ export const handler = async (event) => {
       [target_user_id]);
 
     if (ret.length != 1) {
+      await closeConnection();
       return {
         statusCode: 400,
         body: { message: "유저 정보가 없습니다." },
@@ -67,13 +68,15 @@ export const handler = async (event) => {
     }
 
     response["post_list"] = ret;
-
+      
+    await closeConnection();
     return {
       statusCode: 200,
       body: response,
     };
 
   } catch (error) {
+    await closeConnection();
     return {
       statusCode: 500,
       body: { message: 'Internal Server Error'},
