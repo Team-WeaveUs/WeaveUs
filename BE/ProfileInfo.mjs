@@ -2,14 +2,14 @@ import { getConnection, closeConnection, executeQuery } from './dbClient.mjs';
 import { verifyAccessToken } from './jwt.mjs';
 
 export const handler = async (event) => {
-  // const verifyed = verifyAccessToken(event);
+  const verifyed = verifyAccessToken(event);
 
-  // if (verifyed.code !== 1) {
-  //   return {
-  //     statusCode: verifyed.status,
-  //     body: { message: verifyed.message, event:verifyed.error },
-  //   };
-  // }
+  if (verifyed.code !== 1) {
+    return {
+      statusCode: verifyed.status,
+      body: { message: verifyed.message, event:verifyed.error },
+    };
+  }
 
   const { user_id, target_user_id, post_count } = event.body;
 
