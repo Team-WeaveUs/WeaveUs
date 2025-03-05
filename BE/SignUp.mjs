@@ -1,7 +1,13 @@
 import bcrypt from 'bcryptjs';
-import { getConnection, closeConnection, executeQuery } from './dbClient.mjs';
+import { closeConnection, executeQuery } from './dbClient.mjs';
 
 export const handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+        statusCode: 200,
+        body: {},
+    };
+  }
     const { id, pw, name, nickname, number, gender, is_owner } = event.body;
 
     if (!id || !pw || !name || !nickname || !number || !gender || !is_owner) {

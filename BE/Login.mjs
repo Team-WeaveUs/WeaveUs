@@ -4,6 +4,13 @@ import { getConnection, closeConnection, executeQuery } from './dbClient.mjs';
 import { createAccessToken, createRefreshToken, verifyRefreshToken } from './jwt.mjs';
 
 export const handler = async (event) => {
+
+    if (event.httpMethod === 'OPTIONS') {
+      return {
+          statusCode: 200,
+          body: {},
+      };
+    }
     
     // 요청에서 아이디와 비밀번호를 추출
     const { account_id, password, type } = event.body;

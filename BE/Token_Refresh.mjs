@@ -1,6 +1,13 @@
 import { verifyRefreshToken, createAccessToken, createRefreshToken } from './jwt.mjs';
 
 export const handler = async (event) => {
+    if (event.httpMethod === 'OPTIONS') {
+      return {
+          statusCode: 200,
+          body: {},
+      };
+    }
+    
     const verifyed = verifyRefreshToken(event);
 
     if (verifyed.code !== 1) {
@@ -23,7 +30,7 @@ export const handler = async (event) => {
                 user_id: verifyed.payload.user_id,
             },
         };
-
+        
     } catch (error) {
         return {
             statusCode: 500,

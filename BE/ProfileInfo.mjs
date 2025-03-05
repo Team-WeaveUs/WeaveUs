@@ -2,6 +2,12 @@ import { getConnection, closeConnection, executeQuery } from './dbClient.mjs';
 import { verifyAccessToken } from './jwt.mjs';
 
 export const handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+        statusCode: 200,
+        body: {},
+    };
+  }
   const verifyed = verifyAccessToken(event);
 
   if (verifyed.code !== 1) {
@@ -52,18 +58,18 @@ export const handler = async (event) => {
 
     if (user_id == target_user_id) {
       ret = await executeQuery(
-        `SELECT id as post_id, media_url as img, location as loc 
-          FROM Post 
-          WHERE user_id = ? 
-          ORDER BY id DESC LIMIT ${normalizePostCount}`,
+        `SELECT p.id as post_id, m.content_url as img, p.location as loc 
+          FROM Post as p, Media as m
+          WHERE p.user_id = ? AND m.id = p.thumbnail_media_id 
+          ORDER BY p.id DESC LIMIT ${normalizePostCount}`,
         [target_user_id]);
     } else {
       // 본인 프로필 탐색이 아닐경우 public 게시물만 SELECT
       ret = await executeQuery(
-        `SELECT id as post_id, media_url as img, location as loc 
-          FROM Post 
-          WHERE user_id = ? AND privacy_id = 3 
-          ORDER BY id DESC LIMIT ${normalizePostCount}`,
+        `SELECT p.id as post_id, m.content_url as img, p.location as loc 
+          FROM Post as p, Media as m
+          WHERE p.user_id = ? AND m.id = p.thumbnail_media_id AND p.privacy_id = 3 
+          ORDER BY p.id DESC LIMIT ${normalizePostCount}`,
         [target_user_id]);
     }
 
@@ -80,6 +86,7 @@ export const handler = async (event) => {
     return {
       statusCode: 500,
       body: { message: 'Internal Server Error'},
+      error : error.message
     };
   }
 };

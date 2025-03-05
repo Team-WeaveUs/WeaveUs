@@ -2,6 +2,12 @@ import { verifyAccessToken } from './jwt.mjs';
 import { closeConnection, executeQuery } from './dbClient.mjs';
 
 export const handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+        statusCode: 200,
+        body: {},
+    };
+  }
   const verifyed = verifyAccessToken(event);
 
   if (verifyed.code !== 1) {
@@ -88,7 +94,7 @@ export const handler = async (event) => {
     console.error('Error uploading post:', error);
     return {
       statusCode: 500,
-      body: { message: 'Internal Server Error' },
+      body: { message: 'Internal Server Error UPLOAD' },
     };
   } finally {
     await closeConnection();
