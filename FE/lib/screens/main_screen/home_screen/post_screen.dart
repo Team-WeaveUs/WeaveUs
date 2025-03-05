@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weave_us/screens/main_screen/home_screen/comment_input_widget.dart';
 import 'package:weave_us/screens/main_screen/weave_upload_screen.dart';
 import 'post.dart';
+import 'package:weave_us/screens/main_screen/home_screen/post_detail_screen/post_info_screen.dart';
 
 class PostScreen extends StatefulWidget {
   final Post postData;
@@ -89,16 +90,19 @@ class _PostScreenState extends State<PostScreen> {
                   const Text("weaveType"),
                 ],
               ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.black),
-                ),
-                child: IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.add, color: Colors.black),
-                ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.black),
+            ),
+            child: const IconButton(
+              onPressed: null,
+              icon: Icon(
+                Icons.add,
+                color: Colors.black,
               ),
+            ),
+          ),
             ],
           ),
         ),
@@ -129,10 +133,20 @@ class _PostScreenState extends State<PostScreen> {
                       child: Column(
                         children: [
                           if (post.urls.isNotEmpty)
-                            Image.network(
-                              height: size.height * 0.6,
-                              fit: BoxFit.cover,
-                              post.urls.first,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PostInfoScreen(postData: post),
+                                  ),
+                                );
+                              },
+                              child: Image.network(
+                                height: size.height * 0.6,
+                                fit: BoxFit.cover,
+                                post.urls.first,
+                              ),
                             ),
                           Container(
                             padding: const EdgeInsets.all(10),
@@ -145,11 +159,17 @@ class _PostScreenState extends State<PostScreen> {
                                 Row(
                                   children: [
                                     CircleAvatar(
-                                      radius: 17.5,
-                                      backgroundImage: post.userProfile == '0' ? null : NetworkImage(post.userProfile),
+                                      radius: 35 / 2,
+                                      backgroundImage: post.userProfile == '0'
+                                          ? null
+                                          : NetworkImage(post.userProfile),
                                       backgroundColor: Colors.grey,
                                       child: post.userProfile == '0'
-                                          ? const Icon(Icons.person, size: 17.5, color: Colors.white)
+                                          ? const Icon(
+                                        size: 35 / 2,
+                                        Icons.person,
+                                        color: Colors.white,
+                                      )
                                           : null,
                                     ),
                                     const SizedBox(width: 10),
@@ -182,40 +202,67 @@ class _PostScreenState extends State<PostScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  post.content,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                                if (post.content.length > 50)
-                                  TextButton(
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: const Text('전체 내용'),
-                                          content: Text(post.content),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(context),
-                                              child: const Text('닫기'),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => PostInfoScreen(postData: post),
                                             ),
-                                          ],
+                                          );
+                                        },
+                                        child: Text(
+                                          post.content,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 18),
                                         ),
-                                      );
-                                    },
-                                    child: const Text('더보기', style: TextStyle(color: Colors.blue)),
-                                  ),
-                                SizedBox(height: 10),
-                                CommentInputWidget(
-                                  username: post.name,
-                                  profileImageUrl: post.userProfile,
-                                  onCommentSubmit: (value) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text("댓글이 작성되었습니다: $value")),
+                                      ),
+                                    ),
+                                    if (post.content.length > 3)
+                                      GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => PostInfoScreen(postData: post),
+                                            ),
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5),
+                                          child: Text(
+                                            '더보기',
+                                            style: const TextStyle(fontSize: 12, color: Colors.black),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+
+                                GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PostInfoScreen(postData: post),
+                                      ),
                                     );
                                   },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5),
+                                    child: Text(
+                                      "@@개의 댓글 더보기",
+                                      style: const TextStyle(fontSize: 10, color: Colors.black),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
