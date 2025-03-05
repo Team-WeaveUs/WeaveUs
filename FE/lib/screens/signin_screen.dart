@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:weave_us/config.dart';
 import 'dart:convert';
 import 'package:weave_us/screens/main_screen.dart';
 import 'package:weave_us/screens/signpassword_screen.dart';
@@ -71,7 +72,6 @@ class _SigninScreenState extends State<SigninScreen> {
         "https://v79h9dyx08.execute-api.ap-northeast-2.amazonaws.com/WeaveAPI/Login";
     final Map<String, String> headers = {
       "Content-Type": "application/json",
-      "x-api-key": dotenv.env['AWS_API_KEY'] ?? ''
     };
 
     final Map<String, dynamic> body = {
