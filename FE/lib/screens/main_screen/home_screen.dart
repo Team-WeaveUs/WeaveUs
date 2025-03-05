@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:weave_us/screens/main_screen/home_screen/post_screen_physics.dart';
 import '../main_screen/home_screen/post_screen.dart';
 import '../main_screen/home_screen/post.dart'; // Post 모델 분리
 
@@ -18,13 +16,11 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _fetchFailed = false;
   bool _isLoading = false;
   int _currentIndex = 0;
-
   @override
   void initState() {
     super.initState();
     _fetchPosts(); // 첫 번째 게시물 로드
   }
-
   // API에서 게시물 가져오기 (타임아웃 추가)
   Future<void> _fetchPosts() async {
     if (_isLoading) return;
@@ -42,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final headers = {
       'Content-Type': 'application/json; charset=utf-8',
-      'x-api-key': dotenv.env['AWS_API_KEY'] ?? '',
     };
 
     try {
@@ -60,19 +55,26 @@ class _HomeScreenState extends State<HomeScreen> {
           newPosts.add(Post.fromJson(item));
         }
 
-        setState(() {
-          _posts.addAll(newPosts);
-          _fetchFailed = false; // 성공 시 에러 초기화
-        });
+        if (mounted) {
+          setState(() {
+            _posts.addAll(newPosts);
+            _fetchFailed = false; // 성공 시 에러 초기화
+          });
+        }
       } else {
         throw Exception("타임아웃 또는 API 오류");
       }
     } catch (e) {
-      setState(() => _fetchFailed = true); // 실패 시 에러 상태 true로 설정
+      if (mounted) {
+        setState(() => _fetchFailed = true); // 실패 시 에러 상태 true로 설정
+      }
     } finally {
-      setState(() => _isLoading = false); // 로딩 상태 해제
+      if (mounted) {
+        setState(() => _isLoading = false); // 로딩 상태 해제
+      }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

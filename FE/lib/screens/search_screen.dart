@@ -58,7 +58,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
     final headers = {
       'Content-Type': 'application/json; charset=utf-8',
-      'x-api-key': dotenv.env['AWS_API_KEY'] ?? '',
     };
 
     try {
