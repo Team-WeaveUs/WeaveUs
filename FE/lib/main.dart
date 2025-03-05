@@ -4,7 +4,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:weave_us/screens/signin_screen.dart';
 import 'package:weave_us/screens/main_screen.dart';
 import 'package:weave_us/screens/owner_screen.dart';
-import "config.dart";
+
+
 // fe/dev(아무개) Branch 생성
 // fe/dev 에서 작업 및 커밋
 // fe/dev 를 fe/main 으로 pr
@@ -12,7 +13,6 @@ import "config.dart";
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  if (!kIsWeb) {await dotenv.load();}
   runApp(const MyApp());
 }
 

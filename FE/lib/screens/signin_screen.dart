@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:weave_us/config.dart';
 import 'dart:convert';
 import 'package:weave_us/screens/main_screen.dart';
 import 'package:weave_us/screens/signpassword_screen.dart';
@@ -68,27 +66,26 @@ class _SigninScreenState extends State<SigninScreen> {
       return; // 입력값이 유효하지 않으면 종료
     }
 
-    const String apiUrl =
-        "https://v79h9dyx08.execute-api.ap-northeast-2.amazonaws.com/WeaveAPI/Login";
-    final Map<String, String> headers = {
-      "Content-Type": "application/json",
-    };
-
+    // const String apiUrl ="https://v79h9dyx08.execute-api.ap-northeast-2.amazonaws.com/WeaveAPI/Login";
+    // final Map<String, String> headers = {"Content-Type": "application/json"};
     final Map<String, dynamic> body = {
-      "username": _idController.text.trim(),
+      "account_id": _idController.text.trim(),
       "password": _passwordController.text.trim(),
     };
 
     try {
       final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: headers,
-        body: jsonEncode(body),
+        Uri.parse("https://v79h9dyx08.execute-api.ap-northeast-2.amazonaws.com/WeaveAPI/Login"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: jsonEncode(body)
       );
 
       final responseBody = utf8.decode(response.bodyBytes); // UTF-8로 디코딩
       final responseData = jsonDecode(responseBody); // JSON 디코딩
-
+      print("응답 받음: ${response}");
       if (response.statusCode == 200) {
         print("로그인 성공: ${responseData['message']}");
         ScaffoldMessenger.of(context).showSnackBar(

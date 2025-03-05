@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:weave_us/config.dart';
 import 'package:weave_us/screens/main_screen/search_screen/floating_map_button.dart';
 import 'package:weave_us/screens/main_screen/search_screen/search_input.dart';
 import 'package:weave_us/screens/main_screen/search_screen/search_title.dart';
@@ -59,7 +58,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
     final headers = {
       'Content-Type': 'application/json; charset=utf-8',
-      'x-api-key': EnvironmentConfig.apiKey,
     };
 
     try {
