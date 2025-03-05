@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:weave_us/Auth/auth_service.dart';
 import 'dart:convert';
 import 'package:weave_us/screens/main_screen.dart';
 import 'package:weave_us/screens/signpassword_screen.dart';
 import 'package:weave_us/screens/signup_screen.dart';
+
+import '../Auth/token_storage.dart';
 
 
 class SigninScreen extends StatefulWidget {
@@ -60,53 +63,37 @@ class _SigninScreenState extends State<SigninScreen> {
       });
     }
   }
-
+  final _authService = AuthService();
   Future<void> _loginUser() async {
     if (_idError != null || _passwordError != null) {
       return; // 입력값이 유효하지 않으면 종료
     }
 
-    // const String apiUrl ="https://v79h9dyx08.execute-api.ap-northeast-2.amazonaws.com/WeaveAPI/Login";
-    // final Map<String, String> headers = {"Content-Type": "application/json"};
-    final Map<String, dynamic> body = {
-      "account_id": _idController.text.trim(),
-      "password": _passwordController.text.trim(),
-    };
-
     try {
-      final response = await http.post(
-        Uri.parse("https://v79h9dyx08.execute-api.ap-northeast-2.amazonaws.com/WeaveAPI/Login"),
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: jsonEncode(body)
+      final loginResponse = await _authService.loginUser(
+        _idController.text,
+        _passwordController.text,
       );
 
-      final responseBody = utf8.decode(response.bodyBytes); // UTF-8로 디코딩
-      final responseData = jsonDecode(responseBody); // JSON 디코딩
-      print("응답 받음: ${response}");
-      if (response.statusCode == 200) {
-        print("로그인 성공: ${responseData['message']}");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("로그인 성공: ${responseData['message']}")),
-        );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("로그인 성공: ${loginResponse.message}")),
+      );
 
-        // MainScreen으로 이동
+      if (loginResponse.accessToken != null) {
+        // 토큰 저장
+        await TokenStorage.saveTokens(
+            loginResponse.accessToken!, loginResponse.refreshToken!);
+        await TokenStorage.saveUserID(loginResponse.userId!);
+
+        // 메인 화면으로 이동
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MainScreen()),
         );
-      } else {
-        print("로그인 실패: ${responseData['message']}");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("로그인 실패: ${responseData['message']}")),
-        );
       }
     } catch (e) {
-      print("서버 요청 실패: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("서버 요청 실패: $e")),
+        SnackBar(content: Text(e.toString())),
       );
     }
   }
