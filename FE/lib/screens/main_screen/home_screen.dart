@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:weave_us/config.dart';
 import 'package:weave_us/screens/main_screen/home_screen/post_screen_physics.dart';
 import '../main_screen/home_screen/post_screen.dart';
 import '../main_screen/home_screen/post.dart'; // Post 모델 분리
@@ -42,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final headers = {
       'Content-Type': 'application/json; charset=utf-8',
-      'x-api-key': dotenv.env['AWS_API_KEY'] ?? '',
+      'x-api-key': EnvironmentConfig.apiKey,
     };
 
     try {
