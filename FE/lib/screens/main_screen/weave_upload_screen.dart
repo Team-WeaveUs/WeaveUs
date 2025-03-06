@@ -8,8 +8,11 @@ import 'package:weave_us/screens/main_screen/weave_upload_screen/content_input.d
 import 'package:weave_us/screens/main_screen/weave_upload_screen/media_widget/tag_input.dart';
 import 'dart:convert';
 
+import '../../Auth/token_storage.dart';
 import 'weave_upload_screen/share_button.dart';
 import 'weave_upload_screen/weave_selector.dart';
+
+import 'package:weave_us/Auth/api_client.dart';
 import 'weave_upload_screen/media_widget/tag_input.dart';
 import 'weave_upload_screen/content_input.dart';
 import 'weave_upload_screen/media_widget/media_picker.dart';
@@ -32,6 +35,7 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
   final TextEditingController _tagController = TextEditingController();
   String objectKey = '';
   String? _selectedWeave;
+  int? _selectedWeaveId;
 
   /// 사진 & 글이 있는지 여부 체크
   bool get isUploadable => _selectedFiles.isNotEmpty && _contentController.text.trim().isNotEmpty;
@@ -63,7 +67,7 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
   }
 
   /// 📩 **공유하기 버튼 클릭 시 실행**
-  void _onShare() {
+  Future<void> _onShare() async {
     if (!isUploadable) {
       print("🚨 사진과 글을 입력하세요! 🚨");
       return;
@@ -71,8 +75,27 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
 
     for (var file in _selectedFiles) {
       print("📤 업로드 시작: ${file["name"]}");
+      file["name"] = '${uuid.v4()}.jpg';
       _uploadToS3(file["name"], file["bytes"]);
+      file.remove("bytes");
+      file["Type"] = "image/jpeg";
     }
+
+
+    print("✅ 업로드 완ddddddddddd료 ${_selectedFiles}");
+
+    print("✅ 업로드 완dfsafddas료 -> ${_contentController.text}");
+
+    final response = await ApiService.sendRequest(
+      "WeaveAPI/PostUpload",
+      {
+        "privacy_id": 3,
+        "weave_id":_selectedWeaveId,
+        "content":_contentController.text,
+        "files": _selectedFiles
+      }, // 🔥 검색어 전송
+    );
+
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("📤 게시물 공유 완료!")),
@@ -88,14 +111,15 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
 
   /// 📜 **Presigned URL 요청**
   Future<String?> _getPresignedUrl(String fileName) async {
-    final String uniqueFilename = '${uuid.v4()}.jpg';
+    String? accessToken = await TokenStorage.getAccessToken();
+
+    final String uniqueFilename = fileName;
     final String contentType = 'image/jpeg';
     final String apiUrl =
         'https://v79h9dyx08.execute-api.ap-northeast-2.amazonaws.com/WeaveAPI/GetPresignedURL';
 
-
     final headers = {
-      "Accesstoken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3NDExOTYyNDEsImV4cCI6MTc0MTE5Njg0MX0.20yUiqR7usxPdw9OAWmhw8b2ImkBYt8cAZu1llkRZ6g",
+      "accesstoken": "$accessToken",
       "Content-Type": "application/json"
     };
 
@@ -124,9 +148,9 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         final presignedUrl = responseData["body"][0]["presignedUrl"];
-        setState(() {
-          objectKey = uniqueFilename;
-        });
+        // setState(() {
+        //   objectKey = uniqueFilename;
+        // });
         print("✅ Presigned URL 성공: $presignedUrl");
         return presignedUrl;
       } else {
@@ -204,7 +228,8 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
         return WeaveDialog(
           onWeaveSelected: (selectedWeave) {
             setState(() {
-              _selectedWeave = selectedWeave;
+              _selectedWeave = selectedWeave.split(",")[0];
+              _selectedWeaveId = int.tryParse(selectedWeave.split(",")[1]);
             });
           },
         );
