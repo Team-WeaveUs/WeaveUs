@@ -13,7 +13,8 @@ class _SignupScreenState extends State<SignupScreen> {
   TextEditingController _passwordEditingController = TextEditingController();
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
-  bool get _isEnabled => true;
+  String selectedGender = "비공개";
+  int selectedOption = 0; // 0 or 1 for the second dropdown
 
   @override
   Widget build(BuildContext context) {
@@ -30,75 +31,122 @@ class _SignupScreenState extends State<SignupScreen> {
               children: [
                 // 팀 로고
                 Image.asset(
-                  '/image/weave_us.JPG',
+                  'assets/image/weave_us.JPG', // Ensure this path is correct
                   height: 200,
+                ),
+                SizedBox(height: 10),
+
+                // 가로로 배치된 드롭다운 버튼들
+                SizedBox(
+                  height: 65,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          value: selectedGender,
+                          decoration: const InputDecoration(
+                            labelText: '성별',
+                            border: OutlineInputBorder(),
+                            filled: true,
+                          ),
+                          items: const [
+                            DropdownMenuItem(value: '비공개', child: Text('비공개')),
+                            DropdownMenuItem(value: '남성', child: Text('남성')),
+                            DropdownMenuItem(value: '여성', child: Text('여성')),
+                          ],
+                          onChanged: (value) => setState(() => selectedGender = value!),
+                        ),
+                      ),
+                      SizedBox(width: 20), // Space between dropdowns
+                      Expanded(
+                        child: DropdownButtonFormField<int>(
+                          value: selectedOption,
+                          decoration: const InputDecoration(
+                            labelText: '오너계정이신가요?',
+                            border: OutlineInputBorder(),
+                            filled: true,
+                          ),
+                          items: const [
+                            DropdownMenuItem(value: 0, child: Text('아니요')),
+                            DropdownMenuItem(value: 1, child: Text('네')),
+                          ],
+                          onChanged: (value) => setState(() => selectedOption = value!),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // 닉네임과 이름을 가로로 배치
+                SizedBox(
+                  height: 65,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: '닉네임',
+                            prefixIcon: Icon(Icons.person_2),
+                            filled: true,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return '닉네임을 입력해주세요.';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Expanded(
+                        child: TextFormField(
+                          keyboardType: TextInputType.name,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: '이름',
+                            prefixIcon: Icon(Icons.person),
+                            filled: true,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
+
+                // 전화번호 입력 필드
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: '전화번호',
+                    prefixIcon: Icon(Icons.call),
+                    filled: true,
+                  ),
                 ),
                 SizedBox(height: 20),
 
-                // 이메일
+                // 아이디 입력 필드
                 TextFormField(
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: '이메일',
+                    labelText: '아이디',
                     prefixIcon: Icon(Icons.email),
                     filled: true,
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return '이메일을 입력해주세요.';
-                    }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return '유효한 이메일을 입력해주세요.';
+                      return '아이디를 입력해주세요.';
                     }
                     return null;
                   },
                 ),
                 SizedBox(height: 20),
 
-                // 닉네임
-                TextFormField(
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: '닉네임',
-                    prefixIcon: Icon(Icons.person_2),
-                    filled: true,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return '닉네임을 입력해주세요.';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-
-                // 이름
-                TextFormField(
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: '이름',
-                    prefixIcon: Icon(Icons.person),
-                    filled: true,
-                  ),
-                ),
-                SizedBox(height: 20),
-
-                // 생년월일
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: '생년월일',
-                    prefixIcon: Icon(Icons.calendar_month),
-                    filled: true,
-                  ),
-                ),
-                SizedBox(height: 20),
-
-                // 패스워드
+                // 패스워드 입력 필드
                 TextFormField(
                   controller: _passwordEditingController,
                   obscureText: true,
@@ -120,7 +168,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 SizedBox(height: 20),
 
-                // 패스워드 확인
+                // 패스워드 확인 입력 필드
                 TextFormField(
                   obscureText: true,
                   decoration: InputDecoration(
@@ -133,24 +181,25 @@ class _SignupScreenState extends State<SignupScreen> {
                     if (_passwordEditingController.text != value) {
                       return '패스워드가 일치하지 않습니다.';
                     }
-                    // 추가 비밀번호 확인 로직을 여기에 작성
                     return null;
                   },
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 20),
 
                 // 회원가입 버튼
                 ElevatedButton(
                   onPressed: () {
                     final form = _globalKey.currentState;
-
-                    // 실시간 검증 ex) 이메일, 닉네임, 패스워드 똑바로 입력했는지
-                    setState(() {
-                      _autovalidateMode = AutovalidateMode.always;
-                    });
+                    if (form != null && form.validate()) {
+                      // Proceed with signup logic
+                    } else {
+                      setState(() {
+                        _autovalidateMode = AutovalidateMode.always;
+                      });
+                    }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orangeAccent, // 버튼 배경색
+                    backgroundColor: Colors.orangeAccent,
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
                   child: Text(
@@ -158,23 +207,22 @@ class _SignupScreenState extends State<SignupScreen> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black, // 텍스트 색상
+                      color: Colors.black,
                     ),
                   ),
                 ),
                 SizedBox(height: 10),
 
-                // 다시 Signin 화면으로 복귀
+                // 로그인 페이지로 이동 버튼
                 TextButton(
-                  onPressed: _isEnabled
-                      ? () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SigninScreen(),
-                      ))
-                      : null,
+                  onPressed: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SigninScreen(),
+                    ),
+                  ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orangeAccent, // 버튼 배경색
+                    backgroundColor: Colors.orangeAccent,
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
                   child: Text(
@@ -182,7 +230,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black, // 텍스트 색상
+                      color: Colors.black,
                     ),
                   ),
                 ),
