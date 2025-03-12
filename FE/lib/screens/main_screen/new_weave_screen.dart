@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:weave_us/Auth/api_client.dart';
 import 'package:weave_us/Auth/token_storage.dart';
 
 class NewWeaveScreen extends StatefulWidget {
@@ -15,6 +16,16 @@ class _NewWeaveScreenState extends State<NewWeaveScreen> {
   final TextEditingController _descriptionController = TextEditingController();
 
   String selectedWeaveType = "Local";
+
+  void _createWeave() {
+    Future.delayed(Duration.zero, () {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("게시물 공유 완료!")),
+        );
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -37,55 +48,23 @@ class _NewWeaveScreenState extends State<NewWeaveScreen> {
   }
 
   Future<bool> _createWeaveOnServer(String title, String description, int typeId, int privacyId) async {
-    String? accessToken = await TokenStorage.getAccessToken();
+    final response = await ApiService.sendRequest(
+      "WeaveAPI/WeaveUpload",
+      {
+        "title": title,
+        "description": description,
+        "privacy_id": privacyId,
+        "type_id": typeId
+      },
+    );
 
-    final apiUrl = 'https://v79h9dyx08.execute-api.ap-northeast-2.amazonaws.com/WeaveAPI/WeaveUpload';
-
-    final headers = {
-      "accesstoken": "$accessToken",
-      "Content-Type": "application/json"
-    };
-
-    final body = jsonEncode({
-      "title": title,
-      "description": description,
-      "privacy_id": privacyId,
-      "type_id": typeId
-    });
-
-    try {
-      final response = await http.post(Uri.parse(apiUrl), headers: headers, body: body);
-
-      return response.statusCode == 200;
-    } catch (e) {
-      debugPrint("위브 생성 중 오류: $e");
+    if (response != null) {
+      debugPrint("위브 생성 성공!");
+      return true;
+    } else {
+      debugPrint("위브 생성 실패!");
       return false;
     }
-  }
-
-  void _createWeave() async {
-    final weaveName = _nameController.text.trim();
-    final description = _descriptionController.text.trim();
-
-    if (weaveName.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("위브 이름을 입력하세요!")),
-      );
-      return;
-    }
-
-    final success = await _createWeaveOnServer(
-      weaveName,
-      description,
-      _getTypeId(selectedWeaveType),
-      3, // privacy_id 고정값 사용 (예시로 3 사용)
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(success ? "위브가 성공적으로 생성되었습니다!" : "위브 생성에 실패했습니다.")),
-    );
-
-    if (success) Navigator.pop(context);
   }
 
   @override
