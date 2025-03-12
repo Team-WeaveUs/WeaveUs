@@ -17,14 +17,29 @@ class _NewWeaveScreenState extends State<NewWeaveScreen> {
 
   String selectedWeaveType = "Local";
 
-  void _createWeave() {
-    Future.delayed(Duration.zero, () {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("게시물 공유 완료!")),
-        );
-      }
-    });
+  void _createWeave() async {
+    final weaveName = _nameController.text.trim();
+    final description = _descriptionController.text.trim();
+
+    if (weaveName.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("위브 이름을 입력하세요!")),
+      );
+      return;
+    }
+
+    final success = await _createWeaveOnServer(
+      weaveName,
+      description,
+      _getTypeId(selectedWeaveType),
+      3, // privacy_id 고정값 사용 (예시로 3 사용)
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(success ? "위브가 성공적으로 생성되었습니다!" : "위브 생성에 실패했습니다.")),
+    );
+
+    if (success) Navigator.pop(context);
   }
 
   @override
