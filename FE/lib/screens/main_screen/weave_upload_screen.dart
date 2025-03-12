@@ -6,18 +6,10 @@ import 'package:http/http.dart' as http;
 import 'package:weave_us/dialog/weave_dialog.dart';
 import 'package:weave_us/screens/main_screen/weave_upload_screen/content_input.dart';
 import 'package:weave_us/screens/main_screen/weave_upload_screen/media_widget/tag_input.dart';
-import 'dart:convert';
-
-import '../../Auth/token_storage.dart';
 import 'weave_upload_screen/share_button.dart';
 import 'weave_upload_screen/weave_selector.dart';
 
 import 'package:weave_us/Auth/api_client.dart';
-import 'weave_upload_screen/media_widget/tag_input.dart';
-import 'weave_upload_screen/content_input.dart';
-import 'weave_upload_screen/media_widget/media_picker.dart';
-import 'weave_upload_screen/media_widget/selected_media_widget.dart';
-
 class WeaveUploadScreen extends StatefulWidget {
   const WeaveUploadScreen({super.key});
 
@@ -37,10 +29,8 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
   String? _selectedWeave;
   int? _selectedWeaveId;
 
-  /// 사진 & 글이 있는지 여부 체크
   bool get isUploadable => _selectedFiles.isNotEmpty && _contentController.text.trim().isNotEmpty;
 
-  /// 📂 **웹에서 파일 선택 (jpg, jpeg만 허용)**
   void _pickImages() {
     final html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
     uploadInput.accept = "image/jpeg, image/jpg";
@@ -59,119 +49,116 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
             setState(() {
               _selectedFiles.add({"name": file.name, "bytes": bytes});
             });
-            print("✅ 선택된 파일: ${file.name}");
+            print("선택된 파일: ${file.name}");
           });
         }
       }
     });
   }
 
-  /// 📩 **공유하기 버튼 클릭 시 실행**
   Future<void> _onShare() async {
     if (!isUploadable) {
-      print("🚨 사진과 글을 입력하세요! 🚨");
       return;
     }
 
+    List<Map<String, dynamic>> uploadedFiles = [];
+
     for (var file in _selectedFiles) {
-      print("📤 업로드 시작: ${file["name"]}");
+      print("업로드 시작: ${file["name"]}");
       file["name"] = '${uuid.v4()}.jpg';
-      _uploadToS3(file["name"], file["bytes"]);
-      file.remove("bytes");
-      file["Type"] = "image/jpeg";
+
+      // Presigned URL 요청
+      final String? presignedUrl = await _getPresignedUrl(file["name"]);
+      if (presignedUrl == null) {
+        print("Presigned URL 요청 실패: ${file["name"]}");
+        continue; // 업로드 실패 시 건너뜀
+      }
+
+      // S3 업로드 수행
+      bool uploadSuccess = await _uploadToS3(presignedUrl, file["bytes"]);
+      if (!uploadSuccess) {
+        print("❌ S3 업로드 실패: ${file["name"]}");
+        continue;
+      }
+
+      // 업로드 성공 후 리스트에 추가
+      uploadedFiles.add({
+        "name": file["name"],
+        "Type": "image/jpeg",
+      });
     }
 
-
-    print("✅ 업로드 완ddddddddddd료 ${_selectedFiles}");
-
-    print("✅ 업로드 완dfsafddas료 -> ${_contentController.text}");
-
+    // 모든 업로드가 끝난 후 위브 생성 요청
     final response = await ApiService.sendRequest(
       "WeaveAPI/PostUpload",
       {
         "privacy_id": 3,
-        "weave_id":_selectedWeaveId,
-        "content":_contentController.text,
-        "files": _selectedFiles
-      }, // 🔥 검색어 전송
+        "weave_id": _selectedWeaveId,
+        "content": _contentController.text,
+        "files": uploadedFiles  // ✅ 업로드된 파일 목록 전달
+      },
     );
 
+    if (response != null) {
+      print("게시물 업로드 성공!");
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("📤 게시물 공유 완료!")),
-    );
-
-    // ✅ 업로드 후 1초 뒤 main_screen.dart로 이동
-    Future.delayed(const Duration(seconds: 1), () {
-      print("✅ 업로드 완료 -> main_screen.dart 이동!");
-      Navigator.pushReplacementNamed(context, '/main');
-    });
-  }
-
-
-  /// 📜 **Presigned URL 요청**
-  Future<String?> _getPresignedUrl(String fileName) async {
-    String? accessToken = await TokenStorage.getAccessToken();
-
-    final String uniqueFilename = fileName;
-    final String contentType = 'image/jpeg';
-    final String apiUrl =
-        'https://v79h9dyx08.execute-api.ap-northeast-2.amazonaws.com/WeaveAPI/GetPresignedURL';
-
-    final headers = {
-      "accesstoken": "$accessToken",
-      "Content-Type": "application/json"
-    };
-
-    final requestBody = {
-
-      "files": [
-        {
-          "filename": uniqueFilename,
-          "fileType": contentType,
+      // 1초 후 메인 화면으로 이동
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          print("✅ 업로드 완료 -> main_screen.dart 이동!");
+          Navigator.pushReplacementNamed(context, '/main');
         }
-      ]
-    };
+      });
 
+      // 스낵바 표시 (mounted 상태 확인 후 실행)
+      Future.delayed(Duration.zero, () {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("게시물 공유 완료!")),
+          );
+        }
+      });
+    } else {
+      print("게시물 업로드 실패!");
 
-    print("🔄 Presigned URL 요청 중...");
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: headers,
-        body: jsonEncode(requestBody),
-      );
-
-      print("🟢 Presigned URL 응답 코드: ${response.statusCode}");
-      print("🔹 Presigned URL 응답 바디: ${response.body}");
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        final presignedUrl = responseData["body"][0]["presignedUrl"];
-        // setState(() {
-        //   objectKey = uniqueFilename;
-        // });
-        print("✅ Presigned URL 성공: $presignedUrl");
-        return presignedUrl;
-      } else {
-        print("❌ Presigned URL 요청 실패: ${response.body}");
+      // 업로드 실패 시 스낵바 표시
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("게시물 업로드 실패! 다시 시도해주세요.")),
+        );
       }
-    } catch (e) {
-      print("❌ Presigned URL 요청 오류: $e");
     }
-    return null;
   }
 
-  /// 📤 **S3 업로드 기능**
-  Future<void> _uploadToS3(String fileName, Uint8List fileBytes) async {
-    final presignedUrl = await _getPresignedUrl(fileName);
-    if (presignedUrl == null) {
-      print("❌ Presigned URL이 없습니다. 업로드 중단");
-      return;
+
+
+
+  // PresignUrl 요청
+  Future<String?> _getPresignedUrl(String fileName) async {
+    final response = await ApiService.sendRequest(
+      "WeaveAPI/GetPresignedURL",
+      {
+        "files": [
+          {
+            "filename": fileName,
+            "fileType": "image/jpeg"
+          }
+        ]
+      },
+    );
+
+    if (response != null && response["body"] is List && response["body"].isNotEmpty) {
+      final presignedUrl = response["body"][0]["presignedUrl"];
+      print("Presigned URL 성공: $presignedUrl");
+      return presignedUrl;
+    } else {
+      print("Presigned URL 요청 실패");
+      return null;
     }
+  }
 
-    print("🔄 S3 업로드 시작: $presignedUrl");
-
+  // S3 업로드 기능
+  Future<bool> _uploadToS3(String presignedUrl, Uint8List fileBytes) async {
     try {
       final response = await http.put(
         Uri.parse(presignedUrl),
@@ -181,26 +168,73 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
         body: fileBytes,
       );
 
-      print("🟢 S3 업로드 응답 코드: ${response.statusCode}");
-
       if (response.statusCode == 200) {
-        print("✅ 파일 업로드 성공: ${_getObjectUrl()}");
+        print("파일 업로드 성공!");
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("게시물 공유 완료!")),
+          );
+
+          // 스낵바가 뜬 후 1초 뒤 화면 이동
+          await Future.delayed(const Duration(seconds: 1));
+
+          if (mounted) {
+            Navigator.pushReplacementNamed(context, '/main');
+          }
+        }
+
+        return true;
       } else {
-        print("❌ 파일 업로드 실패: ${response.statusCode} - ${response.body}");
+        print("파일 업로드 실패: ${response.statusCode} - ${response.body}");
+        return false;
       }
     } catch (e) {
-      print("❌ S3 업로드 오류: $e");
+      print("S3 업로드 오류: $e");
+      return false;
     }
   }
 
-  /// 📌 **업로드된 S3 파일 URL 생성**
+  Future<bool> _createWeaveOnServer(
+      String title, String description, int typeId, int privacyId, String fileName, Uint8List fileBytes) async {
+
+    // Presigned URL 요청
+    final String? presignedUrl = await _getPresignedUrl(fileName);
+    if (presignedUrl == null) return false;
+
+    // S3 업로드 수행
+    bool uploadSuccess = await _uploadToS3(presignedUrl, fileBytes);
+    if (!uploadSuccess) return false;
+
+    // 위브 생성 API 호출
+    final response = await ApiService.sendRequest(
+      "WeaveAPI/WeaveUpload",
+      {
+        "title": title,
+        "description": description,
+        "privacy_id": privacyId,
+        "type_id": typeId,
+        "image_url": presignedUrl
+      },
+    );
+
+    if (response != null) {
+      debugPrint("위브 생성 성공!");
+      return true;
+    } else {
+      debugPrint("위브 생성 실패!");
+      return false;
+    }
+  }
+
+  // 업로드 s3파일 url생성
   String _getObjectUrl() {
     return "$bucketUrl/$objectKey";
   }
 
-  /// 🖼️ **선택된 사진 삭제 기능**
+  // 선택 사진 제거
   void _removeImage(int index) {
-    print("🗑️ 사진 삭제: ${_selectedFiles[index]["name"]}");
+    print("사진 삭제: ${_selectedFiles[index]["name"]}");
     setState(() {
       _selectedFiles.removeAt(index);
     });
@@ -249,10 +283,9 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
           children: [
             const SizedBox(height: 10),
 
-            // 📸 사진 추가 아이콘 & 선택된 사진 미리보기
+            // 사진 추가 & 선택된 사진 미리보기
             Row(
               children: [
-                // 사진 추가 버튼 (최대 9장)
                 if (_selectedFiles.length < 9)
                   GestureDetector(
                     onTap: _pickImages,
@@ -268,21 +301,20 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
                       ),
                     ),
                   ),
+                const SizedBox(width: 10),
 
-                const SizedBox(width: 10), // 아이콘과 사진 사이 간격
-
-                // 선택된 사진 미리보기 (가로 스크롤 적용)
+                // 선택된 사진 미리보기 (가로 스크롤)
                 Expanded(
                   child: _selectedFiles.isNotEmpty
                       ? SingleChildScrollView(
-                    scrollDirection: Axis.horizontal, // 가로 스크롤
+                    scrollDirection: Axis.horizontal,
                     child: Row(
                       children: List.generate(_selectedFiles.length, (index) {
                         return Stack(
                           alignment: Alignment.topRight,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(left: 10), // 사진 간격 유지
+                              padding: const EdgeInsets.only(left: 10),
                               child: Image.memory(
                                 _selectedFiles[index]["bytes"],
                                 width: 100,
@@ -292,30 +324,42 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
                             ),
                             GestureDetector(
                               onTap: () => _removeImage(index),
-                              child: const Icon(
-                                Icons.close,
-                                color: Colors.black,
-                                size: 24,
-                              ),
+                              child: const Icon(Icons.close, color: Colors.black, size: 24),
                             ),
                           ],
                         );
                       }),
                     ),
                   )
-                      : Container(), // 빈 상태일 때 차지하는 공간 없음
+                      : Container(),
                 ),
               ],
             ),
 
             const SizedBox(height: 15),
-            PostContentInput(controller: _contentController),
+
+            PostContentInput(
+                controller: _contentController),
+
             const SizedBox(height: 15),
-            TagInput(controller: _tagController, tags: _tags, onTagAdded: _addTag, onTagRemoved: _removeTag),
+            TagInput(
+                controller: _tagController,
+                tags: _tags,
+                onTagAdded: _addTag,
+                onTagRemoved: _removeTag),
+
             const SizedBox(height: 15),
-            WeaveSelector(selectedWeave: _selectedWeave, onWeaveSelected: _showWeaveDialog),
+
+            WeaveSelector(
+                selectedWeave: _selectedWeave,
+                onWeaveSelected: _showWeaveDialog),
+
             const SizedBox(height: 15),
-            ShareButton(onShare: _onShare, isUploadable: isUploadable),
+
+            ShareButton(
+              onShare: _onShare,
+              isUploadable: isUploadable,
+            ),
           ],
         ),
       ),
