@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:weave_us/Auth/api_client.dart';
 import 'package:weave_us/Auth/token_storage.dart';
+
+import '../main_screen.dart';
 
 class NewWeaveScreen extends StatefulWidget {
   const NewWeaveScreen({super.key});
@@ -39,7 +42,7 @@ class _NewWeaveScreenState extends State<NewWeaveScreen> {
       SnackBar(content: Text(success ? "위브가 성공적으로 생성되었습니다!" : "위브 생성에 실패했습니다.")),
     );
 
-    if (success) Navigator.pop(context);
+    if (success) Get.offAll(() => MainScreen());
   }
 
   @override

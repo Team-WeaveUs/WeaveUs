@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:weave_us/Auth/auth_service.dart';
 import 'dart:convert';
@@ -63,7 +64,9 @@ class _SigninScreenState extends State<SigninScreen> {
       });
     }
   }
+
   final _authService = AuthService();
+
   Future<void> _loginUser() async {
     if (_idError != null || _passwordError != null) {
       return; // 입력값이 유효하지 않으면 종료
@@ -86,10 +89,11 @@ class _SigninScreenState extends State<SigninScreen> {
         await TokenStorage.saveUserID(loginResponse.userId!);
 
         // 메인 화면으로 이동
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainScreen()),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => MainScreen()),
+        // );
+        Get.to(() => MainScreen());
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -145,13 +149,10 @@ class _SigninScreenState extends State<SigninScreen> {
               SizedBox(height: 5),
 
               TextButton(
-                onPressed: _isEnabled
-                    ? () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SignpasswordScreen(),
-                    ))
-                    : null,
+                onPressed: (){
+                  // Get.to(SignpasswordScreen());
+                  Get.to(() => SignpasswordScreen());
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white, // 버튼 배경색
                   padding: const EdgeInsets.symmetric(vertical: 15),
@@ -187,12 +188,9 @@ class _SigninScreenState extends State<SigninScreen> {
 
               // 회원가입 버튼
               TextButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SignupScreen(),
-                  ),
-                ),
+                onPressed: (){
+                  Get.to(() => SignupScreen());
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orangeAccent,
                   padding: const EdgeInsets.symmetric(vertical: 15),

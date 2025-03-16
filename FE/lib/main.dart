@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:weave_us/screens/main_screen/home_screen.dart';
+import 'package:weave_us/screens/main_screen/router.dart';
 import 'package:weave_us/screens/signin_screen.dart';
 import 'package:weave_us/screens/main_screen.dart';
 
@@ -28,22 +30,31 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false, // 배너 제거
-      home: FutureBuilder<bool>(future: _checkLogin(),
+      home: FutureBuilder<bool>(
+        future: _checkLogin(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Scaffold(
               body: Center(child: CircularProgressIndicator()),
             );
-          } else if (snapshot.hasData && snapshot.data == true) {
-            return const MainScreen();
           } else {
-            return const SigninScreen();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (snapshot.hasData && snapshot.data == true) {
+                Get.offAll(SigninScreen());
+              } else {
+                Get.offAll(SigninScreen());
+              }
+            });
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
           }
         },
       ),
-      //home: MainScreen(), //Sign in api 안돼서 main먼저 보여주기
+      // home: MainScreen(), //Sign in api 안돼서 main먼저 보여주기
+      getPages: Routes.pages,
     );
   }
 }

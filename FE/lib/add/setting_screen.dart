@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import 'package:weave_us/add/user_management.dart';
@@ -33,11 +34,7 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     return WillPopScope( // ✅ 뒤로가기 동작을 감지
       onWillPop: () async {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const MainScreen()), // ✅ 메인 화면으로 이동
-              (Route<dynamic> route) => false, // ✅ 모든 기존 화면을 제거
-        );
+        Get.offAll(() => MainScreen());
         return false; // 기본 뒤로가기 동작 방지
       },
       child: Scaffold(
@@ -45,11 +42,7 @@ class _SettingScreenState extends State<SettingScreen> {
           leading: IconButton( // ✅ 앱바에서도 뒤로가기 버튼을 메인화면으로 이동
             icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const MainScreen()), // ✅ MainScreen으로 이동
-                    (Route<dynamic> route) => false,
-              );
+              Get.offAll(() => MainScreen());
             },
           ),
           title: const Text(

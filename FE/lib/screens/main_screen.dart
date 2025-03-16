@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:weave_us/add/profile_edit_screen.dart';
 import 'package:weave_us/add/setting_screen.dart';
 import 'package:weave_us/screens/main_screen/bottom_navigation.dart';
@@ -28,10 +29,7 @@ class _MainScreenState extends State<MainScreen>
 
   void onItemTapped(int index) {
     if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WeaveUploadScreen()),
-      );
+      Get.to(() => WeaveUploadScreen());
     } else {
       setState(() {
         _tabController.index = index;
@@ -40,10 +38,7 @@ class _MainScreenState extends State<MainScreen>
   }
 
   void _onMiddleLongPress() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const NewWeaveScreen()),
-    );
+    Get.to(() => NewWeaveScreen());
   }
 
   // 상단에 있는 Alarm
@@ -65,6 +60,9 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
+    // NaviController를 GetX를 통해 의존성 주입합니다.
+    Get.lazyPut(() => NaviController());
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -101,15 +99,9 @@ class _MainScreenState extends State<MainScreen>
               position: PopupMenuPosition.under,
               onSelected: (value) {
                 if (value == "프로필 편집") {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProfileEditScreen()), // profile_edit.dart 화면으로 이동
-                  );
+                  Get.to(() => ProfileEditScreen());
                 } else if (value == "설정") {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SettingScreen()), // setting.dart 화면으로 이동
-                  );
+                  Get.to(() => SettingScreen());
                 } else {
                   print('$value 선택됨');
                 }
@@ -142,5 +134,16 @@ class _MainScreenState extends State<MainScreen>
         ),
       ),
     );
+  }
+}
+
+// NaviController 클래스: 현재 선택된 페이지의 인덱스를 관리합니다.
+class NaviController extends GetxController {
+  var selectedIndex = 0; // 현재 선택된 페이지 인덱스
+
+  // 선택된 페이지 인덱스를 설정하고 UI를 업데이트합니다.
+  void setIndex(int index) {
+    selectedIndex = index;
+    update();
   }
 }
