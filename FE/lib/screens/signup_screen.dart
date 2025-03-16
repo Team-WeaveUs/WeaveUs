@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:weave_us/Auth/api_client.dart';
 import 'package:weave_us/Auth/auth_signup.dart';
 import 'package:weave_us/Auth/sign_up_response.dart';
@@ -146,10 +147,11 @@ class _SignupScreenState extends State<SignupScreen> {
       // 회원가입 성공 후 0초 후 로그인 화면으로 이동
       Future.delayed(const Duration(seconds: 0), () {
         if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => SigninScreen()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => SigninScreen()),
+          // );
+          Get.offAll(SigninScreen());
         }
       });
 
@@ -306,13 +308,10 @@ class _SignupScreenState extends State<SignupScreen> {
 
               // Login 화면 돌아가기
               ElevatedButton(
-                onPressed: () =>
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SigninScreen(),
-                      ),
-                    ),
+                onPressed: (){
+                  // Get.offAll(SigninScreen());
+                  Get.offAll(() => SigninScreen());
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orangeAccent,
                   padding: const EdgeInsets.symmetric(vertical: 15),

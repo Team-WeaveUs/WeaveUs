@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:weave_us/screens/signin_screen.dart';
 
 class SignpasswordScreen extends StatefulWidget {
@@ -71,14 +72,10 @@ class _SignpasswordScreenState extends State<SignpasswordScreen> {
 
                 // 변경하지 않고 나가기 버튼
                 TextButton(
-                  onPressed: _isEnabled
-                  // pushReplace 쓴이유 = 계속 push 하면 Widget 트리에 계속 쌓이게 됨
-                      ? () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SigninScreen(),
-                      ))
-                      : null,
+                  onPressed:()
+                  {
+                    Get.offAll(() => SigninScreen());
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white, // 버튼 배경색
                     padding: const EdgeInsets.symmetric(vertical: 15),

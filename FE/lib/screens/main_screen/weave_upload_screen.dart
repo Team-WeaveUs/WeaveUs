@@ -1,11 +1,13 @@
 import 'dart:html' as html;
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'package:weave_us/dialog/weave_dialog.dart';
 import 'package:weave_us/screens/main_screen/weave_upload_screen/content_input.dart';
 import 'package:weave_us/screens/main_screen/weave_upload_screen/media_widget/tag_input.dart';
+import '../main_screen.dart';
 import 'weave_upload_screen/share_button.dart';
 import 'weave_upload_screen/weave_selector.dart';
 
@@ -105,8 +107,9 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
       // 1초 후 메인 화면으로 이동
       Future.delayed(const Duration(seconds: 1), () {
         if (mounted) {
-          print("✅ 업로드 완료 -> main_screen.dart 이동!");
-          Navigator.pushReplacementNamed(context, '/main');
+          // print("✅ 업로드 완료 -> main_screen.dart 이동!");
+          // Navigator.pushReplacementNamed(context, '/main');
+          Get.offAll(() => MainScreen());
         }
       });
 
