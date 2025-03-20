@@ -19,28 +19,27 @@ class TagInput extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: '# 태그 입력',
-            border: const OutlineInputBorder(),
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.add, color: Colors.deepOrange),
-              onPressed: () {
-                if (controller.text.isNotEmpty) {
-                  onTagAdded(controller.text);
-                  controller.clear();
-                }
-              },
+        Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: '# 태그를 추가해주세요',
+              hintStyle: TextStyle(
+                fontSize: 20,
+                color: Colors.grey,
+              ),
+              border: InputBorder.none,
             ),
+            onSubmitted: (value) {
+              if (value.isNotEmpty) {
+                onTagAdded(value);
+                controller.clear();
+              }
+            },
           ),
-          onSubmitted: (value) {
-            if (value.isNotEmpty) {
-              onTagAdded(value);
-              controller.clear();
-            }
-          },
         ),
+
         const SizedBox(height: 10),
         Wrap(
           spacing: 6,
