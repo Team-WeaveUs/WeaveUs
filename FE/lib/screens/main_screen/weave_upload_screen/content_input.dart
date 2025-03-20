@@ -7,13 +7,26 @@ class PostContentInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      decoration: const InputDecoration(
-        hintText: '게시물 내용을 입력하세요...',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      child: TextField(
+        controller: controller,
+        style: const TextStyle(
+          fontSize: 20,
+          color: Colors.black,
+          letterSpacing: 1.0
+        ),
+        decoration: const InputDecoration(
+          hintText: '게시물에 대한 설명을 적어주세요.',
+          hintStyle: TextStyle(
+            fontSize: 20,
+            color: Colors.grey,
+              letterSpacing: null
+          ),
+          border: InputBorder.none,
+        ),
+        maxLines: null,
       ),
-      maxLines: 3,
     );
   }
 }

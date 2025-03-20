@@ -1,39 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:weave_us/screens/main_screen.dart';
 
 class ShareButton extends StatelessWidget {
   final VoidCallback onShare;
-  final bool isUploadable; // 업로드 가능 여부 추가
+  final bool isUploadable;
 
   const ShareButton({Key? key, required this.onShare, required this.isUploadable}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: isUploadable
-            ? () {
-          onShare(); // 먼저 업로드 실행     // 게시글과 사진 없으면 넘어가지 않음
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: SizedBox(
+        width: double.infinity,
+        height: 60,
+        child: ElevatedButton(
+          onPressed: isUploadable
+              ? () {
+            onShare(); // 업로드 실행
 
-          // 업로드 후 1초 뒤 main_screen.dart로 이동 (이전 화면 제거 // 스택 방지)
-          Future.delayed(const Duration(seconds: 1), () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => MainScreen()), // 이전 화면 삭제 후 이동
-            );
-          });
-        }
-            : null, // ❌ 사진 & 글 없으면 비활성화
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isUploadable ? Colors.white60 : Colors.grey[400], // 비활성화 시 색상 변경 (사진 or 게시글없으면)
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            // 업로드 후 스낵바 표시
+            Future.delayed(Duration.zero, () {
+              if (Get.isSnackbarOpen == false) {
+                Get.snackbar(
+                  "성공", "게시물 공유 완료!",
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.black.withOpacity(0.8),
+                  colorText: Colors.white,
+                  duration: const Duration(seconds: 2),
+                );
+              }
+            });
+
+            Future.delayed(const Duration(seconds: 1), () {
+              Get.offAll(() => MainScreen());
+            });
+          }
+              : null, // 비활성화 시 클릭 불가
+
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isUploadable ? Colors.orange : Colors.orangeAccent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
-        ),
-        child: const Text(
-          "공유하기",
-          style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+
+          child: const Text(
+            "공유하기",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2.0,
+            ),
+          ),
         ),
       ),
     );

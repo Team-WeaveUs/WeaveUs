@@ -3,15 +3,17 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
-import 'package:http/http.dart' as http;
 import 'package:weave_us/dialog/weave_dialog.dart';
 import 'package:weave_us/screens/main_screen/weave_upload_screen/content_input.dart';
-import 'package:weave_us/screens/main_screen/weave_upload_screen/media_widget/tag_input.dart';
+import '../../dialog/delete_image_dialog.dart';
 import '../main_screen.dart';
+import 'weave_upload_screen/s3_serivce.dart';
 import 'weave_upload_screen/share_button.dart';
 import 'weave_upload_screen/weave_selector.dart';
+import 'package:textfield_tags/textfield_tags.dart';
 
 import 'package:weave_us/Auth/api_client.dart';
+
 class WeaveUploadScreen extends StatefulWidget {
   const WeaveUploadScreen({super.key});
 
@@ -19,20 +21,51 @@ class WeaveUploadScreen extends StatefulWidget {
   State<WeaveUploadScreen> createState() => _WeaveUploadScreenState();
 }
 
-
 class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
-  List<Map<String, dynamic>> _selectedFiles = [];
+  final S3Service _s3Service = S3Service();
   final TextEditingController _contentController = TextEditingController();
-  final uuid = Uuid();
-  final String bucketUrl = "https://weave-bucket.s3.ap-northeast-2.amazonaws.com";
-  final List<String> _tags = [];
   final TextEditingController _tagController = TextEditingController();
-  String objectKey = '';
+  final uuid = Uuid();
+  final List<String> _tags = [];
+
+  List<Map<String, dynamic>> _selectedFiles = [];
   String? _selectedWeave;
   int? _selectedWeaveId;
 
-  bool get isUploadable => _selectedFiles.isNotEmpty && _contentController.text.trim().isNotEmpty;
+  bool get isUploadable =>
+      _selectedFiles.isNotEmpty && _contentController.text.trim().isNotEmpty;
 
+  late double _distanceToField;
+  late StringTagController _stringTagController;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _distanceToField = MediaQuery.of(context).size.width;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _stringTagController = StringTagController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _stringTagController.dispose();
+  }
+
+  static const List<String> _initialTags = <String>[
+    'c',
+    'c++',
+    'java',
+    'json',
+    'python',
+    'javascript',
+  ];
+
+  // 이미지 선택
   void _pickImages() {
     final html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
     uploadInput.accept = "image/jpeg, image/jpg";
@@ -58,62 +91,22 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
     });
   }
 
+  // 업로드 버튼 클릭 시 실행
   Future<void> _onShare() async {
     if (!isUploadable) {
       return;
     }
 
-    List<Map<String, dynamic>> uploadedFiles = [];
+    bool success = await _s3Service.uploadFilesAndSendToServer(
+        _selectedFiles, _contentController.text, _selectedWeaveId);
 
-    for (var file in _selectedFiles) {
-      print("업로드 시작: ${file["name"]}");
-      file["name"] = '${uuid.v4()}.jpg';
-
-      // Presigned URL 요청
-      final String? presignedUrl = await _getPresignedUrl(file["name"]);
-      if (presignedUrl == null) {
-        print("Presigned URL 요청 실패: ${file["name"]}");
-        continue; // 업로드 실패 시 건너뜀
-      }
-
-      // S3 업로드 수행
-      bool uploadSuccess = await _uploadToS3(presignedUrl, file["bytes"]);
-      if (!uploadSuccess) {
-        print("❌ S3 업로드 실패: ${file["name"]}");
-        continue;
-      }
-
-      // 업로드 성공 후 리스트에 추가
-      uploadedFiles.add({
-        "name": file["name"],
-        "Type": "image/jpeg",
-      });
-    }
-
-    // 모든 업로드가 끝난 후 위브 생성 요청
-    final response = await ApiService.sendRequest(
-      "WeaveAPI/PostUpload",
-      {
-        "privacy_id": 3,
-        "weave_id": _selectedWeaveId,
-        "content": _contentController.text,
-        "files": uploadedFiles  // ✅ 업로드된 파일 목록 전달
-      },
-    );
-
-    if (response != null) {
+    if (success) {
       print("게시물 업로드 성공!");
-
-      // 1초 후 메인 화면으로 이동
       Future.delayed(const Duration(seconds: 1), () {
         if (mounted) {
-          // print("✅ 업로드 완료 -> main_screen.dart 이동!");
-          // Navigator.pushReplacementNamed(context, '/main');
           Get.offAll(() => MainScreen());
         }
       });
-
-      // 스낵바 표시 (mounted 상태 확인 후 실행)
       Future.delayed(Duration.zero, () {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -123,138 +116,12 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
       });
     } else {
       print("게시물 업로드 실패!");
-
-      // 업로드 실패 시 스낵바 표시
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("게시물 업로드 실패! 다시 시도해주세요.")),
         );
       }
     }
-  }
-
-
-
-
-  // PresignUrl 요청
-  Future<String?> _getPresignedUrl(String fileName) async {
-    final response = await ApiService.sendRequest(
-      "WeaveAPI/GetPresignedURL",
-      {
-        "files": [
-          {
-            "filename": fileName,
-            "fileType": "image/jpeg"
-          }
-        ]
-      },
-    );
-
-    if (response != null && response["body"] is List && response["body"].isNotEmpty) {
-      final presignedUrl = response["body"][0]["presignedUrl"];
-      print("Presigned URL 성공: $presignedUrl");
-      return presignedUrl;
-    } else {
-      print("Presigned URL 요청 실패");
-      return null;
-    }
-  }
-
-  // S3 업로드 기능
-  Future<bool> _uploadToS3(String presignedUrl, Uint8List fileBytes) async {
-    try {
-      final response = await http.put(
-        Uri.parse(presignedUrl),
-        headers: {
-          "Content-Type": "image/jpeg"
-        },
-        body: fileBytes,
-      );
-
-      if (response.statusCode == 200) {
-        print("파일 업로드 성공!");
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("게시물 공유 완료!")),
-          );
-
-          // 스낵바가 뜬 후 1초 뒤 화면 이동
-          await Future.delayed(const Duration(seconds: 1));
-
-          if (mounted) {
-            Navigator.pushReplacementNamed(context, '/main');
-          }
-        }
-
-        return true;
-      } else {
-        print("파일 업로드 실패: ${response.statusCode} - ${response.body}");
-        return false;
-      }
-    } catch (e) {
-      print("S3 업로드 오류: $e");
-      return false;
-    }
-  }
-
-  Future<bool> _createWeaveOnServer(
-      String title, String description, int typeId, int privacyId, String fileName, Uint8List fileBytes) async {
-
-    // Presigned URL 요청
-    final String? presignedUrl = await _getPresignedUrl(fileName);
-    if (presignedUrl == null) return false;
-
-    // S3 업로드 수행
-    bool uploadSuccess = await _uploadToS3(presignedUrl, fileBytes);
-    if (!uploadSuccess) return false;
-
-    // 위브 생성 API 호출
-    final response = await ApiService.sendRequest(
-      "WeaveAPI/WeaveUpload",
-      {
-        "title": title,
-        "description": description,
-        "privacy_id": privacyId,
-        "type_id": typeId,
-        "image_url": presignedUrl
-      },
-    );
-
-    if (response != null) {
-      debugPrint("위브 생성 성공!");
-      return true;
-    } else {
-      debugPrint("위브 생성 실패!");
-      return false;
-    }
-  }
-
-  // 업로드 s3파일 url생성
-  String _getObjectUrl() {
-    return "$bucketUrl/$objectKey";
-  }
-
-  // 선택 사진 제거
-  void _removeImage(int index) {
-    print("사진 삭제: ${_selectedFiles[index]["name"]}");
-    setState(() {
-      _selectedFiles.removeAt(index);
-    });
-  }
-
-  // 태그 추가 기능
-  void _addTag(String tag) {
-    setState(() {
-      _tags.add(tag.startsWith('#') ? tag.trim() : '#${tag.trim()}');
-    });
-  }
-
-  // 태그 삭제 기능
-  void _removeTag(String tag) {
-    setState(() {
-      _tags.remove(tag);
-    });
   }
 
   // 위브 선택 다이얼로그 표시
@@ -274,95 +141,265 @@ class _WeaveUploadScreenState extends State<WeaveUploadScreen> {
     );
   }
 
+  // 다이얼로그 호출하는 함수
+  void _showDeleteImageDialog() {
+    Get.dialog(
+      DeleteImageDialog(
+        onDelete: () {
+          setState(() {
+            _selectedFiles.clear();
+          });
+        },
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: const Text("새 게시물")),
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: const Text("새 게시물",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.0,
+                  fontSize: 25
+              )),
+        ),
+        backgroundColor: Colors.white, // 앱바 배경색
+        centerTitle: true, // 앱바 타이틀 중앙
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.only(top: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 10),
-
-            // 사진 추가 & 선택된 사진 미리보기
-            Row(
-              children: [
-                if (_selectedFiles.length < 9)
-                  GestureDetector(
-                    onTap: _pickImages,
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(10),
+            Divider(color: Colors.grey[850], thickness: 1, indent: 0, endIndent: 0,),
+            // 위브 선택
+            WeaveSelector(selectedWeave: _selectedWeave, onWeaveSelected: _showWeaveDialog),
+            Divider(color: Colors.grey[850], thickness: 0.5, indent: 0, endIndent: 0,),
+            // 사진 추가
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Center(
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        if (_selectedFiles.isNotEmpty) {
+                          _showDeleteImageDialog(); // ✅ 삭제 다이얼로그 띄우기
+                        } else {
+                          _pickImages(); // ✅ 사진 선택
+                        }
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: MediaQuery.of(context).size.width * 0.9,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: _selectedFiles.isEmpty
+                            ? Center(
+                          child: Image.asset(
+                            'assets/image/picture_upload.png',
+                            height: 150,
+                          ),
+                        )
+                            : ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.memory(
+                            _selectedFiles[0]["bytes"],
+                            width: double.infinity,
+                            height: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                      child: const Center(
-                        child: Icon(Icons.add_a_photo, size: 40, color: Colors.black54),
-                      ),
-                    ),
-                  ),
-                const SizedBox(width: 10),
-
-                // 선택된 사진 미리보기 (가로 스크롤)
-                Expanded(
-                  child: _selectedFiles.isNotEmpty
-                      ? SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: List.generate(_selectedFiles.length, (index) {
-                        return Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Image.memory(
-                                _selectedFiles[index]["bytes"],
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Divider(color: Colors.grey[850], thickness: 0.5, indent: 0, endIndent: 0,),
+            // 게시물 내용
+            PostContentInput(controller: _contentController),
+            Divider(color: Colors.grey[850], thickness: 0.5, indent: 0, endIndent: 0,),
+            // 태그
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(
+                children: [
+                  Autocomplete<String>(
+                    optionsViewBuilder: (context, onSelected, options) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 4.0),
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Material(
+                            elevation: 4.0,
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(
+                                  maxHeight: 200),
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: options.length,
+                                itemBuilder: (BuildContext context,
+                                    int index) {
+                                  final String option = options.elementAt(
+                                      index);
+                                  return TextButton(
+                                    onPressed: () {
+                                      onSelected(option);
+                                    },
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        '#$option',
+                                        textAlign: TextAlign.left,
+                                        style: const TextStyle(
+                                          color: Color.fromARGB(
+                                              255, 74, 137, 92),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () => _removeImage(index),
-                              child: const Icon(Icons.close, color: Colors.black, size: 24),
+                          ),
+                        ),
+                      );
+                    },
+                    optionsBuilder: (TextEditingValue textEditingValue) {
+                      if (textEditingValue.text == '') {
+                        return const Iterable<String>.empty();
+                      }
+                      return _initialTags.where((String option) {
+                        return option.contains(
+                            textEditingValue.text.toLowerCase());
+                      });
+                    },
+                    onSelected: (String selectedTag) {
+                      _stringTagController.onTagSubmitted(selectedTag);
+                    },
+                    fieldViewBuilder: (context, textEditingController,
+                        focusNode,
+                        onFieldSubmitted) {
+                      return TextFieldTags<String>(
+                        textEditingController: textEditingController,
+                        focusNode: focusNode,
+                        textfieldTagsController: _stringTagController,
+                        textSeparators: const [' ', ','],
+                        letterCase: LetterCase.normal,
+                        validator: (String tag) {
+                          if (tag == 'php') {
+                            return 'No, please just no';
+                          } else
+                          if (_stringTagController.getTags!.contains(tag)) {
+                            return '이미 추가된 태그입니다!';
+                          }
+                          return null;
+                        },
+                        inputFieldBuilder: (context, inputFieldValues) {
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: TextField(
+                              controller: inputFieldValues
+                                  .textEditingController,
+                              focusNode: inputFieldValues.focusNode,
+                              style: const TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.black,
+                              ),
+                              decoration: InputDecoration(
+                                isDense: true,
+                                border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+
+                                hintText: inputFieldValues.tags.isNotEmpty
+                                    ? '# 태그'
+                                    : "# 태그",
+                                errorText: inputFieldValues.error,
+                                prefixIconConstraints:
+                                BoxConstraints(
+                                    maxWidth: _distanceToField * 1),
+                                prefixIcon: inputFieldValues.tags.isNotEmpty
+                                    ? SingleChildScrollView(
+                                  controller:
+                                  inputFieldValues.tagScrollController,
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                      children: inputFieldValues.tags
+                                          .map((String tag) {
+                                        return Container(
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(20.0),
+                                            ),
+                                            color: Color.fromARGB(
+                                                255, 133, 132, 130),
+                                          ),
+                                          margin:
+                                          const EdgeInsets.only(right: 10.0),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10.0,
+                                              vertical: 4.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              InkWell(
+                                                child: Text(
+                                                  '#$tag',
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.white,
+                                                    letterSpacing: 1,),
+                                                ),
+                                                onTap: () {
+                                                  //print("$tag selected");
+                                                },
+                                              ),
+                                              const SizedBox(width: 4.0),
+                                              InkWell(
+                                                child: const Icon(
+                                                  Icons.cancel,
+                                                  size: 14.0,
+                                                  color: Color.fromARGB(
+                                                      255, 233, 233, 233),
+                                                ),
+                                                onTap: () {
+                                                  inputFieldValues
+                                                      .onTagRemoved(tag);
+                                                },
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }).toList()),
+                                )
+                                    : null,
+                              ),
+                              onChanged: inputFieldValues.onTagChanged,
+                              onSubmitted: inputFieldValues.onTagSubmitted,
                             ),
-                          ],
-                        );
-                      }),
-                    ),
-                  )
-                      : Container(),
-                ),
-              ],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-
-            const SizedBox(height: 15),
-
-            PostContentInput(
-                controller: _contentController),
-
-            const SizedBox(height: 15),
-            TagInput(
-                controller: _tagController,
-                tags: _tags,
-                onTagAdded: _addTag,
-                onTagRemoved: _removeTag),
-
-            const SizedBox(height: 15),
-
-            WeaveSelector(
-                selectedWeave: _selectedWeave,
-                onWeaveSelected: _showWeaveDialog),
-
-            const SizedBox(height: 15),
-
-            ShareButton(
-              onShare: _onShare,
-              isUploadable: isUploadable,
-            ),
+            // 공유 버튼
+            ShareButton(onShare: _onShare, isUploadable: isUploadable),
           ],
         ),
       ),
