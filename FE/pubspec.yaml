@@ -47,6 +47,7 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   cookie_jar: ^4.0.8
   get: ^4.7.2
+  textfield_tags: ^3.0.1
 
 dev_dependencies:
   flutter_test:
