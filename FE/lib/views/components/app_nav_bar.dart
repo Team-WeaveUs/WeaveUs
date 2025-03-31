@@ -13,7 +13,14 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(title, style: const TextStyle(color: Colors.black, fontFamily: "Pretendard", fontWeight: FontWeight.bold)),
+      title: Text(
+          title,
+          style: const TextStyle(
+              color: Colors.black,
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w900,
+          )
+      ),
       backgroundColor: Colors.white, // 원하는 색상 설정
       actions: [
         IconButton(

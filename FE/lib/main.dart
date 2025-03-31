@@ -16,6 +16,9 @@ class MyApp extends StatelessWidget {
       initialRoute: AppRoutes.LOGIN,
       getPages: AppRoutes.routes,
       initialBinding: AuthBinding(),
+      theme: ThemeData(
+        fontFamily: 'Pretendard',
+      ),
     );
   }
 }

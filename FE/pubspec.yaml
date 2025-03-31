@@ -47,6 +47,7 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   cookie_jar: ^4.0.8
   get: ^4.7.2
+  hugeicons:
 
 dev_dependencies:
   flutter_test:
@@ -86,14 +87,15 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-fonts:
+  fonts:
    - family: Pretendard
      fonts:
-       - asset: fonts/Pretendard-black.ttf
-         weight: 700
+       - asset: fonts/Pretendard-Black.ttf
+         weight: 900
        - asset: fonts/Pretendard-Bold.ttf
-         weight: 600
+         weight: 700
        - asset: fonts/Pretendard-Medium.ttf
+         weight: 400
 
   #   - family: Trajan Pro
   #     fonts:
