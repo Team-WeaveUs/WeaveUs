@@ -23,7 +23,7 @@ class ApiService {
       },
     );
 
-    final LambdaResponse response = LambdaResponse.fromJson(jsonDecode(lambdaResponse.body));
+    final LambdaResponse response = LambdaResponse.fromJson(jsonDecode(utf8.decode(lambdaResponse.bodyBytes)));
 
     if (response.statusCode == 401) {
       bool refreshed = await _authController.handle401();
@@ -48,7 +48,7 @@ class ApiService {
       body: jsonEncode(body),
     );
 
-    final LambdaResponse response = LambdaResponse.fromJson(jsonDecode(lambdaResponse.body));
+    final LambdaResponse response = LambdaResponse.fromJson(jsonDecode(utf8.decode(lambdaResponse.bodyBytes)));
 
     if (response.statusCode == 401) {
       bool refreshed = await _authController.handle401();
