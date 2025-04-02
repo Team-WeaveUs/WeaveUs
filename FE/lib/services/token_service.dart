@@ -22,17 +22,19 @@ class TokenService extends GetxService {
 
   // 토큰 불러오기
   Future<Token?> loadToken() async {
-    print("토큰 불러오기");
     String? accessToken = await _storage.read(key: _accessTokenKey);
     String? refreshToken = await _storage.read(key: _refreshTokenKey);
     String? userId = await _storage.read(key: _userId);
 
     if (accessToken != null && refreshToken != null && userId != null) {
-      print("저장된 토큰 있음.");
       return Token(accessToken: accessToken, refreshToken: refreshToken, userId: userId);
     }
-    print("저장된 토큰 없음.");
     return null;
+  }
+
+  Future<String> loadUserId() async {
+    String? userId = await _storage.read(key: _userId);
+    return userId ?? '';
   }
 
   // 토큰 삭제 (로그아웃 시 사용)
