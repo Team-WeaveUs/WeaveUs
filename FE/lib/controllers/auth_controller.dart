@@ -19,7 +19,6 @@ class AuthController extends GetxController {
   Future<void> _checkAuthStatus() async {
     bool isValid = await _tokenService.refreshToken();
     if (isValid) {
-      Get.snackbar("자동 로그인", "성공");
       isAuthenticated.value = true;
       Get.offAllNamed(AppRoutes.HOME); // 자동 로그인 시 /home으로 이동
     } else {
@@ -27,6 +26,12 @@ class AuthController extends GetxController {
       isAuthenticated.value = false;
       Get.offAllNamed(AppRoutes.LOGIN); // 인증 실패 시 로그인 페이지로 이동
     }
+  }
+
+  Future<bool> checkAuthStatus() async {
+    bool isValid = await _tokenService.refreshToken();
+    isAuthenticated.value = isValid;
+    return isValid;
   }
 
   // ✅ 로그인 처리
