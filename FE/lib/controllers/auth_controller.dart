@@ -1,12 +1,31 @@
 import 'package:get/get.dart';
-import 'package:weave_us/routes/app_routes.dart';
+import '../routes/app_routes.dart';
 import '../services/auth_service.dart';
+import '../services/token_service.dart';
 
 class AuthController extends GetxController {
+  final TokenService _tokenService = TokenService();
   final AuthService _authService = AuthService();
 
-  RxBool isAuthenticated = false.obs;
+  var isAuthenticated = false.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    _checkAuthStatus();
+  }
+
+  // ✅ 앱 실행 시 토큰 검증 및 자동 로그인 처리
+  Future<void> _checkAuthStatus() async {
+    bool isValid = await _tokenService.isTokenValid();
+    isAuthenticated.value = isValid;
+
+    if (!isValid) {
+      await logout();
+    }
+  }
+
+  // ✅ 로그인 처리
   Future<void> login(String email, String password) async {
     bool success = await _authService.login(email, password);
     if (success) {
@@ -17,9 +36,22 @@ class AuthController extends GetxController {
     }
   }
 
-  void logout() {
+  // ✅ 로그아웃 처리
+  Future<void> logout() async {
+    await _tokenService.clearToken();
     _authService.logout();
     isAuthenticated.value = false;
-    Get.offNamed(AppRoutes.LOGIN);
+    Get.offAllNamed(AppRoutes.LOGIN);
+  }
+
+  // ✅ 401 오류 발생 시 토큰 갱신
+  Future<bool> handle401() async {
+    bool success = await _tokenService.refreshToken();
+    if (success) {
+      isAuthenticated.value = true;
+    } else {
+      await logout();
+    }
+    return success;
   }
 }

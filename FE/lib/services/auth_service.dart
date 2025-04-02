@@ -1,11 +1,14 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:get/get.dart';
 import 'package:weave_us/models/lambda_response_model.dart';
+import '../models/token_model.dart';
+import 'token_service.dart';
 
 class AuthService {
   String? accessToken;
   String? refreshToken;
+  late Token token;
+  final TokenService tokenController = TokenService();
 
   Future<bool> login(String email, String password) async {
     final lambdaResponse = await http.post(
@@ -20,8 +23,8 @@ class AuthService {
       if (response.statusCode== 200) {
         final data = response.body;
         if (data.containsKey('accessToken') && data.containsKey('refreshToken')) {
-          accessToken = data['accessToken'];
-          refreshToken = data['refreshToken'];
+          token = Token(accessToken: data['accessToken'], refreshToken: data['refreshToken']);
+          tokenController.saveToken(token.accessToken, token.refreshToken);
           return true;
         } else {
           return false;
@@ -34,39 +37,7 @@ class AuthService {
       return false;
     }
   }
-
-  Future<void> refreshTokenHandler() async {
-    final response = await http.post(
-      Uri.parse('https://api.example.com/token/refresh'),
-      body: jsonEncode({'refresh_token': refreshToken}),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      accessToken = data['access_token'];
-      refreshToken = data['refresh_token'];
-    } else {
-      Get.offNamed('/login');
-    }
-  }
-
-  Future<http.Response> makeAuthenticatedRequest(String url) async {
-    final response = await http.get(
-      Uri.parse(url),
-      headers: {'Authorization': 'Bearer $accessToken'},
-    );
-
-    if (response.statusCode == 401) {
-      await refreshTokenHandler();
-      return makeAuthenticatedRequest(url);
-    }
-
-    return response;
-  }
-
   void logout() {
-    accessToken = null;
-    refreshToken = null;
+    tokenController.clearToken();
   }
 }
