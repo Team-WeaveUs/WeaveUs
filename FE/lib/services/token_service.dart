@@ -1,56 +1,71 @@
-// import 'dart:io' show Platform;
-// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// import 'package:cookie_jar/cookie_jar.dart';
-//
-// class TokenService {
-//   static const _storage = FlutterSecureStorage();
-//   static final cookieJar = PersistCookieJar();
-//
-//   /// ✅ 토큰 저장 (환경별 처리)
-//   Future<void> saveToken(String accessToken, String refreshToken) async {
-//     if (Platform.isAndroid || Platform.isIOS) {
-//       // 앱 환경: Secure Storage에 저장
-//       await _storage.write(key: 'access_token', value: accessToken);
-//       await _storage.write(key: 'refresh_token', value: refreshToken);
-//     } else {
-//       // 웹 환경: HttpOnly 쿠키에 저장
-//       final dio = Dio()..interceptors.add(CookieManager(cookieJar));
-//       final uri = Uri.parse('https://your-api.com'); // 실제 API 도메인
-//       await cookieJar.saveFromResponse(uri, [
-//         Cookie('access_token', accessToken)..httpOnly = true,
-//         Cookie('refresh_token', refreshToken)..httpOnly = true,
-//       ]);
-//     }
-//   }
-//
-//   /// ✅ 토큰 가져오기
-//   Future<Token?> getToken() async {
-//     if (Platform.isWeb) {
-//       final uri = Uri.parse('https://your-api.com');
-//       final cookies = await cookieJar.loadForRequest(uri);
-//       final accessToken = cookies.firstWhere((c) => c.name == 'access_token', orElse: () => Cookie('', '')).value;
-//       final refreshToken = cookies.firstWhere((c) => c.name == 'refresh_token', orElse: () => Cookie('', '')).value;
-//
-//       return (accessToken.isNotEmpty && refreshToken.isNotEmpty)
-//           ? Token(accessToken: accessToken, refreshToken: refreshToken)
-//           : null;
-//     } else {
-//       final accessToken = await _storage.read(key: 'access_token');
-//       final refreshToken = await _storage.read(key: 'refresh_token');
-//
-//       return (accessToken != null && refreshToken != null)
-//           ? Token(accessToken: accessToken, refreshToken: refreshToken)
-//           : null;
-//     }
-//   }
-//
-//   /// ✅ 토큰 삭제
-//   Future<void> clearToken() async {
-//     if (Platform.isWeb) {
-//       final uri = Uri.parse('https://your-api.com');
-//       await cookieJar.delete(uri);
-//     } else {
-//       await _storage.deleteAll();
-//     }
-//   }
-// }
+import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:weave_us/models/lambda_response_model.dart';
+import '../models/token_model.dart';
+
+
+class TokenService extends GetxService {
+  final _storage = const FlutterSecureStorage();
+
+
+  static const String _accessTokenKey = 'access_token';
+  static const String _refreshTokenKey = 'refresh_token';
+
+  // 토큰 저장
+  Future<void> saveToken(String accessToken, String refreshToken) async {
+    await _storage.write(key: _accessTokenKey, value: accessToken);
+    await _storage.write(key: _refreshTokenKey, value: refreshToken);
+  }
+
+  // 토큰 불러오기
+  Future<Token?> loadToken() async {
+    String? accessToken = await _storage.read(key: _accessTokenKey);
+    String? refreshToken = await _storage.read(key: _refreshTokenKey);
+
+    if (accessToken != null && refreshToken != null) {
+      return Token(accessToken: accessToken, refreshToken: refreshToken);
+    }
+    return null;
+  }
+
+  // 토큰 삭제 (로그아웃 시 사용)
+  Future<void> clearToken() async {
+    await _storage.delete(key: _accessTokenKey);
+    await _storage.delete(key: _refreshTokenKey);
+  }
+
+  // ✅ 토큰 유효성 검증 (만료 확인)
+  Future<bool> isTokenValid() async {
+    Token? token = await loadToken();
+    if (token == null) return false;
+
+    // access token이 만료되었는지 확인
+    return !JwtDecoder.isExpired(token.accessToken);
+  }
+
+  // ✅ 401 발생 시 토큰 갱신
+  Future<bool> refreshToken() async {
+    Token? token = await loadToken();
+    if (token == null) return false;
+
+    final lambdaResponse = await http.post(
+      Uri.parse('https://v79h9dyx08.execute-api.ap-northeast-2.amazonaws.com/WeaveAPI/Token_Refresh'),
+      body: jsonEncode({'refreshtoken': token.refreshToken}),
+      headers: {'Content-Type': 'application/json'},
+    );
+    final LambdaResponse response = LambdaResponse.fromJson(jsonDecode(lambdaResponse.body));
+
+    if (response.statusCode == 200) {
+      final data = response.body;
+      await saveToken(data['access_token'], data['refresh_token']);
+      return true; // 갱신 성공
+    }
+
+    // 403 또는 500일 경우 토큰 만료 → 로그아웃 필요
+    await clearToken();
+    return false;
+  }
+}
