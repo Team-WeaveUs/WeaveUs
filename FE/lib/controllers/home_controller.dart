@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:weave_us/routes/app_routes.dart';
 import 'package:weave_us/services/api_service.dart';
 import 'package:weave_us/services/token_service.dart';
 import '../models/post_model.dart';
@@ -6,17 +7,28 @@ import '../models/post_model.dart';
 class HomeController extends GetxController {
   final ApiService _apiService = ApiService();
   final TokenService _tokenService = TokenService();
+
   @override
   void onInit() {
     super.onInit();
-    fetchPostList1(); // 초기 데이터 로드
+    _initialize(); // 초기 데이터 로드
   }
+
   var postList1 = <Post>[].obs; // 가로 스크롤용 메인 포스트 리스트
   var postList2 = <Post>[].obs; // 각 weave_id에 따른 세로 리스트 (Map 형태)
   var currentIndex = 0.obs; // 현재 가로 스크롤 인덱스
 
+  Future<void> _initialize() async {
+    final token = await _tokenService.loadToken();
 
-  Future<void> fetchPostList1() async {
+    if (token == null || token.accessToken.isEmpty) {
+      Get.offAllNamed(AppRoutes.SPLASH);
+      return;
+    }
+
+    _fetchPostList1(); // ✅ 토큰이 있을 때만 API 호출
+  }
+  Future<void> _fetchPostList1() async {
     try {
       String userId = await _tokenService.loadUserId();
       var response = await _apiService.postRequest('main', {'user_id': userId});
