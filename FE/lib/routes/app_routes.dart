@@ -24,7 +24,7 @@ class AppRoutes {
   static const PROFILE = '/profile';
 
   static final routes = [
-    GetPage(name: SPLASH, page: () => SplashScreen()),
+    GetPage(name: SPLASH, page: () => SplashScreen(), binding: AuthBinding()),
     GetPage(name: LOGIN, page: () => LoginView(), binding: AuthBinding()),
     GetPage(
       name: HOME,
