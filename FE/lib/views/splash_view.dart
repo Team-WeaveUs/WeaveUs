@@ -31,8 +31,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Placeholder()), // 로딩 인디케이터
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()), // 로딩 인디케이터
     );
   }
 }
