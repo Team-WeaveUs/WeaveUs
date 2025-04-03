@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:weave_us/bindings/auth_binding.dart';
+import 'package:weave_us/views/splash_view.dart';
 import '../bindings/home_binding.dart';
 import '../bindings/profile_binding.dart';
 import '../bindings/reward_binding.dart';
@@ -14,6 +15,7 @@ import '../views/reward_view.dart';
 import '../views/search_view.dart';
 
 class AppRoutes {
+  static const SPLASH = '/';
   static const LOGIN = '/login';
   static const HOME = '/home';
   static const SEARCH = '/search';
@@ -22,6 +24,7 @@ class AppRoutes {
   static const PROFILE = '/profile';
 
   static final routes = [
+    GetPage(name: SPLASH, page: () => SplashScreen(), binding: AuthBinding()),
     GetPage(name: LOGIN, page: () => LoginView(), binding: AuthBinding()),
     GetPage(
       name: HOME,
