@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../models/token_model.dart';
 import '../routes/app_routes.dart';
 import '../services/auth_service.dart';
 import '../services/token_service.dart';
@@ -10,36 +11,39 @@ class AuthController extends GetxController {
   var isAuthenticated = false.obs;
 
   @override
-  void onInit() {
+  onInit(){
     super.onInit();
     _checkAuthStatus();
   }
 
   // ✅ 앱 실행 시 토큰 검증 및 자동 로그인 처리
-  Future<void> _checkAuthStatus() async {
-    bool isValid = await _tokenService.refreshToken();
-    if (isValid) {
-      isAuthenticated.value = true;
-      Get.offAllNamed(AppRoutes.HOME); // 자동 로그인 시 /home으로 이동
-    } else {
-      Get.snackbar("자동 로그인", "실패");
-      isAuthenticated.value = false;
-      Get.offAllNamed(AppRoutes.LOGIN); // 인증 실패 시 로그인 페이지로 이동
-    }
-  }
-
   Future<bool> checkAuthStatus() async {
     bool isValid = await _tokenService.refreshToken();
     isAuthenticated.value = isValid;
+    Get.offAllNamed(AppRoutes.LOGIN);
     return isValid;
+  }
+
+  Future<void> _checkAuthStatus() async {
+    Token token = await _tokenService.loadToken() ?? Token(accessToken: '', refreshToken: '', userId: '');
+    bool isValid = token.accessToken != '';
+    isAuthenticated.value = isValid;
+    if (isValid) {
+      Get.offAllNamed(AppRoutes.HOME);
+    }
   }
 
   // ✅ 로그인 처리
   Future<void> login(String email, String password) async {
     bool success = await _authService.login(email, password);
+    isAuthenticated.value = false;
+
     if (success) {
+      // ✅ 토큰 저장을 기다린 후 화면 전환
+      await _tokenService.loadToken();
+
       isAuthenticated.value = true;
-      Get.offNamed(AppRoutes.HOME);
+      Get.offAllNamed(AppRoutes.HOME);
       Get.snackbar("로그인", "성공");
     } else {
       Get.snackbar("로그인", "실패");
