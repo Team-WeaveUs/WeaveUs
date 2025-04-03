@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:weave_us/services/token_service.dart';
+import 'bindings/auth_binding.dart';
 import 'controllers/auth_controller.dart';
 import 'routes/app_routes.dart';
 
@@ -15,8 +16,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.SPLASH,
       getPages: AppRoutes.routes,
+      initialBinding: AuthBinding(),
       theme: ThemeData(
         fontFamily: 'Pretendard',
       ),

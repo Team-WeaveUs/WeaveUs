@@ -18,7 +18,6 @@ class AuthService {
     );
     var responseData = jsonDecode(lambdaResponse.body);
     final LambdaResponse response = LambdaResponse.fromJson(responseData);
-
     try {
       if (response.statusCode== 200) {
         final data = response.body;
