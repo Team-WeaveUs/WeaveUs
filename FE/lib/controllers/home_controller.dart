@@ -75,9 +75,9 @@ class HomeController extends GetxController {
   }
 
   // 가로 스크롤 시 다음 postList1에 맞는 postList2를 불러오기
-  void onHorizontalScroll(int index) {
+  Future<void> onHorizontalScroll(int index) async {
     currentIndex.value = index;
-    fetchPostList2(postList1[index].weaveId);
+    if (postListMap[index]!.length < 2) fetchPostList2();
   }
 }
 
