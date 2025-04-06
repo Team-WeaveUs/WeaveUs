@@ -22,13 +22,12 @@ class HomeController extends GetxController {
 
   Future<void> _initialize() async {
     final token = await _tokenService.loadToken();
-
     if (token == null || token.accessToken.isEmpty) {
       Get.offAllNamed(AppRoutes.SPLASH);
       return;
     }
 
-    _fetchPostList1(); // ✅ 토큰이 있을 때만 API 호출
+    _fetchPostList1();
   }
   Future<void> _fetchPostList1() async {
     try {
@@ -36,12 +35,17 @@ class HomeController extends GetxController {
       var response = await _apiService.postRequest('main', {'user_id': userId});
       List<int> postIdList1 = List<int>.from(response['post_id']);
 
+      nextStartAt.value = List<int>.filled(postIdList1.length, 0);
+
       // 2. post/simple 호출하여 postList1 가져오기
       var postResponse = await _apiService.postRequest('Post/Simple', {'post_id': postIdList1});
+
       postList1.value = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
 
+
       if (postList1.isNotEmpty) {
-        fetchPostList2(postList1[0].weaveId); // 첫 번째 postList1의 weave_id로 postList2 가져오기
+        _initializePostListMap();
+        fetchPostList2();// 첫 번째 postList1의 weave_id로 postList2 가져오기
       }
     } catch (e) {
       print('Error fetching postList1: $e');
