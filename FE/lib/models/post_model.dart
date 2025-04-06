@@ -16,6 +16,7 @@ class Post {
   final int subValid;
   final int commentCount;
   final String mediaUrl;
+  final int weaveType;
 
   Post({
     required this.id,
@@ -35,6 +36,7 @@ class Post {
     required this.subValid,
     required this.commentCount,
     required this.mediaUrl,
+    required this.weaveType,
   });
 
   // JSON 변환을 위한 factory constructor
@@ -57,6 +59,7 @@ class Post {
       subValid: json['sub_valid'],
       commentCount: json['comment_count'],
       mediaUrl: json['media_url'],
+      weaveType: json['weave_type'],
     );
   }
 
@@ -80,6 +83,7 @@ class Post {
       'sub_valid': subValid,
       'comment_count': commentCount,
       'media_url': mediaUrl,
+      'weave_type': weaveType,
     };
   }
 }
