@@ -15,7 +15,6 @@ class HomeController extends GetxController {
   }
 
   var postList1 = <Post>[].obs; // 가로 스크롤용 메인 포스트 리스트
-  var postList2 = <Post>[].obs; // 각 weave_id에 따른 세로 리스트 (Map 형태)
   var currentIndex = 0.obs; // 현재 가로 스크롤 인덱스
 
   Future<void> _initialize() async {
