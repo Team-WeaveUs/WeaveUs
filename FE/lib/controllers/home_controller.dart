@@ -53,16 +53,24 @@ class HomeController extends GetxController {
   }
 
   // 4~5. 특정 weave_id로 postList2 가져오기
-  Future<void> fetchPostList2(int weaveId) async {
+  Future<void> fetchPostList2() async {
     try {
       String userId = await _tokenService.loadUserId();
-      var response = await _apiService.postRequest('weave', {'user_id': userId,'weave_id': weaveId, "startat": 0, "offset": 10});
+      int weaveId = postList1[currentIndex.value].weaveId;
+      int startAt = nextStartAt[currentIndex.value];
+
+      var response = await _apiService.postRequest('weave', {'user_id': userId,'weave_id': weaveId, "startat": startAt, "offset": 10});
+
       List<int> postIdList2 = List<int>.from(response['post_id']);
 
       var postResponse = await _apiService.postRequest('Post/Simple', {'post_id': postIdList2});
-      postList2.value = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
+      List<Post> fetchedPostList2 = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
+
+      nextStartAt[currentIndex.value] = response['next_startat'];
+      _updatePostListMap(currentIndex.value, fetchedPostList2);
+
     } catch (e) {
-      print('Error fetching postList2: $e');
+      print('Error fetching postListMap: $e');
     }
   }
 
