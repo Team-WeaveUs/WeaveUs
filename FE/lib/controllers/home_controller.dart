@@ -79,5 +79,32 @@ class HomeController extends GetxController {
     currentIndex.value = index;
     if (postListMap[index]!.length < 2) fetchPostList2();
   }
+
+  Future<void> onVerticalScroll(int index) async {
+    if (index == nextStartAt[currentIndex.value]) {
+      fetchPostList2();
+    }
+  }
+
+  void _initializePostListMap() {
+    postListMap.clear(); // Clear any existing data
+    for (int index = 0; index < postList1.length; index++) {
+      List<Post> appendList = [];
+      appendList.add(postList1[index]);
+      postListMap[index] = appendList.obs;
+    }
+  }
+
+  void _updatePostListMap(int index, List<Post> fetchedPostList2) {
+    List<Post> appendPost = [];
+    appendPost.addAll(postListMap[index]!);
+    appendPost.addAll(fetchedPostList2);
+    if (postListMap.isNotEmpty) {
+      postListMap[index] = appendPost.obs;
+    } else {
+      // Handle the case where weaveId is not in postListMap (shouldn't happen in normal flow)
+      print('Warning: Index $index not found in postListMap');
+    }
+  }
 }
 
