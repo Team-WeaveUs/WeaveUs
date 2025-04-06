@@ -17,6 +17,9 @@ class HomeController extends GetxController {
   var postList1 = <Post>[].obs; // 가로 스크롤용 메인 포스트 리스트
   var currentIndex = 0.obs; // 현재 가로 스크롤 인덱스
 
+  RxMap<int, RxList<Post>> postListMap = <int, RxList<Post>>{}.obs; //post_id 로 list의 첫번째 에는 postList1을 각각 mapping, 두번째 부터는 각 게시물에 해당하는 postList2를 저장할 맵
+  var nextStartAt = <int>[].obs;
+
   Future<void> _initialize() async {
     final token = await _tokenService.loadToken();
 
