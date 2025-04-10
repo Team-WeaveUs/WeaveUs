@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../services/api_service.dart';
+import '../../../services/api_service.dart';
 
 class WeaveDialog extends StatefulWidget {
   final Function(String) onWeaveSelected;
@@ -119,7 +119,6 @@ class _WeaveDialogState extends State<WeaveDialog> {
                 height: _searchResults.isNotEmpty ? 10 : 0, // 검색 결과가 있을 때만 공간 추가
               ),
 
-              /// 🔥 **검색 결과 리스트 (title만 표시)**
               _searchResults.isEmpty
                   ? const Padding(
                 padding: EdgeInsets.all(8.0),
