@@ -9,6 +9,11 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ever(authController.isLoading, (bool loading) {
+      if (!loading && Get.isDialogOpen!) {
+        Get.back(); // 다이얼로그 닫기
+      }
+    });
     return Scaffold(
       appBar: AppBar(title: Text("Login")),
       body: Padding(

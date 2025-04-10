@@ -17,7 +17,7 @@ class HomeView extends GetView<HomeController> {
         children: [
           Expanded(
             child: Obx(() {
-              if (controller.postListMap.length < 10){
+              if (controller.postListMap.isEmpty){
                 return const Center(child: CircularProgressIndicator());
               }
               return PageView.builder(
@@ -29,7 +29,7 @@ class HomeView extends GetView<HomeController> {
                     List<Post> currentPostList = controller.postListMap[index]!;
                     return Container(
                         padding:
-                            const EdgeInsets.only(top: 10, left: 10, right: 10),
+                        const EdgeInsets.only(top: 10, left: 10, right: 10),
                         child: Column(
                           children: [
                             Container(
@@ -47,7 +47,7 @@ class HomeView extends GetView<HomeController> {
                                 padding: const EdgeInsets.all(10),
                                 child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(children: [
                                         Text(controller.postList1[index].weaveTitle,
@@ -68,10 +68,10 @@ class HomeView extends GetView<HomeController> {
                                     scrollDirection: Axis.vertical,
                                     onPageChanged: controller.onVerticalScroll,
                                     itemCount:
-                                        controller.postListMap[index]?.length,
+                                    controller.postListMap[index]?.length,
                                     itemBuilder: (context, index2) {
                                       var verticalPost =
-                                          currentPostList[index2];
+                                      currentPostList[index2];
                                       return Column(children: [
                                         Expanded(
                                             child: Image.network(
@@ -84,9 +84,9 @@ class HomeView extends GetView<HomeController> {
                                             decoration: const BoxDecoration(
                                                 borderRadius: BorderRadius.only(
                                                     bottomLeft:
-                                                        Radius.circular(10),
+                                                    Radius.circular(10),
                                                     bottomRight:
-                                                        Radius.circular(10)),
+                                                    Radius.circular(10)),
                                                 color: Colors.white,
                                                 border: Border(
                                                     left: BorderSide(

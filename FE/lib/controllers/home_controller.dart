@@ -1,22 +1,18 @@
 import 'package:get/get.dart';
-import 'package:weave_us/routes/app_routes.dart';
 import 'package:weave_us/services/api_service.dart';
 import 'package:weave_us/services/token_service.dart';
 import '../models/post_model.dart';
 
 class HomeController extends GetxController {
-  final ApiService _apiService;
-  final TokenService _tokenService;
-  HomeController({required ApiService apiService, required TokenService tokenService})
-      : _apiService = apiService,
-        _tokenService = tokenService;
+  final ApiService apiService;
+  final TokenService tokenService;
+
+  HomeController({required this.apiService, required this.tokenService});
+
   @override
   void onInit() {
     super.onInit();
-    Future.microtask(() {
-      _initialize();
-    }
-    );
+      _fetchPostList1();
   }
 
   var postList1 = <Post>[].obs; // 가로 스크롤용 메인 포스트 리스트
@@ -25,25 +21,18 @@ class HomeController extends GetxController {
   RxMap<int, RxList<Post>> postListMap = <int, RxList<Post>>{}.obs; //post_id 로 list의 첫번째 에는 postList1을 각각 mapping, 두번째 부터는 각 게시물에 해당하는 postList2를 저장할 맵
   var nextStartAt = <int>[].obs;
 
-  Future<void> _initialize() async {
-    final token = await _tokenService.loadToken();
-    if (token == null || token.accessToken.isEmpty) {
-      Get.offAllNamed(AppRoutes.SPLASH);
-      return;
-    }
 
-    _fetchPostList1();
-  }
+
   Future<void> _fetchPostList1() async {
     try {
-      String userId = await _tokenService.loadUserId();
-      var response = await _apiService.postRequest('main', {'user_id': userId});
+      String userId = await tokenService.loadUserId();
+      var response = await apiService.postRequest('main', {'user_id': userId});
       List<int> postIdList1 = List<int>.from(response['post_id']);
 
       nextStartAt.value = List<int>.filled(postIdList1.length, 0);
 
       // 2. post/simple 호출하여 postList1 가져오기
-      var postResponse = await _apiService.postRequest('Post/Simple', {'post_id': postIdList1});
+      var postResponse = await apiService.postRequest('Post/Simple', {'post_id': postIdList1});
 
       postList1.value = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
 
@@ -60,15 +49,15 @@ class HomeController extends GetxController {
   // 4~5. 특정 weave_id로 postList2 가져오기
   Future<void> fetchPostList2() async {
     try {
-      String userId = await _tokenService.loadUserId();
+      String userId = await tokenService.loadUserId();
       int weaveId = postList1[currentIndex.value].weaveId;
       int startAt = nextStartAt[currentIndex.value];
 
-      var response = await _apiService.postRequest('weave', {'user_id': userId,'weave_id': weaveId, "startat": startAt, "offset": 10});
+      var response = await apiService.postRequest('weave', {'user_id': userId,'weave_id': weaveId, "startat": startAt, "offset": 10});
 
       List<int> postIdList2 = List<int>.from(response['post_id']);
 
-      var postResponse = await _apiService.postRequest('Post/Simple', {'post_id': postIdList2});
+      var postResponse = await apiService.postRequest('Post/Simple', {'post_id': postIdList2});
       List<Post> fetchedPostList2 = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
 
       nextStartAt[currentIndex.value] = response['next_startat'];

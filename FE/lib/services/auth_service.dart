@@ -23,7 +23,7 @@ class AuthService {
         final data = response.body;
         if (data.containsKey('accessToken') && data.containsKey('refreshToken') && data.containsKey('user_id')) {
           token = Token(accessToken: data['accessToken'], refreshToken: data['refreshToken'], userId: data['user_id'].toString());
-          tokenController.saveToken(token.accessToken, token.refreshToken, token.userId);
+          await tokenController.saveToken(token.accessToken, token.refreshToken, token.userId);
           return true;
         } else {
           return false;
