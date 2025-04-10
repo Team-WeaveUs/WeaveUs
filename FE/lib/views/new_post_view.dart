@@ -72,7 +72,7 @@ class NewPostView extends GetView<NewPostController> {
                       )
                           : Center(
                         child: Icon(
-                          HugeIcons.strokeRoundedImage03,
+                          HugeIcons.strokeRoundedImageUpload,
                           color: Colors.black,
                           size: 100,
                         ),
