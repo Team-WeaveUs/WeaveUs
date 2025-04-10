@@ -2,22 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/routes/app_routes.dart';
+import 'package:weave_us/views/new_weave_view.dart';
 
 class BottomNavigation extends StatelessWidget {
+  const BottomNavigation({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       showSelectedLabels: false,
       showUnselectedLabels: false,
-      backgroundColor: Colors.white,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(HugeIcons.strokeRoundedHome05, color: Colors.black), label: ''),
-        BottomNavigationBarItem(icon: Icon(HugeIcons.strokeRoundedSearch02, color: Colors.black), label: ''),
-        BottomNavigationBarItem(icon: Icon(Icons.add_circle_outline_sharp, color: Colors.black), label: ''),
-        BottomNavigationBarItem(icon: Icon(HugeIcons.strokeRoundedGift, color: Colors.black), label: ''),
-        BottomNavigationBarItem(icon: Icon(HugeIcons.strokeRoundedUser, color: Colors.black), label: ''),
-      ],
+      currentIndex: 0,
       onTap: (index) {
         switch (index) {
           case 0:
@@ -37,6 +33,28 @@ class BottomNavigation extends StatelessWidget {
             break;
         }
       },
+      items: [
+        const BottomNavigationBarItem(
+          icon: Icon(HugeIcons.strokeRoundedHome05, color: Colors.black), label: "",
+        ),
+        const BottomNavigationBarItem(
+          icon: Icon(HugeIcons.strokeRoundedSearch02, color: Colors.black), label: "",
+        ),
+        BottomNavigationBarItem(
+          icon: GestureDetector(
+            onTap: () => Get.toNamed(AppRoutes.NEW_POST),
+            onLongPress: () => Get.to(() => const NewWeaveView()),
+            child: const Icon(Icons.add_circle_outline_sharp, color: Colors.black),
+          ),
+          label: "",
+        ),
+        const BottomNavigationBarItem(
+          icon: Icon(HugeIcons.strokeRoundedGift, color: Colors.black), label: "",
+        ),
+        const BottomNavigationBarItem(
+          icon: Icon(HugeIcons.strokeRoundedUser, color: Colors.black), label: "",
+        ),
+      ],
     );
   }
 }
