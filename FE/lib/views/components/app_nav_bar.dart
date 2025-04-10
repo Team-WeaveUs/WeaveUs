@@ -5,18 +5,14 @@ import '../../controllers/auth_controller.dart';
 
 class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final bool centerTitle;
   final AuthController authController = Get.find<AuthController>();
 
   AppNavBar({
-    Key? key, required this.title,
-    this.centerTitle = false,
-  }) : super(key: key);
+    Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      centerTitle: centerTitle,
       title: Text(
           title,
           style: const TextStyle(
