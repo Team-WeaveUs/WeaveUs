@@ -16,6 +16,7 @@ class Post {
   final int subValid;
   final int commentCount;
   final String mediaUrl;
+  final int weaveType;
 
   Post({
     required this.id,
@@ -35,6 +36,7 @@ class Post {
     required this.subValid,
     required this.commentCount,
     required this.mediaUrl,
+    required this.weaveType,
   });
 
   // JSON 변환을 위한 factory constructor
@@ -57,6 +59,7 @@ class Post {
       subValid: json['sub_valid'],
       commentCount: json['comment_count'],
       mediaUrl: json['media_url'],
+      weaveType: json['weave_type'],
     );
   }
 
@@ -80,6 +83,7 @@ class Post {
       'sub_valid': subValid,
       'comment_count': commentCount,
       'media_url': mediaUrl,
+      'weave_type': weaveType,
     };
   }
 }
@@ -98,40 +102,4 @@ class PostList {
   List<Map<String, dynamic>> toJson() {
     return posts.map((post) => post.toJson()).toList();
   }
-}
-
-class CreatePostRequest {
-  final String userId;
-  final int privacyId;
-  final String weaveId;
-  final String content;
-  final List<CreatePostFile> files;
-
-  CreatePostRequest({
-    required this.userId,
-    this.privacyId = 3,
-    required this.weaveId,
-    required this.content,
-    required this.files,
-  });
-
-  Map<String, dynamic> toJson() => {
-    "user_id": userId,
-    "privacy_id": privacyId,
-    "weave_id": weaveId,
-    "content": content,
-    "files": files.map((file) => file.toJson()).toList(),
-  };
-}
-
-class CreatePostFile {
-  final String type;
-  final String name;
-
-  CreatePostFile({this.type = "image/jpeg", required this.name});
-
-  Map<String, dynamic> toJson() => {
-    "Type": type,
-    "name": name,
-  };
 }

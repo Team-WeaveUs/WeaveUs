@@ -48,6 +48,8 @@ dependencies:
   cookie_jar: ^4.0.8
   get: ^4.7.2
   hugeicons:
+  js:
+  jwt_decoder:
 
 dev_dependencies:
   flutter_test:
