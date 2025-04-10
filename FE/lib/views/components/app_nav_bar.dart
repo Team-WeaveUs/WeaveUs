@@ -24,6 +24,7 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
               fontWeight: FontWeight.w900,
           )
       ),
+      centerTitle: centerTitle,
       backgroundColor: Colors.white, // 원하는 색상 설정
       actions: [
         IconButton(
