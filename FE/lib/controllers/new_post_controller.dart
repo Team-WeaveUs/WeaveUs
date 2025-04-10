@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import '../services/api_service.dart';
 import '../services/token_service.dart';
 import '../models/create_post_model.dart';
-import '../views/widgets/delete_image_dialog.dart';
+import '../views/widgets/new_post_widgets/delete_image_dialog.dart';
 
 class NewPostController extends GetxController {
   final ApiService apiService;
