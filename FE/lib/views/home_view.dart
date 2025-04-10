@@ -15,6 +15,7 @@ class HomeView extends StatelessWidget {
       appBar: AppNavBar(title: "Weave Us"),
       body: Column(
         children: [
+          // 변경된 내용들.
           Expanded(
             child: Obx(() => PageView.builder(
                   pageSnapping: true,
