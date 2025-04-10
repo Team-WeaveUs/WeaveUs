@@ -5,13 +5,18 @@ import 'package:weave_us/services/token_service.dart';
 import '../models/post_model.dart';
 
 class HomeController extends GetxController {
-  final ApiService _apiService = ApiService();
-  final TokenService _tokenService = TokenService();
-
+  final ApiService _apiService;
+  final TokenService _tokenService;
+  HomeController({required ApiService apiService, required TokenService tokenService})
+      : _apiService = apiService,
+        _tokenService = tokenService;
   @override
   void onInit() {
     super.onInit();
-    _initialize(); // 초기 데이터 로드
+    Future.microtask(() {
+      _initialize();
+    }
+    );
   }
 
   var postList1 = <Post>[].obs; // 가로 스크롤용 메인 포스트 리스트

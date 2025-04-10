@@ -5,8 +5,8 @@ import '../controllers/home_controller.dart';
 import '../models/post_model.dart';
 import 'components/bottom_nav_bar.dart';
 
-class HomeView extends StatelessWidget {
-  final HomeController controller = Get.put(HomeController());
+class HomeView extends GetView<HomeController> {
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +16,16 @@ class HomeView extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: Obx(() => PageView.builder(
+            child: Obx(() {
+              if (controller.postListMap.length < 10){
+                return const Center(child: CircularProgressIndicator());
+              }
+              return PageView.builder(
                   pageSnapping: true,
                   scrollDirection: Axis.horizontal,
                   onPageChanged: controller.onHorizontalScroll,
                   itemCount: controller.postListMap.length,
                   itemBuilder: (context, index) {
-                    final post = controller.postList1[index];
-                    controller.currentIndex.value = index;
                     List<Post> currentPostList = controller.postListMap[index]!;
                     return Container(
                         padding:
@@ -48,11 +50,11 @@ class HomeView extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(children: [
-                                        Text(post.weaveTitle,
+                                        Text(controller.postList1[index].weaveTitle,
                                             style: const TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold)),
-                                        Text(post.weaveId == 1
+                                        Text(controller.postList1[index].weaveId == 1
                                             ? "else weave"
                                             : "Weave")
                                       ]),
@@ -110,7 +112,7 @@ class HomeView extends StatelessWidget {
                           ],
                         ));
                   },
-                )),
+                );}),
           ),
         ],
       ),
