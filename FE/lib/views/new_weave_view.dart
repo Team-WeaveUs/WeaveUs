@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:weave_us/views/components/app_nav_bar.dart';
+import 'package:weave_us/views/widgets/new_weave_widget/new_name.input.dart';
+import 'package:weave_us/views/widgets/new_weave_widget/weave_explanation.dart';
 
 import '../services/api_service.dart';
 
@@ -75,43 +78,28 @@ class _NewWeaveViewState extends State<NewWeaveView> {
         Get.snackbar("성공", "위브가 성공적으로 생성되었습니다");
         Get.back();
       } else {
-        debugPrint("위브 생성 실패: ${response.toString()}");
+        debugPrint("위브 생성 실패: \${response.toString()}");
         Get.snackbar("실패", "위브 생성에 실패했습니다");
       }
     } catch (e) {
-      debugPrint("오류 발생: $e");
+      debugPrint("오류 발생: \$e");
       Get.snackbar("에러", "서버 오류가 발생했습니다");
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
+      appBar: AppNavBar(
+        title: "새 게시물",
         centerTitle: true,
-        systemOverlayStyle:
-        const SystemUiOverlayStyle(statusBarColor: Colors.white),
-        title: const Text(
-          '새 위브',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-            letterSpacing: 1.0,
-          ),
-        ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        padding: const EdgeInsets.only(top: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('위브 종류',
-                style: TextStyle(fontSize: 15, color: Colors.black)),
+            const Text('위브 종류', style: TextStyle(fontSize: 15, color: Colors.black)),
             DropdownButton<String>(
               value: selectedWeave,
               isExpanded: true,
@@ -125,8 +113,7 @@ class _NewWeaveViewState extends State<NewWeaveView> {
             if (selectedWeave == '내 Weave') ...[
               const SizedBox(height: 10),
               GestureDetector(
-                onTap: () =>
-                    setState(() => isOpenRangeExpanded = !isOpenRangeExpanded),
+                onTap: () => setState(() => isOpenRangeExpanded = !isOpenRangeExpanded),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -135,15 +122,10 @@ class _NewWeaveViewState extends State<NewWeaveView> {
                       const SizedBox(width: 8),
                       Text(
                         selectedOpenRange,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                     ]),
-                    Icon(
-                      isOpenRangeExpanded
-                          ? Icons.arrow_drop_up
-                          : Icons.arrow_drop_down,
-                    ),
+                    Icon(isOpenRangeExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
                   ],
                 ),
               ),
@@ -167,8 +149,7 @@ class _NewWeaveViewState extends State<NewWeaveView> {
                 ),
               const SizedBox(height: 8),
               GestureDetector(
-                onTap: () =>
-                    setState(() => isInviteExpanded = !isInviteExpanded),
+                onTap: () => setState(() => isInviteExpanded = !isInviteExpanded),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -177,15 +158,10 @@ class _NewWeaveViewState extends State<NewWeaveView> {
                       const SizedBox(width: 8),
                       Text(
                         selectedInviteOption,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                     ]),
-                    Icon(
-                      isInviteExpanded
-                          ? Icons.arrow_drop_up
-                          : Icons.arrow_drop_down,
-                    ),
+                    Icon(isInviteExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
                   ],
                 ),
               ),
@@ -208,38 +184,48 @@ class _NewWeaveViewState extends State<NewWeaveView> {
                   ),
                 ),
             ],
-            const SizedBox(height: 20),
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: "위브 이름을 입력하세요",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: descriptionController,
-              maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: "위브 소개를 입력하세요",
-                border: OutlineInputBorder(),
-              ),
-            ),
+            Divider(color: Colors.grey[850], thickness: 1),
+            NewNameInput(controller: nameController),
+            Divider(color: Colors.grey[850], thickness: 1),
+            WeaveExplanation(controller: descriptionController),
+            Divider(color: Colors.grey[850], thickness: 1),
             const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  final title = nameController.text.trim();
-                  final desc = descriptionController.text.trim();
 
-                  if (title.isNotEmpty && desc.isNotEmpty) {
-                    _createWeave(title, desc, typeId, privacyId);
-                  } else {
-                    Get.snackbar("입력 오류", "제목과 소개를 모두 입력해주세요");
-                  }
-                },
-                child: const Text("위브 생성"),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    final title = nameController.text.trim();
+                    final desc = descriptionController.text.trim();
+
+                    if (title.isNotEmpty && desc.isNotEmpty) {
+                      _createWeave(title, desc, typeId, privacyId);
+                    } else {
+                      Get.snackbar("입력 오류", "제목과 소개를 모두 입력해주세요");
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF8000),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      "위브 생성",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontFamily: 'Pretendard',
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
