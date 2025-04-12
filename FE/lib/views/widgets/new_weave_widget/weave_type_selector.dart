@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
 class WeaveTypeSelector extends StatefulWidget {
-  final String selectedWeave;
-  final String selectedOpenRange;
-  final String selectedInviteOption;
-  final Function(String weave, String range, String invite) onChanged;
+  final Function({
+  required String? weave,
+  required String? range,
+  required String? invite,
+  }) onChanged;
 
   const WeaveTypeSelector({
     super.key,
-    required this.selectedWeave,
-    required this.selectedOpenRange,
-    required this.selectedInviteOption,
     required this.onChanged,
   });
 
@@ -19,27 +17,23 @@ class WeaveTypeSelector extends StatefulWidget {
 }
 
 class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
-  final weaveTypes = ['Weave', '내 Weave', 'Global', 'Private'];
-  final openRanges = ['모두 공개', '초대한 사용자', '나만 보기'];
-  final inviteOptions = ['1명 업로드 가능', '3명 업로드 가능', '5명 업로드 가능'];
+  final List<String> weaveTypes = ['Weave', '내 Weave', 'Global', 'Private'];
+  final List<String> openRanges = ['모두 공개', '초대한 사용자', '나만 보기'];
+  final List<String> inviteOptions = ['1명 업로드 가능', '3명 업로드 가능', '5명 업로드 가능'];
 
-  late String selectedWeave;
-  late String selectedOpenRange;
-  late String selectedInviteOption;
+  String? selectedWeave;
+  String? selectedOpenRange;
+  String? selectedInviteOption;
 
   bool isOpenRangeExpanded = false;
   bool isInviteExpanded = false;
 
-  @override
-  void initState() {
-    super.initState();
-    selectedWeave = widget.selectedWeave;
-    selectedOpenRange = widget.selectedOpenRange;
-    selectedInviteOption = widget.selectedInviteOption;
-  }
-
-  void _updateParent() {
-    widget.onChanged(selectedWeave, selectedOpenRange, selectedInviteOption);
+  void _notifyParent() {
+    widget.onChanged(
+      weave: selectedWeave,
+      range: selectedOpenRange,
+      invite: selectedInviteOption,
+    );
   }
 
   @override
@@ -51,13 +45,18 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
         DropdownButton<String>(
           value: selectedWeave,
           isExpanded: true,
+          hint: const Text("위브 종류를 선택하세요"),
           items: weaveTypes.map((type) {
             return DropdownMenuItem(value: type, child: Text(type));
           }).toList(),
           onChanged: (value) {
             setState(() {
-              selectedWeave = value!;
-              _updateParent();
+              selectedWeave = value;
+              selectedOpenRange = null;
+              selectedInviteOption = null;
+              isOpenRangeExpanded = false;
+              isInviteExpanded = false;
+              _notifyParent();
             });
           },
         ),
@@ -72,7 +71,7 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
                   const Icon(Icons.public, size: 18),
                   const SizedBox(width: 8),
                   Text(
-                    selectedOpenRange,
+                    selectedOpenRange ?? "공개 범위를 선택하세요",
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ]),
@@ -86,13 +85,11 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
               child: Column(
                 children: openRanges.map((option) {
                   return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedOpenRange = option;
-                        isOpenRangeExpanded = false;
-                        _updateParent();
-                      });
-                    },
+                    onTap: () => setState(() {
+                      selectedOpenRange = option;
+                      isOpenRangeExpanded = false;
+                      _notifyParent();
+                    }),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(option),
@@ -111,7 +108,7 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
                   const Icon(Icons.group, size: 18),
                   const SizedBox(width: 8),
                   Text(
-                    selectedInviteOption,
+                    selectedInviteOption ?? "초대 인원 설정",
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ]),
@@ -125,13 +122,11 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
               child: Column(
                 children: inviteOptions.map((option) {
                   return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedInviteOption = option;
-                        isInviteExpanded = false;
-                        _updateParent();
-                      });
-                    },
+                    onTap: () => setState(() {
+                      selectedInviteOption = option;
+                      isInviteExpanded = false;
+                      _notifyParent();
+                    }),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(option),
@@ -140,7 +135,7 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
                 }).toList(),
               ),
             ),
-        ],
+        ]
       ],
     );
   }

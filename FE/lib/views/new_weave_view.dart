@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:weave_us/views/components/app_nav_bar.dart';
 import 'package:weave_us/views/widgets/new_weave_widget/new_name.input.dart';
 import 'package:weave_us/views/widgets/new_weave_widget/weave_explanation.dart';
-
+import 'package:weave_us/views/widgets/new_weave_widget/weave_type_selector.dart';
 import '../services/api_service.dart';
 
 class NewWeaveView extends StatefulWidget {
@@ -17,16 +16,9 @@ class NewWeaveView extends StatefulWidget {
 }
 
 class _NewWeaveViewState extends State<NewWeaveView> {
-  final weaveTypes = ['Weave', '내 Weave', 'Global', 'Private'];
-  final openRanges = ['모두 공개', '초대한 사용자', '나만 보기'];
-  final inviteOptions = ['1명 업로드 가능', '3명 업로드 가능', '5명 업로드 가능'];
-
-  String selectedWeave = 'Weave';
-  String selectedOpenRange = '모두 공개';
-  String selectedInviteOption = '3명 업로드 가능';
-
-  bool isOpenRangeExpanded = false;
-  bool isInviteExpanded = false;
+  String selectedWeave = '';
+  String selectedOpenRange = '';
+  String selectedInviteOption = '';
 
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -55,6 +47,12 @@ class _NewWeaveViewState extends State<NewWeaveView> {
       default:
         return 1;
     }
+  }
+
+  bool get isFormValid {
+    return selectedWeave.isNotEmpty &&
+        nameController.text.trim().isNotEmpty &&
+        descriptionController.text.trim().isNotEmpty;
   }
 
   @override
@@ -90,139 +88,94 @@ class _NewWeaveViewState extends State<NewWeaveView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppNavBar(
-        title: "새 게시물",
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
         centerTitle: true,
+        systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.white),
+        title: const Text(
+          '새 위브',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+            letterSpacing: 1.0,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('위브 종류', style: TextStyle(fontSize: 15, color: Colors.black)),
-            DropdownButton<String>(
-              value: selectedWeave,
-              isExpanded: true,
-              items: weaveTypes.map((type) {
-                return DropdownMenuItem(value: type, child: Text(type));
-              }).toList(),
-              onChanged: (value) {
-                setState(() => selectedWeave = value!);
+            WeaveTypeSelector(
+              onChanged: ({required weave, required range, required invite}) {
+                setState(() {
+                  selectedWeave = weave ?? '';
+                  selectedOpenRange = range ?? '';
+                  selectedInviteOption = invite ?? '';
+                });
               },
             ),
-            if (selectedWeave == '내 Weave') ...[
-              const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () => setState(() => isOpenRangeExpanded = !isOpenRangeExpanded),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
-                      const Icon(Icons.public, size: 18),
-                      const SizedBox(width: 8),
-                      Text(
-                        selectedOpenRange,
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                    ]),
-                    Icon(isOpenRangeExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                  ],
-                ),
-              ),
-              if (isOpenRangeExpanded)
-                Padding(
-                  padding: const EdgeInsets.only(left: 36, bottom: 8),
-                  child: Column(
-                    children: openRanges.map((option) {
-                      return GestureDetector(
-                        onTap: () => setState(() {
-                          selectedOpenRange = option;
-                          isOpenRangeExpanded = false;
-                        }),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Text(option),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              const SizedBox(height: 8),
-              GestureDetector(
-                onTap: () => setState(() => isInviteExpanded = !isInviteExpanded),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
-                      const Icon(Icons.group, size: 18),
-                      const SizedBox(width: 8),
-                      Text(
-                        selectedInviteOption,
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                    ]),
-                    Icon(isInviteExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                  ],
-                ),
-              ),
-              if (isInviteExpanded)
-                Padding(
-                  padding: const EdgeInsets.only(left: 36, bottom: 8),
-                  child: Column(
-                    children: inviteOptions.map((option) {
-                      return GestureDetector(
-                        onTap: () => setState(() {
-                          selectedInviteOption = option;
-                          isInviteExpanded = false;
-                        }),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Text(option),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-            ],
+            const SizedBox(height: 20),
             Divider(color: Colors.grey[850], thickness: 1),
             NewNameInput(controller: nameController),
             Divider(color: Colors.grey[850], thickness: 1),
+            const SizedBox(height: 20),
             WeaveExplanation(controller: descriptionController),
             Divider(color: Colors.grey[850], thickness: 1),
             const SizedBox(height: 30),
-
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    final title = nameController.text.trim();
-                    final desc = descriptionController.text.trim();
-
-                    if (title.isNotEmpty && desc.isNotEmpty) {
-                      _createWeave(title, desc, typeId, privacyId);
-                    } else {
-                      Get.snackbar("입력 오류", "제목과 소개를 모두 입력해주세요");
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF8000),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+            if (isFormValid)
+              Center(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                      fontFamily: 'Pretendard',
                     ),
-                    elevation: 0,
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Text(
-                      "위브 생성",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontFamily: 'Pretendard',
+                    children: [
+                      TextSpan(text: '위브는 '),
+                      TextSpan(
+                        text: '그 누구의 소유도 아닙니다.',
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
+                      TextSpan(text: '추가하시겠습니까?'),
+                    ],
+                  ),
+                ),
+              ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: isFormValid
+                    ? () {
+                  final title = nameController.text.trim();
+                  final desc = descriptionController.text.trim();
+                  _createWeave(title, desc, typeId, privacyId);
+                }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFF8000),
+                  disabledBackgroundColor: Colors.grey.shade300,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 0,
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Text(
+                    "위브 생성",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'Pretendard',
                     ),
                   ),
                 ),
