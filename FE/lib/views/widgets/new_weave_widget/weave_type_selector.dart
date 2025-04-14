@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
 class WeaveTypeSelector extends StatefulWidget {
@@ -41,11 +42,17 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('위브 종류', style: TextStyle(fontSize: 15, color: Colors.black)),
-        DropdownButton<String>(
+        DropdownButton2<String>(
           value: selectedWeave,
           isExpanded: true,
-          hint: const Text("위브 종류를 선택하세요"),
+          hint: const Text("위브 종류를 선택하세요",
+          style: TextStyle(
+            fontSize: 20,
+            fontFamily: 'Pretendard',
+            color: Colors.grey,
+            letterSpacing: 1
+          )
+          ),
           items: weaveTypes.map((type) {
             return DropdownMenuItem(value: type, child: Text(type));
           }).toList(),

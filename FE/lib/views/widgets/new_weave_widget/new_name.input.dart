@@ -15,7 +15,7 @@ class NewNameInput extends StatelessWidget {
           fontSize: 20,
           fontFamily: 'Pretendard',
           color: Colors.black,
-          letterSpacing: 0.5,
+          letterSpacing: 1,
         ),
         decoration: const InputDecoration(
           hintText: '위브 이름을 입력해주세요.',
