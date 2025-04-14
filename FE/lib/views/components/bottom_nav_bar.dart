@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/routes/app_routes.dart';
-import 'package:weave_us/views/new_weave_view.dart';
 
 class BottomNavigation extends StatelessWidget {
   const BottomNavigation({super.key});
