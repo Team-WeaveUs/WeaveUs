@@ -43,7 +43,7 @@ class BottomNavigation extends StatelessWidget {
         BottomNavigationBarItem(
           icon: GestureDetector(
             onTap: () => Get.toNamed(AppRoutes.NEW_POST),
-            onLongPress: () => Get.to(() => const NewWeaveView()),
+            onLongPress: () => Get.toNamed(AppRoutes.NEW_WEAVE),
             child: const Icon(Icons.add_circle_outline_sharp, color: Colors.black),
           ),
           label: "",
