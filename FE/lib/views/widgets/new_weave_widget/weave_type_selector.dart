@@ -1,12 +1,10 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
+import '../../../models/weave_type_model.dart';
 
 class WeaveTypeSelector extends StatefulWidget {
-  final Function({
-  required String? weave,
-  required String? range,
-  required String? invite,
-  }) onChanged;
+  final Function(WeaveTypeModel model) onChanged;
 
   const WeaveTypeSelector({
     super.key,
@@ -20,7 +18,7 @@ class WeaveTypeSelector extends StatefulWidget {
 class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
   final List<String> weaveTypes = ['Weave', '내 Weave', 'Global', 'Private'];
   final List<String> openRanges = ['모두 공개', '초대한 사용자', '나만 보기'];
-  final List<String> inviteOptions = ['1명 업로드 가능', '3명 업로드 가능', '5명 업로드 가능'];
+  final List<String> inviteOptions = ['인원', '로직', '필요'];
 
   String? selectedWeave;
   String? selectedOpenRange;
@@ -31,9 +29,11 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
 
   void _notifyParent() {
     widget.onChanged(
-      weave: selectedWeave,
-      range: selectedOpenRange,
-      invite: selectedInviteOption,
+      WeaveTypeModel(
+        weave: selectedWeave,
+        range: selectedOpenRange,
+        invite: selectedInviteOption,
+      ),
     );
   }
 
@@ -42,48 +42,78 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DropdownButton2<String>(
-          value: selectedWeave,
-          isExpanded: true,
-          hint: const Text("위브 종류를 선택하세요",
-          style: TextStyle(
-            fontSize: 20,
-            fontFamily: 'Pretendard',
-            color: Colors.grey,
-            letterSpacing: 1
-          )
-          ),
-          items: weaveTypes.map((type) {
-            return DropdownMenuItem(value: type, child: Text(type));
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              selectedWeave = value;
-              selectedOpenRange = null;
-              selectedInviteOption = null;
-              isOpenRangeExpanded = false;
-              isInviteExpanded = false;
-              _notifyParent();
-            });
-          },
-        ),
-        if (selectedWeave == '내 Weave') ...[
-          const SizedBox(height: 10),
-          GestureDetector(
-            onTap: () => setState(() => isOpenRangeExpanded = !isOpenRangeExpanded),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(children: [
-                  const Icon(Icons.public, size: 18),
-                  const SizedBox(width: 8),
-                  Text(
-                    selectedOpenRange ?? "공개 범위를 선택하세요",
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        Padding(
+          padding: const EdgeInsets.only(right: 20, left: 5),
+          child: DropdownButton2<String>(
+            alignment: Alignment.centerLeft,
+
+            underline: const SizedBox.shrink(),
+            value: selectedWeave,
+            isExpanded: true,
+            hint: const Text(
+              "위브 종류를 선택하세요",
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                fontSize: 20,
+                fontFamily: 'Pretendard',
+                color: Colors.grey,
+                letterSpacing: 1,
+              ),
+            ),
+            items: weaveTypes.map((type) {
+              return DropdownMenuItem(value: type, child: Text(type));
+            }).toList(),
+            selectedItemBuilder: (context) => weaveTypes.map((type) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  type,
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'Pretendard',
+                    color: Colors.black,
+                    letterSpacing: 1,
                   ),
-                ]),
-                Icon(isOpenRangeExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-              ],
+                ),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedWeave = value;
+                selectedOpenRange = null;
+                selectedInviteOption = null;
+                isOpenRangeExpanded = false;
+                isInviteExpanded = false;
+                _notifyParent();
+              });
+            },
+          ),
+        ),
+
+        // 공개 범위, 초대 인원 옵션은 '내 Weave'일 때만 표시
+        if (selectedWeave == '내 Weave') ...[
+          Divider(color: Colors.grey[850], thickness: 1),
+
+          // 공개 범위
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: GestureDetector(
+              onTap: () => setState(() => isOpenRangeExpanded = !isOpenRangeExpanded),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(children: [
+                    const Icon(HugeIcons.strokeRoundedGlobe02),
+                    const SizedBox(width: 8),
+                    Text(
+                      selectedOpenRange ?? "공개 범위를 선택하세요",
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ]),
+                  Icon(isOpenRangeExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                ],
+              ),
             ),
           ),
           if (isOpenRangeExpanded)
@@ -92,11 +122,13 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
               child: Column(
                 children: openRanges.map((option) {
                   return GestureDetector(
-                    onTap: () => setState(() {
-                      selectedOpenRange = option;
-                      isOpenRangeExpanded = false;
-                      _notifyParent();
-                    }),
+                    onTap: () {
+                      setState(() {
+                        selectedOpenRange = option;
+                        isOpenRangeExpanded = false;
+                        _notifyParent();
+                      });
+                    },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(option),
@@ -105,21 +137,30 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
                 }).toList(),
               ),
             ),
-          const SizedBox(height: 8),
+
+          Divider(color: Colors.grey[850], thickness: 1),
+
+          // 초대 인원
           GestureDetector(
             onTap: () => setState(() => isInviteExpanded = !isInviteExpanded),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(children: [
-                  const Icon(Icons.group, size: 18),
-                  const SizedBox(width: 8),
-                  Text(
-                    selectedInviteOption ?? "초대 인원 설정",
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ]),
-                Icon(isInviteExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(children: [
+                    const Icon(HugeIcons.strokeRoundedUserLock02),
+                    const SizedBox(width: 8),
+                    Text(
+                      selectedInviteOption ?? "초대 인원 설정",
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ]),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: Icon(Icons.arrow_drop_down),
+                ),
               ],
             ),
           ),
@@ -129,11 +170,13 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
               child: Column(
                 children: inviteOptions.map((option) {
                   return GestureDetector(
-                    onTap: () => setState(() {
-                      selectedInviteOption = option;
-                      isInviteExpanded = false;
-                      _notifyParent();
-                    }),
+                    onTap: () {
+                      setState(() {
+                        selectedInviteOption = option;
+                        isInviteExpanded = false;
+                        _notifyParent();
+                      });
+                    },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(option),
@@ -142,7 +185,7 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
                 }).toList(),
               ),
             ),
-        ]
+        ],
       ],
     );
   }
