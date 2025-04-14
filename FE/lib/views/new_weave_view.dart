@@ -105,10 +105,11 @@ class _NewWeaveViewState extends State<NewWeaveView> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        padding: const EdgeInsets.only(top: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Divider(color: Colors.grey[850], thickness: 1),
             WeaveTypeSelector(
               onChanged: ({required weave, required range, required invite}) {
                 setState(() {
@@ -118,14 +119,13 @@ class _NewWeaveViewState extends State<NewWeaveView> {
                 });
               },
             ),
-            const SizedBox(height: 20),
             Divider(color: Colors.grey[850], thickness: 1),
             NewNameInput(controller: nameController),
             Divider(color: Colors.grey[850], thickness: 1),
-            const SizedBox(height: 20),
             WeaveExplanation(controller: descriptionController),
             Divider(color: Colors.grey[850], thickness: 1),
             const SizedBox(height: 30),
+            // 안내 멘트
             if (isFormValid)
               Center(
                 child: RichText(
@@ -140,7 +140,7 @@ class _NewWeaveViewState extends State<NewWeaveView> {
                     children: [
                       TextSpan(text: '위브는 '),
                       TextSpan(
-                        text: '그 누구의 소유도 아닙니다.',
+                        text: '그 누구의 소유도 아닙니다.  ',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(text: '추가하시겠습니까?'),
@@ -148,34 +148,37 @@ class _NewWeaveViewState extends State<NewWeaveView> {
                   ),
                 ),
               ),
-            const SizedBox(height: 12),
+            // 생성 버튼
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: isFormValid
-                    ? () {
-                  final title = nameController.text.trim();
-                  final desc = descriptionController.text.trim();
-                  _createWeave(title, desc, typeId, privacyId);
-                }
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF8000),
-                  disabledBackgroundColor: Colors.grey.shade300,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: ElevatedButton(
+                  onPressed: isFormValid
+                      ? () {
+                    final title = nameController.text.trim();
+                    final desc = descriptionController.text.trim();
+                    _createWeave(title, desc, typeId, privacyId);
+                  }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF8000),
+                    disabledBackgroundColor: Colors.grey.shade300,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    elevation: 0,
                   ),
-                  elevation: 0,
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Text(
-                    "위브 생성",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontFamily: 'Pretendard',
+                  child: const Padding(
+                    padding: EdgeInsets.only(top:10, bottom: 10),
+                    child: Text(
+                      "위브 생성",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontFamily: 'Pretendard',
+                      ),
                     ),
                   ),
                 ),

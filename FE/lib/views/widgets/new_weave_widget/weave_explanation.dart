@@ -15,7 +15,7 @@ class WeaveExplanation extends StatelessWidget {
           fontSize: 20,
           fontFamily: 'Pretendard',
           color: Colors.black,
-          letterSpacing: 0.5,
+          letterSpacing: 1,
         ),
         decoration: const InputDecoration(
           hintText: '위브를 소개해주세요.',
