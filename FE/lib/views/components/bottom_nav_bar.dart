@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/routes/app_routes.dart';
-import 'package:weave_us/views/new_weave_view.dart';
 
 class BottomNavigation extends StatelessWidget {
   const BottomNavigation({super.key});
@@ -43,7 +42,7 @@ class BottomNavigation extends StatelessWidget {
         BottomNavigationBarItem(
           icon: GestureDetector(
             onTap: () => Get.toNamed(AppRoutes.NEW_POST),
-            onLongPress: () => Get.to(() => const NewWeaveView()),
+            onLongPress: () => Get.toNamed(AppRoutes.NEW_WEAVE),
             child: const Icon(Icons.add_circle_outline_sharp, color: Colors.black),
           ),
           label: "",
