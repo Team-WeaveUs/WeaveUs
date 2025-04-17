@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/token_model.dart';
 import '../routes/app_routes.dart';
@@ -9,6 +11,8 @@ class AuthController extends GetxController {
   final AuthService _authService = AuthService();
 
   var isAuthenticated = false.obs;
+  var isLoading = false.obs;
+  var isLoginSuccess = false.obs;
 
   @override
   onInit(){
@@ -35,18 +39,41 @@ class AuthController extends GetxController {
 
   // ✅ 로그인 처리
   Future<void> login(String email, String password) async {
-    bool success = await _authService.login(email, password);
-    isAuthenticated.value = false;
+    isLoading.value = true;
+
+    // 로그인 다이얼로그 띄우기
+    if (!Get.isDialogOpen!) {
+      Get.dialog(
+        PopScope(
+          canPop: false,
+          child: Dialog(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text("로그인 중입니다..."),
+                ],
+              ),
+            ),
+          ),
+        ),
+        barrierDismissible: false,
+      );
+    }
+
+    final success = await _authService.login(email, password);
 
     if (success) {
-      // ✅ 토큰 저장을 기다린 후 화면 전환
       await _tokenService.loadToken();
-
       isAuthenticated.value = true;
+      isLoading.value = false;
       Get.offAllNamed(AppRoutes.HOME);
-      Get.snackbar("로그인", "성공");
     } else {
-      Get.snackbar("로그인", "실패");
+      isLoading.value = false;
+      Get.snackbar("로그인 실패", "아이디나 비밀번호를 확인하세요");
     }
   }
 

@@ -1,17 +1,20 @@
 import 'package:get/get.dart';
-import 'package:weave_us/services/api_service.dart';
-import 'package:weave_us/services/token_service.dart';
-import '../controllers/home_controller.dart';
 
-class HomeBinding extends Bindings {
+import '../services/api_service.dart';
+import '../services/token_service.dart';
+
+import '../controllers/post_controller.dart';
+
+class PostBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<ApiService>(() => ApiService());
     Get.lazyPut<TokenService>(() => TokenService());
-    Get.lazyPut(() => HomeController(
+    Get.lazyPut<PostController>(() => PostController(
       apiService: Get.find(),
       tokenService: Get.find(),
     ));
-  }
-}
 
+  }
+
+}

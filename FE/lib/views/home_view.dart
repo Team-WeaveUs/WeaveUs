@@ -5,8 +5,8 @@ import '../controllers/home_controller.dart';
 import '../models/post_model.dart';
 import 'components/bottom_nav_bar.dart';
 
-class HomeView extends StatelessWidget {
-  final HomeController controller = Get.put(HomeController());
+class HomeView extends GetView<HomeController> {
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,18 +16,20 @@ class HomeView extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: Obx(() => PageView.builder(
+            child: Obx(() {
+              if (controller.postListMap.isEmpty){
+                return const Center(child: CircularProgressIndicator());
+              }
+              return PageView.builder(
                   pageSnapping: true,
                   scrollDirection: Axis.horizontal,
                   onPageChanged: controller.onHorizontalScroll,
                   itemCount: controller.postListMap.length,
                   itemBuilder: (context, index) {
-                    final post = controller.postList1[index];
-                    controller.currentIndex.value = index;
                     List<Post> currentPostList = controller.postListMap[index]!;
                     return Container(
                         padding:
-                            const EdgeInsets.only(top: 10, left: 10, right: 10),
+                        const EdgeInsets.only(top: 10, left: 10, right: 10),
                         child: Column(
                           children: [
                             Container(
@@ -45,14 +47,14 @@ class HomeView extends StatelessWidget {
                                 padding: const EdgeInsets.all(10),
                                 child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(children: [
-                                        Text(post.weaveTitle,
+                                        Text(controller.postList1[index].weaveTitle,
                                             style: const TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold)),
-                                        Text(post.weaveId == 1
+                                        Text(controller.postList1[index].weaveId == 1
                                             ? "else weave"
                                             : "Weave")
                                       ]),
@@ -66,10 +68,10 @@ class HomeView extends StatelessWidget {
                                     scrollDirection: Axis.vertical,
                                     onPageChanged: controller.onVerticalScroll,
                                     itemCount:
-                                        controller.postListMap[index]?.length,
+                                    controller.postListMap[index]?.length,
                                     itemBuilder: (context, index2) {
                                       var verticalPost =
-                                          currentPostList[index2];
+                                      currentPostList[index2];
                                       return Column(children: [
                                         Expanded(
                                             child: Image.network(
@@ -82,9 +84,9 @@ class HomeView extends StatelessWidget {
                                             decoration: const BoxDecoration(
                                                 borderRadius: BorderRadius.only(
                                                     bottomLeft:
-                                                        Radius.circular(10),
+                                                    Radius.circular(10),
                                                     bottomRight:
-                                                        Radius.circular(10)),
+                                                    Radius.circular(10)),
                                                 color: Colors.white,
                                                 border: Border(
                                                     left: BorderSide(
@@ -110,7 +112,7 @@ class HomeView extends StatelessWidget {
                           ],
                         ));
                   },
-                )),
+                );}),
           ),
         ],
       ),
