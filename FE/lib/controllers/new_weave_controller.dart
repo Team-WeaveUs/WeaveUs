@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
@@ -11,6 +12,7 @@ class NewWeaveController extends GetxController {
 
   final ApiService apiService;
   final TokenService tokenService;
+  final isLoading = false.obs;
 
   NewWeaveController({required this.apiService, required this.tokenService});
 
@@ -54,6 +56,32 @@ class NewWeaveController extends GetxController {
   Future<void> createWeave() async {
     final title = nameController.text.trim();
     final desc = descriptionController.text.trim();
+
+    if (!Get.isDialogOpen!) {
+      Get.dialog(
+        PopScope(
+          canPop: false,
+          child: Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text(
+                    "위브를 생성 중입니다...",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        barrierDismissible: false,
+      );
+    }
 
     try {
       final response = await apiService.postRequest("WeaveUpload", {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,6 +14,7 @@ import '../views/widgets/new_post_widgets/delete_image_dialog.dart';
 class NewPostController extends GetxController {
   final ApiService apiService;
   final TokenService tokenService;
+  final isLoading = false.obs;
 
   NewPostController({required this.apiService, required this.tokenService});
 
@@ -95,6 +97,32 @@ class NewPostController extends GetxController {
 
   // 게시물 공유 (최종 로직)
   Future<void> sharePost() async {
+    if (!Get.isDialogOpen!) {
+      Get.dialog(
+        PopScope(
+          canPop: false,
+          child: Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text(
+                    "게시물을 업로드 중입니다...",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        barrierDismissible: false,
+      );
+    }
+
     try {
       final uploadedFiles = <CreatePostFile>[];
       final userId = await tokenService.loadUserId();
