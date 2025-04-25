@@ -1,6 +1,9 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:weave_us/views/widgets/new_weave_widget/friend_invite.dialog.dart';
 import '../../../models/weave_type_model.dart';
 
 class WeaveTypeSelector extends StatefulWidget {
@@ -152,11 +155,21 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
                     const Icon(HugeIcons.strokeRoundedUserLock02),
                     const SizedBox(width: 8),
                     Text(
-                      selectedInviteOption ?? "초대 인원 설정",
+                      selectedInviteOption ?? "친구 초대하기",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 50.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.dialog(const FriendInviteDialog());
+                      },
+                      child: const Icon(HugeIcons.strokeRoundedPlusSignCircle),
+                    ),
+                  ),
                   ]),
                 ),
+
                 const Padding(
                   padding: EdgeInsets.only(right: 20.0),
                   child: Icon(Icons.arrow_drop_down),
