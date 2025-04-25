@@ -148,6 +148,8 @@ class NewPostController extends GetxController {
               response['message']?.toString().contains("성공") == true)) {
         Get.back();
         Get.snackbar("성공", "게시물이 등록되었습니다.");
+
+        Get.offAllNamed('/home');
       } else {
         throw Exception("게시물 생성 실패: $response");
       }

@@ -5,6 +5,8 @@ import 'package:weave_us/views/widgets/new_post_widgets/post_content.input.dart'
 import 'package:weave_us/views/widgets/new_post_widgets/post_tag.input.dart';
 import 'package:weave_us/views/widgets/new_post_widgets/weave_selector_widget.dart';
 import '../controllers/new_post_controller.dart';
+import '../controllers/weave_dialog_controller.dart';
+import '../services/api_service.dart';
 import '../views/components/app_nav_bar.dart';
 import 'widgets/new_post_widgets/weave_select_dialog.dart';
 
@@ -27,6 +29,17 @@ class NewPostView extends GetView<NewPostController> {
             Obx(() => WeaveSelector(
               selectedWeave: controller.selectedWeaveText.value,
               onWeaveSelected: () {
+                // ✅ ApiService가 아직 등록되지 않았다면 등록
+                if (!Get.isRegistered<ApiService>()) {
+                  Get.put(ApiService());
+                }
+
+                // ✅ WeaveDialogController도 등록
+                if (!Get.isRegistered<WeaveDialogController>()) {
+                  Get.put(WeaveDialogController(apiService: Get.find<ApiService>()));
+                }
+
+                // ✅ 다이얼로그 띄우기
                 Get.dialog(
                   WeaveDialog(
                     onWeaveSelected: (selected) {
