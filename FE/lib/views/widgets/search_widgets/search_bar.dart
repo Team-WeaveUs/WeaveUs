@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:hugeicons/hugeicons.dart';
 import '../../../controllers/search_controller.dart';
 
 class CustomSearchBar extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController textController;
+  final WeaveSearchController searchController;
   final VoidCallback onSearch;
 
   const CustomSearchBar({
     super.key,
-    required this.controller,
+    required this.textController,
+    required this.searchController,
     required this.onSearch,
   });
 
@@ -18,7 +21,7 @@ class CustomSearchBar extends StatelessWidget {
       children: [
         Expanded(
           child: TextField(
-            controller: controller,
+            controller: textController,
             decoration: InputDecoration(
               hintText: "@닉네임 또는 제목으로 검색",
               border: OutlineInputBorder(
@@ -30,10 +33,16 @@ class CustomSearchBar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        IconButton(
+        Obx(() => searchController.isLoading.value
+            ? const SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        )
+            : IconButton(
           onPressed: onSearch,
           icon: const Icon(HugeIcons.strokeRoundedSearch02),
-        ),
+        )),
       ],
     );
   }
