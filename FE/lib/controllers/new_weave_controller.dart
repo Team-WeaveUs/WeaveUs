@@ -60,7 +60,26 @@ class NewWeaveController extends GetxController {
   Future<void> createWeave() async {
     if (!Get.isDialogOpen!) {
       Get.dialog(
-        const Center(child: CircularProgressIndicator()),
+        PopScope(
+          canPop: false,
+          child: Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text(
+                    "위브 생성 중입니다...",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
         barrierDismissible: false,
       );
     }
@@ -86,6 +105,7 @@ class NewWeaveController extends GetxController {
       Get.snackbar("에러", "네트워크 오류");
     }
   }
+
 
   @override
   void onInit() {
