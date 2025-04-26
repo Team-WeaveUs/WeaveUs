@@ -22,6 +22,7 @@ class NewPostController extends GetxController {
   var images = <Uint8List>[].obs;
   var selectedWeaveId = RxnString();
   var selectedWeaveText = ''.obs;
+  var tags = <String>[].obs;
 
   // TextField 상태관리 컨트롤러
   final descriptionController = TextEditingController();
@@ -158,6 +159,19 @@ class NewPostController extends GetxController {
     }
   }
 
+  // 태그 추가
+  void addTag([String? input]) {
+    final tagText = tagsController.text.trim();
+    if (tagText.isNotEmpty && !tags.contains(tagText)) {
+      tags.add(tagText);
+      tagsController.clear(); // 입력창 비우기
+    }
+  }
+
+  // 태그 삭제
+  void removeTag(String tag) {
+    tags.remove(tag);
+  }
   // 컨트롤러 메모리 해제
   @override
   void onClose() {
