@@ -19,7 +19,6 @@ class WeaveTypeSelector extends StatefulWidget {
 class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
   final List<String> weaveTypes = ['Weave', '내 Weave', 'Global', 'Private'];
   final List<String> openRanges = ['모두 공개', '초대한 사용자', '나만 보기'];
-  final List<String> inviteOptions = ['인원', '로직', '필요'];
 
   late final FriendInviteDialogController inviteController;
 
@@ -151,12 +150,9 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
                 const Icon(HugeIcons.strokeRoundedUserLock02),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => isInviteExpanded = !isInviteExpanded),
-                    child: Text(
-                      selectedInviteOption ?? "친구 초대하기",
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
+                  child: Text(
+                    "친구 초대하기",
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),
                 GestureDetector(
@@ -174,29 +170,9 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
               ],
             ),
           ),
-          if (isInviteExpanded)
-            Padding(
-              padding: const EdgeInsets.only(left: 36, bottom: 8),
-              child: Column(
-                children: inviteOptions.map((option) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedInviteOption = option;
-                        isInviteExpanded = false;
-                        _notifyParent();
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(option),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
+          const SizedBox(height: 8),
 
-          // 초대한 친구 리스트
+// 초대한 친구 리스트
           Obx(() {
             final invited = inviteController.selectedFriends;
             return Padding(
@@ -205,7 +181,7 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: invited.map((friend) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
+                    padding: const EdgeInsets.only(bottom: 8),
                     child: Row(
                       children: [
                         CircleAvatar(
@@ -217,12 +193,13 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
                               ? const Icon(Icons.person, size: 14)
                               : null,
                         ),
+                        const SizedBox(width: 8),
                         Expanded(child: Text(friend.nickname)),
 
-                        // ✅ 삭제 버튼 추가
+                        // ✅ 삭제 버튼
                         TextButton(
                           onPressed: () {
-                            Get.find<FriendInviteDialogController>().removeFriend(friend);
+                            inviteController.removeFriend(friend);
                           },
                           child: const Text(
                             "삭제하기",
