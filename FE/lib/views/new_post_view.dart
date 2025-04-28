@@ -29,17 +29,14 @@ class NewPostView extends GetView<NewPostController> {
             Obx(() => WeaveSelector(
               selectedWeave: controller.selectedWeaveText.value,
               onWeaveSelected: () {
-                // ✅ ApiService가 아직 등록되지 않았다면 등록
                 if (!Get.isRegistered<ApiService>()) {
                   Get.put(ApiService());
                 }
 
-                // ✅ WeaveDialogController도 등록
                 if (!Get.isRegistered<WeaveDialogController>()) {
                   Get.put(WeaveDialogController(apiService: Get.find<ApiService>()));
                 }
 
-                // ✅ 다이얼로그 띄우기
                 Get.dialog(
                   WeaveDialog(
                     onWeaveSelected: (selected) {
@@ -95,6 +92,7 @@ class NewPostView extends GetView<NewPostController> {
                 ),
               );
             }),
+
             Divider(color: Colors.grey[850], thickness: 1),
 
             // 이미지 설명 부분
@@ -103,7 +101,7 @@ class NewPostView extends GetView<NewPostController> {
             Divider(color: Colors.grey[850], thickness: 1),
 
             // 태그 입력 부분
-            PostTagInput(controller: controller.tagsController),
+            PostTagInput(controller: controller.tagController),
 
             Padding(
               padding: const EdgeInsets.all(20),
@@ -111,7 +109,7 @@ class NewPostView extends GetView<NewPostController> {
                 width: double.infinity, // 가로 전체 채움
                 child: ElevatedButton(
                   onPressed: controller.images.isNotEmpty &&
-                      controller.descriptionText.value.isNotEmpty && // ✅ 여기를 이걸로!
+                      controller.descriptionText.value.isNotEmpty &&
                       controller.selectedWeaveId.value != null
                       ? controller.sharePost
                       : null,

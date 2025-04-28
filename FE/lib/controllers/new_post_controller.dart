@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:textfield_tags/textfield_tags.dart';
 import 'package:uuid/uuid.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -18,17 +19,14 @@ class NewPostController extends GetxController {
 
   NewPostController({required this.apiService, required this.tokenService});
 
-  // 상태관리 변수
   var images = <Uint8List>[].obs;
   var selectedWeaveId = RxnString();
   var selectedWeaveText = ''.obs;
-  var tags = <String>[].obs;
 
-  // TextField 상태관리 컨트롤러
   final descriptionController = TextEditingController();
-  final tagsController = TextEditingController();
-
   final descriptionText = ''.obs;
+
+  late final TextfieldTagsController<String> tagController;
 
   @override
   void onInit() {
@@ -36,6 +34,7 @@ class NewPostController extends GetxController {
     descriptionController.addListener(() {
       descriptionText.value = descriptionController.text.trim();
     });
+    tagController = TextfieldTagsController<String>();
   }
 
   // 게시 가능 여부
@@ -149,7 +148,6 @@ class NewPostController extends GetxController {
               response['message']?.toString().contains("성공") == true)) {
         Get.back();
         Get.snackbar("성공", "게시물이 등록되었습니다.");
-
         Get.offAllNamed('/home');
       } else {
         throw Exception("게시물 생성 실패: $response");
@@ -159,28 +157,20 @@ class NewPostController extends GetxController {
     }
   }
 
-  // 태그 추가
-  void addTag([String? input]) {
-    final tagText = tagsController.text.trim();
-    if (tagText.isNotEmpty && !tags.contains(tagText)) {
-      tags.add(tagText);
-      tagsController.clear(); // 입력창 비우기
-    }
+  // 태그 전체 삭제 (추가로 활용 가능)
+  void clearTags() {
+    tagController.clearTags();
   }
 
-  // 태그 삭제
-  void removeTag(String tag) {
-    tags.remove(tag);
-  }
   // 컨트롤러 메모리 해제
   @override
   void onClose() {
     descriptionController.dispose();
-    tagsController.dispose();
+    tagController.dispose();
     super.onClose();
   }
 
-  // 다이얼로그 호출하는 함수
+  // 이미지 삭제 다이얼로그
   void showDeleteImageDialog() {
     Get.dialog(
       DeleteImageDialog(
