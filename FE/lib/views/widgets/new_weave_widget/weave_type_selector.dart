@@ -61,34 +61,73 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
       children: [
         // 위브 종류 선택
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: DropdownButton2<String>(
-            alignment: Alignment.centerLeft,
-            underline: const SizedBox.shrink(),
-            value: selectedWeave,
-            isExpanded: true,
-            hint: const Text(
-              "위브 종류를 선택하세요",
-              style: TextStyle(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Container(
+            width: double.infinity,
+            child: DropdownButtonFormField2<String>(
+              decoration: const InputDecoration(
+                isDense: true,
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top:10, bottom: 10), // ✨ 직접 패딩 지정
+                hintStyle: TextStyle(color: Colors.grey),
+                focusedBorder: InputBorder.none,
+              ),
+              isExpanded: true,
+              // 버튼 크기, 안쪽 여백 지정
+              buttonStyleData: const ButtonStyleData(
+                padding: EdgeInsets.only(left: 0.0),
+              ),
+              // 펼쳐지는 메뉴 크기, 패딩 설정
+              dropdownStyleData: const DropdownStyleData(
+                padding: EdgeInsets.all(0.0),
+              ),
+              // 드롭다운 메뉴 항목 높이와 내부 여백 설정
+              menuItemStyleData: const MenuItemStyleData
+                (
+                padding: EdgeInsets.symmetric(horizontal: 0.0),
+                height: 40.0,
+              ),
+              style: const TextStyle(
                 fontSize: 20,
                 fontFamily: 'Pretendard',
-                color: Colors.grey,
+                color: Colors.black,
                 letterSpacing: 1,
               ),
+              value: selectedWeave,
+              hint: const Text(
+                "위브 종류를 선택하세요",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'Pretendard',
+                  color: Colors.grey,
+                  letterSpacing: 1,
+                ),
+              ),
+              items: weaveTypes.map((type) {
+                return DropdownMenuItem(
+                  value: type,
+                  child: Text(
+                    type,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'Pretendard',
+                      color: Colors.black,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedWeave = value;
+                  selectedOpenRange = null;
+                  selectedInviteOption = null;
+                  isOpenRangeExpanded = false;
+                  isInviteExpanded = false;
+                  _notifyParent();
+                });
+              },
             ),
-            items: weaveTypes.map((type) {
-              return DropdownMenuItem(value: type, child: Text(type));
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                selectedWeave = value;
-                selectedOpenRange = null;
-                selectedInviteOption = null;
-                isOpenRangeExpanded = false;
-                isInviteExpanded = false;
-                _notifyParent();
-              });
-            },
           ),
         ),
 
@@ -170,18 +209,17 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
               ],
             ),
           ),
-          const SizedBox(height: 8),
 
-// 초대한 친구 리스트
+          // 초대한 친구 리스트
           Obx(() {
             final invited = inviteController.selectedFriends;
             return Padding(
-              padding: const EdgeInsets.only(left: 36, top: 8, bottom: 8),
+              padding: const EdgeInsets.only(left: 36),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: invited.map((friend) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.only(left: 8),
                     child: Row(
                       children: [
                         CircleAvatar(
@@ -193,10 +231,10 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
                               ? const Icon(Icons.person, size: 14)
                               : null,
                         ),
-                        const SizedBox(width: 8),
+
                         Expanded(child: Text(friend.nickname)),
 
-                        // ✅ 삭제 버튼
+                        // 삭제 버튼
                         TextButton(
                           onPressed: () {
                             inviteController.removeFriend(friend);
