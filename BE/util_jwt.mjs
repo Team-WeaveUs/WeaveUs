@@ -32,13 +32,13 @@ export function verifyAccessToken(event) {
 
     const decoded = jwt.verify(accessToken, config.ACCESS_TOKEN_SECRET);
     event.body.user_id = decoded.user_id;
-    // if (Number(decoded.user_id) !== Number(user_id)) {
-    //   return {
-    //     code: -1,
-    //     status: 404,
-    //     message: "접근 권한이 없습니다."
-    //   };
-    // }
+    if (Number(decoded.user_id) !== Number(user_id)) {
+      return {
+        code: -1,
+        status: 404,
+        message: "접근 권한이 없습니다."
+      };
+    }
 
     return { code: 1, payload: decoded  };
   } catch (error) {
@@ -66,13 +66,13 @@ export function verifyRefreshToken(event) {
 
     const decoded = jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET);
     event.body.user_id = decoded.user_id;
-    // if (Number(decoded.user_id) !== Number(user_id)) {
-    //   return {
-    //     code: -1,
-    //     status: 404,
-    //     message: "접근 권한이 없습니다."
-    //   };
-    // }
+    if (Number(decoded.user_id) !== Number(user_id)) {
+      return {
+        code: -1,
+        status: 404,
+        message: "접근 권한이 없습니다."
+      };
+    }
 
     return { code: 1, payload: decoded };
   } catch (error) {

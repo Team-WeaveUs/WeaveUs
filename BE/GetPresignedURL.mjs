@@ -1,6 +1,6 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { verifyAccessToken } from './jwt.mjs';
+import { verifyAccessToken } from 'jwt';
 
 
 const s3Client = new S3Client({ region: 'ap-northeast-2' });
@@ -31,7 +31,7 @@ export async function handler(event, context) {
     if (!user_id || !files) {
       return {
         statusCode: 400,
-        body: 'No user_id or filename provided'
+        body: '유효하지 않은 요청입니다.'
       };
     }
 
@@ -72,9 +72,9 @@ export async function handler(event, context) {
   } catch (error) {
     console.error('Error generating presigned URL:', error);
     return {
-      statusCode: 500,
+      statusCode: 503,
       body: {
-        message: 'Failed to generate presigned URL'
+        message: 'S3의 작업이 정상적으로 처리되지 않았습니다.'
       }
     };
   }

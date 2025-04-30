@@ -1,5 +1,5 @@
-import { verifyAccessToken } from './jwt.mjs';
-import { closeConnection, executeQuery } from './dbClient.mjs';
+import { verifyAccessToken } from 'jwt';
+import { closeConnection, executeQuery } from 'dbclient';
 
 export const handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -19,10 +19,10 @@ export const handler = async (event) => {
 
   const { user_id, privacy_id, weave_id, content, location, area_id, files } = event.body;
 
-  if (user_id == null || privacy_id == null || weave_id == null || content == null || files == null || files.length == 0) {
+  if (user_id == null || privacy_id == null || (privacy_id < 1 || 3 < privacy_id) || weave_id == null || content == null || files == null || files.length == 0) {
     return {
       statusCode: 400,
-      body: { message: 'Bad Request' },
+      body: { message: '유효하지 않은 요청입니다. ' },
     };
   }
   
@@ -31,24 +31,15 @@ export const handler = async (event) => {
 
     if (result.length === 0) {
       return {
-        statusCode: 404,
-        body: { message: 'Weave not found' },
-      };
-    }
-
-    result = await executeQuery(`SELECT * FROM Privacy WHERE id = ?`, [privacy_id]);
-
-    if (result.length === 0) {
-      return {
-        statusCode: 404,
-        body: { message: 'Privacy not found' },
+        statusCode: 506,
+        body: { message: '위브를 찾을 수 없습니다.' },
       };
     }
   } catch (error) {
     console.error('Error uploading post:', error);
     return {
-      statusCode: 500,
-      body: { message: 'Internal Server Error SELECT' },
+      statusCode: 502,
+      body: { message: '데이터가 정상 처리되지 않았습니다. ' },
     };
   } finally {
     await closeConnection();
@@ -88,13 +79,13 @@ export const handler = async (event) => {
 
     return {
       statusCode: 200,
-      body: { message: 'Post uploaded successfully' },
+      body: { message: '게시물 등록 성공' },
     };
   } catch (error) {
     console.error('Error uploading post:', error);
     return {
-      statusCode: 500,
-      body: { message: 'Internal Server Error UPLOAD' },
+      statusCode: 502,
+      body: { message: '데이터가 정상 처리되지 않았습니다.' },
     };
   } finally {
     await closeConnection();

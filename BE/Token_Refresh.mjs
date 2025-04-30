@@ -1,4 +1,4 @@
-import { verifyRefreshToken, createAccessToken, createRefreshToken } from './jwt.mjs';
+import { verifyRefreshToken, createAccessToken, createRefreshToken } from 'jwt';
 
 export const handler = async (event) => {
     if (event.httpMethod === 'OPTIONS') {
@@ -33,7 +33,7 @@ export const handler = async (event) => {
         
     } catch (error) {
         return {
-            statusCode: 500,
+            statusCode: 402,
             body: {
                 message: '토큰 재발행 실패'
             }

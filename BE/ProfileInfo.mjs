@@ -1,5 +1,5 @@
-import { getConnection, closeConnection, executeQuery } from './dbClient.mjs';
-import { verifyAccessToken } from './jwt.mjs';
+import { getConnection, closeConnection, executeQuery } from 'dbclient';
+import { verifyAccessToken } from 'jwt';
 
 export const handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -17,13 +17,12 @@ export const handler = async (event) => {
     };
   }
 
-  const { user_id, target_user_id, post_count } = event.body;
+  const { user_id, target_user_id, startat = 0, post_count = 10 } = event.body;
 
-  // 사용자 유효성 검증
   if (!user_id || !target_user_id || !post_count) {
     return {
       statusCode: 400,
-      body: { message: "아이디와 비밀번호를 입력하세요." },
+      body: { message: "유효하지 않은 요청입니다. " },
     };
   }
 
@@ -39,8 +38,8 @@ export const handler = async (event) => {
     if (ret.length != 1) {
       await closeConnection();
       return {
-        statusCode: 400,
-        body: { message: "유저 정보가 없습니다." },
+        statusCode: 505,
+        body: { message: "사용자를 찾을 수 없습니다." },
       };
     }
 
@@ -54,14 +53,15 @@ export const handler = async (event) => {
       subscribes: ret[0].subscribes
     };
 
-    const normalizePostCount = /^-?\d+$/.test(post_count) ? Number(post_count) : 0;
+    const normalizeStartAt = /^-?\d+$/.test(startat) ? Number(startat) : 0;
+    const normalizePostCount = /^-?\d+$/.test(post_count) ? Number(post_count) : 10;
 
     if (user_id == target_user_id) {
       ret = await executeQuery(
         `SELECT p.id as post_id, m.content_url as img, p.location as loc 
           FROM Post as p, Media as m
           WHERE p.user_id = ? AND m.id = p.thumbnail_media_id 
-          ORDER BY p.id DESC LIMIT ${normalizePostCount}`,
+          ORDER BY p.id DESC LIMIT ${normalizeStartAt},${normalizePostCount}`,
         [target_user_id]);
     } else {
       // 본인 프로필 탐색이 아닐경우 public 게시물만 SELECT
@@ -84,9 +84,8 @@ export const handler = async (event) => {
   } catch (error) {
     await closeConnection();
     return {
-      statusCode: 500,
-      body: { message: 'Internal Server Error'},
-      error : error.message
+      statusCode: 502,
+      body: { message: '데이터가 정상 처리되지 않았습니다. '}
     };
   }
 };
