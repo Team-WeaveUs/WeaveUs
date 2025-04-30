@@ -16,9 +16,7 @@ class Post {
   final int commentCount;
   final String mediaUrl;
   final int weaveType;
-  final int subscribeStatus;
   final bool isLiked; // 좋아요 상태값
-  final bool isSubscribed;
 
 
   Post({
@@ -39,9 +37,7 @@ class Post {
     required this.commentCount,
     required this.mediaUrl,
     required this.weaveType,
-    required this.subscribeStatus,
     required this.isLiked,
-    required this.isSubscribed,
   });
 
   // JSON 변환을 위한 factory constructor
@@ -64,9 +60,7 @@ class Post {
       commentCount: json['comment_count'],
       mediaUrl: json['media_url'],
       weaveType: json['weave_type'],
-      subscribeStatus: json['subscribe_status'] ?? 0,
       isLiked: json['like_status'] == 1,
-      isSubscribed: json['subscribe_status'] == 1,
     );
   }
 
@@ -111,9 +105,7 @@ class Post {
       commentCount: commentCount ?? this.commentCount,
       mediaUrl: mediaUrl ?? this.mediaUrl,
       weaveType: weaveType ?? this.weaveType,
-      subscribeStatus: subscribeStatus ?? this.subscribeStatus,
       isLiked: isLiked ?? this.isLiked,
-      isSubscribed: isSubscribed ?? this.isSubscribed,
     );
   }
   // JSON으로 변환하는 메서드
@@ -139,7 +131,30 @@ class Post {
 
     };
   }
+  factory Post.empty() {
+    return Post(
+      id: 0,
+      userId: 0,
+      privacyId: 0,
+      weaveId: 0,
+      thumbnailMediaId: 0,
+      textContent: '',
+      location: null,
+      areaId: null,
+      likes: 0,
+      createdAt: '',
+      updatedAt: '',
+      weaveTitle: '',
+      nickname: '',
+      userMediaUrl: null,
+      commentCount: 0,
+      mediaUrl: '',
+      weaveType: 0,
+      isLiked: false,
+    );
+  }
 }
+
 
 
 class PostList {
