@@ -13,7 +13,6 @@ class Post {
   final String weaveTitle;
   final String nickname;
   final String? userMediaUrl;
-  final int subValid;
   final int commentCount;
   final String mediaUrl;
   final int weaveType;
@@ -37,7 +36,6 @@ class Post {
     required this.weaveTitle,
     required this.nickname,
     this.userMediaUrl,
-    required this.subValid,
     required this.commentCount,
     required this.mediaUrl,
     required this.weaveType,
@@ -63,7 +61,6 @@ class Post {
       weaveTitle: json['weave_title'],
       nickname: json['nickname'],
       userMediaUrl: json['user_media_url'],
-      subValid: json['sub_valid'],
       commentCount: json['comment_count'],
       mediaUrl: json['media_url'],
       weaveType: json['weave_type'],
@@ -89,7 +86,6 @@ class Post {
     String? weaveTitle,
     String? nickname,
     String? userMediaUrl,
-    int? subValid,
     int? commentCount,
     String? mediaUrl,
     int? weaveType,
@@ -112,7 +108,6 @@ class Post {
       weaveTitle: weaveTitle ?? this.weaveTitle,
       nickname: nickname ?? this.nickname,
       userMediaUrl: userMediaUrl ?? this.userMediaUrl,
-      subValid: subValid ?? this.subValid,
       commentCount: commentCount ?? this.commentCount,
       mediaUrl: mediaUrl ?? this.mediaUrl,
       weaveType: weaveType ?? this.weaveType,
@@ -138,7 +133,6 @@ class Post {
       'weave_title': weaveTitle,
       'nickname': nickname,
       'user_media_url': userMediaUrl,
-      'sub_valid': subValid,
       'comment_count': commentCount,
       'media_url': mediaUrl,
       'weave_type': weaveType,

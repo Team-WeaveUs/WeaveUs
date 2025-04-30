@@ -21,10 +21,12 @@ class HomeController extends GetxController {
   final postListMap = <int, RxList<Post>>{}.obs;
   final nextStartAt = <int>[].obs;
   final subscribedUserIds = <int>{}.obs;
+  final myUId = "".obs;
 
   Future<void> _fetchPostList1() async {
     try {
       final userId = await tokenService.loadUserId();
+      myUId.value = userId.toString();
       final response = await apiService.postRequest('main', {'user_id': userId});
       final postIdList1 = List<int>.from(response['post_id']);
 
@@ -115,15 +117,6 @@ class HomeController extends GetxController {
         'user_id': userId,
         'post_id': post.id,
       });
-
-      final likedCountChange = post.isLiked ? -1 : 1;
-      final isNowLiked = !post.isLiked;
-
-      _updatePostEverywhere(post.userId, post.id,
-        isLiked: isNowLiked,
-        likes: post.likes + likedCountChange,
-      );
-
       print('좋아요 반영 완료');
     } catch (e) {
       print('좋아요 처리 실패: $e');
@@ -135,7 +128,7 @@ class HomeController extends GetxController {
       final myId = await tokenService.loadUserId();
       final isNowSubscribed = !subscribedUserIds.contains(post.userId);
 
-      await apiService.postRequest('user/Subscribe', {
+      await apiService.postRequest('user/subscribe/update', {
         'user_id': myId,
         'target_user_id': post.userId,
       });
@@ -145,31 +138,10 @@ class HomeController extends GetxController {
       } else {
         subscribedUserIds.remove(post.userId);
       }
-
-      _updatePostEverywhere(post.userId, null, isSubscribed: isNowSubscribed);
+      update();
       print('구독 상태 반영 완료');
     } catch (e) {
       print('구독 처리 실패: $e');
     }
-  }
-
-  void _updatePostEverywhere(int userId, int? postId, {
-    bool? isLiked,
-    bool? isSubscribed,
-    int? likes,
-  }) {
-    postListMap.forEach((_, postList) {
-      for (int i = 0; i < postList.length; i++) {
-        final p = postList[i];
-        final match = (postId != null && p.id == postId) || (postId == null && p.userId == userId);
-        if (match) {
-          postList[i] = p.copyWith(
-            isLiked: isLiked ?? p.isLiked,
-            isSubscribed: isSubscribed ?? p.isSubscribed,
-            likes: likes ?? p.likes,
-          );
-        }
-      }
-    });
   }
 }

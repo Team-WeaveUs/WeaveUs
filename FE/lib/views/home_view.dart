@@ -134,15 +134,16 @@ class HomeView extends GetView<HomeController> {
                                             const SizedBox(width: 6),
                                             GestureDetector(
                                               onTap: () => controller.toggleSubscribe(verticalPost),
-                                              child: Container(
+                                              child: (verticalPost.isSubscribed || (verticalPost.userId.toString() == controller.myUId.value))
+                                                  ?Container()
+                                                  :Container(
                                                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                                                 decoration: BoxDecoration(
-                                                  color: verticalPost.isSubscribed ? Colors.grey : const Color(0xFFFF8000),
+                                                  color: const Color(0xFFFF8000),
                                                   borderRadius: BorderRadius.circular(6),
                                                 ),
-                                                child: Text(
-                                                  verticalPost.isSubscribed ? "구독 중" : "구독",
-                                                  style: const TextStyle(
+                                                child: const Text("구독",
+                                                  style: TextStyle(
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.bold,
                                                   ),
