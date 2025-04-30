@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:weave_us/services/api_service.dart';
 import 'package:weave_us/services/token_service.dart';
 import '../models/post_model.dart';
+import '../routes/app_routes.dart';
 
 class HomeController extends GetxController {
   final ApiService apiService;
@@ -12,53 +13,59 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-      _fetchPostList1();
+    _fetchPostList1();
   }
 
-  var postList1 = <Post>[].obs; // 가로 스크롤용 메인 포스트 리스트
-  var currentIndex = 0.obs; // 현재 가로 스크롤 인덱스
-
-  RxMap<int, RxList<Post>> postListMap = <int, RxList<Post>>{}.obs; //post_id 로 list의 첫번째 에는 postList1을 각각 mapping, 두번째 부터는 각 게시물에 해당하는 postList2를 저장할 맵
-  var nextStartAt = <int>[].obs;
-
-
+  final postList1 = <Post>[].obs;
+  final currentIndex = 0.obs;
+  final postListMap = <int, RxList<Post>>{}.obs;
+  final nextStartAt = <int>[].obs;
+  final subscribedUserIds = <int>{}.obs;
 
   Future<void> _fetchPostList1() async {
     try {
-      String userId = await tokenService.loadUserId();
-      var response = await apiService.postRequest('main', {'user_id': userId});
-      List<int> postIdList1 = List<int>.from(response['post_id']);
+      final userId = await tokenService.loadUserId();
+      final response = await apiService.postRequest('main', {'user_id': userId});
+      final postIdList1 = List<int>.from(response['post_id']);
 
       nextStartAt.value = List<int>.filled(postIdList1.length, 0);
-
-      // 2. post/simple 호출하여 postList1 가져오기
-      var postResponse = await apiService.postRequest('Post/Simple', {'post_id': postIdList1});
+      final postResponse = await apiService.postRequest('Post/Simple', {'post_id': postIdList1});
 
       postList1.value = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
 
+      for (var post in postList1) {
+        if (post.isSubscribed) subscribedUserIds.add(post.userId);
+      }
 
       if (postList1.isNotEmpty) {
         _initializePostListMap();
-        fetchPostList2();// 첫 번째 postList1의 weave_id로 postList2 가져오기
+        fetchPostList2();
       }
     } catch (e) {
       print('Error fetching postList1: $e');
     }
   }
 
-  // 4~5. 특정 weave_id로 postList2 가져오기
   Future<void> fetchPostList2() async {
     try {
-      String userId = await tokenService.loadUserId();
-      int weaveId = postList1[currentIndex.value].weaveId;
-      int startAt = nextStartAt[currentIndex.value];
+      final userId = await tokenService.loadUserId();
+      final weaveId = postList1[currentIndex.value].weaveId;
+      final startAt = nextStartAt[currentIndex.value];
 
-      var response = await apiService.postRequest('weave', {'user_id': userId,'weave_id': weaveId, "startat": startAt, "offset": 10});
+      final response = await apiService.postRequest('weave', {
+        'user_id': userId,
+        'weave_id': weaveId,
+        'startat': startAt,
+        'offset': 10
+      });
 
-      List<int> postIdList2 = List<int>.from(response['post_id']);
+      final postIdList2 = List<int>.from(response['post_id']);
+      final postResponse = await apiService.postRequest('Post/Simple', {'post_id': postIdList2});
+      final fetchedPostList2 = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
 
-      var postResponse = await apiService.postRequest('Post/Simple', {'post_id': postIdList2});
-      List<Post> fetchedPostList2 = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
+      for (var post in fetchedPostList2) {
+        if (post.isSubscribed) subscribedUserIds.add(post.userId);
+      }
 
       nextStartAt[currentIndex.value] = response['next_startat'];
       _updatePostListMap(currentIndex.value, fetchedPostList2);
@@ -68,47 +75,101 @@ class HomeController extends GetxController {
     }
   }
 
-  // 가로 스크롤 시 다음 postList1에 맞는 postList2를 불러오기
   Future<void> onHorizontalScroll(int index) async {
     currentIndex.value = index;
     if (postListMap[index]!.length < 2) fetchPostList2();
   }
 
+  Future<void> clickpostList() async {
+    Get.toNamed(AppRoutes.NEW_POST);
+  }
+
   Future<void> onVerticalScroll(int index) async {
-    if (index == nextStartAt[currentIndex.value]) {
-      fetchPostList2();
-    }
+    if (index == nextStartAt[currentIndex.value]) fetchPostList2();
   }
 
   void _initializePostListMap() {
-    postListMap.clear(); // Clear any existing data
+    postListMap.clear();
     for (int index = 0; index < postList1.length; index++) {
-      List<Post> appendList = [];
-      appendList.add(postList1[index]);
-      postListMap[index] = appendList.obs;
+      postListMap[index] = [postList1[index]].obs;
     }
   }
 
   void _updatePostListMap(int index, List<Post> fetchedPostList2) {
-    List<Post> appendPost = [];
-    appendPost.addAll(postListMap[index]!);
-    appendPost.addAll(fetchedPostList2);
-    if (postListMap.isNotEmpty) {
-      postListMap[index] = appendPost.obs;
-    } else {
-      // Handle the case where weaveId is not in postListMap (shouldn't happen in normal flow)
-      print('Warning: Index $index not found in postListMap');
-    }
+    final appendPost = [...postListMap[index]!, ...fetchedPostList2];
+    postListMap[index] = appendPost.obs;
   }
+
   void goToNewWeave() {
     final currentPost = postList1[currentIndex.value];
-    Get.toNamed(
-      '/new_post',
-      arguments: {
-        'weaveId': currentPost.weaveId,
-        'weaveTitle': currentPost.weaveTitle,
-      },
-    );
+    Get.toNamed('/new_post', arguments: {
+      'weaveId': currentPost.weaveId,
+      'weaveTitle': currentPost.weaveTitle,
+    });
+  }
+
+  void toggleLike(Post post) async {
+    try {
+      final userId = await tokenService.loadUserId();
+      await apiService.postRequest('Post/like', {
+        'user_id': userId,
+        'post_id': post.id,
+      });
+
+      final likedCountChange = post.isLiked ? -1 : 1;
+      final isNowLiked = !post.isLiked;
+
+      _updatePostEverywhere(post.userId, post.id,
+        isLiked: isNowLiked,
+        likes: post.likes + likedCountChange,
+      );
+
+      print('좋아요 반영 완료');
+    } catch (e) {
+      print('좋아요 처리 실패: $e');
+    }
+  }
+
+  void toggleSubscribe(Post post) async {
+    try {
+      final myId = await tokenService.loadUserId();
+      final isNowSubscribed = !subscribedUserIds.contains(post.userId);
+
+      await apiService.postRequest('user/Subscribe', {
+        'user_id': myId,
+        'target_user_id': post.userId,
+      });
+
+      if (isNowSubscribed) {
+        subscribedUserIds.add(post.userId);
+      } else {
+        subscribedUserIds.remove(post.userId);
+      }
+
+      _updatePostEverywhere(post.userId, null, isSubscribed: isNowSubscribed);
+      print('구독 상태 반영 완료');
+    } catch (e) {
+      print('구독 처리 실패: $e');
+    }
+  }
+
+  void _updatePostEverywhere(int userId, int? postId, {
+    bool? isLiked,
+    bool? isSubscribed,
+    int? likes,
+  }) {
+    postListMap.forEach((_, postList) {
+      for (int i = 0; i < postList.length; i++) {
+        final p = postList[i];
+        final match = (postId != null && p.id == postId) || (postId == null && p.userId == userId);
+        if (match) {
+          postList[i] = p.copyWith(
+            isLiked: isLiked ?? p.isLiked,
+            isSubscribed: isSubscribed ?? p.isSubscribed,
+            likes: likes ?? p.likes,
+          );
+        }
+      }
+    });
   }
 }
-

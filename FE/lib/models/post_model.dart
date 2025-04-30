@@ -17,6 +17,10 @@ class Post {
   final int commentCount;
   final String mediaUrl;
   final int weaveType;
+  final int subscribeStatus;
+  final bool isLiked; // 좋아요 상태값
+  final bool isSubscribed;
+
 
   Post({
     required this.id,
@@ -37,6 +41,9 @@ class Post {
     required this.commentCount,
     required this.mediaUrl,
     required this.weaveType,
+    required this.subscribeStatus,
+    required this.isLiked,
+    required this.isSubscribed,
   });
 
   // JSON 변환을 위한 factory constructor
@@ -60,9 +67,60 @@ class Post {
       commentCount: json['comment_count'],
       mediaUrl: json['media_url'],
       weaveType: json['weave_type'],
+      subscribeStatus: json['subscribe_status'] ?? 0,
+      isLiked: json['like_status'] == 1,
+      isSubscribed: json['subscribe_status'] == 1,
     );
   }
 
+  // 특정값 변경을 위한 copyWith 메서드
+  Post copyWith({
+    int? id,
+    int? userId,
+    int? privacyId,
+    int? weaveId,
+    int? thumbnailMediaId,
+    String? textContent,
+    String? location,
+    int? areaId,
+    int? likes,
+    String? createdAt,
+    String? updatedAt,
+    String? weaveTitle,
+    String? nickname,
+    String? userMediaUrl,
+    int? subValid,
+    int? commentCount,
+    String? mediaUrl,
+    int? weaveType,
+    int? subscribeStatus,
+    bool? isLiked,
+    bool? isSubscribed,
+  }) {
+    return Post(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      privacyId: privacyId ?? this.privacyId,
+      weaveId: weaveId ?? this.weaveId,
+      thumbnailMediaId: thumbnailMediaId ?? this.thumbnailMediaId,
+      textContent: textContent ?? this.textContent,
+      location: location ?? this.location,
+      areaId: areaId ?? this.areaId,
+      likes: likes ?? this.likes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      weaveTitle: weaveTitle ?? this.weaveTitle,
+      nickname: nickname ?? this.nickname,
+      userMediaUrl: userMediaUrl ?? this.userMediaUrl,
+      subValid: subValid ?? this.subValid,
+      commentCount: commentCount ?? this.commentCount,
+      mediaUrl: mediaUrl ?? this.mediaUrl,
+      weaveType: weaveType ?? this.weaveType,
+      subscribeStatus: subscribeStatus ?? this.subscribeStatus,
+      isLiked: isLiked ?? this.isLiked,
+      isSubscribed: isSubscribed ?? this.isSubscribed,
+    );
+  }
   // JSON으로 변환하는 메서드
   Map<String, dynamic> toJson() {
     return {
@@ -84,9 +142,11 @@ class Post {
       'comment_count': commentCount,
       'media_url': mediaUrl,
       'weave_type': weaveType,
+
     };
   }
 }
+
 
 class PostList {
   final List<Post> posts;
