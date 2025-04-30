@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/comment_controller.dart';
+import '../../controllers/comment_input_controller.dart';
 
-class CommentSectionWidget extends GetView<CommentController> {
+class CommentSectionWidget extends GetView<CommentInputController> {
   final int postId;
 
   const CommentSectionWidget({super.key, required this.postId});

@@ -4,17 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/comment_input_controller.dart';
 
-class CommentInputWidget extends StatelessWidget {
+class CommentInputWidget extends GetView<CommentInputController> {
   final int postId;
 
   const CommentInputWidget({super.key, required this.postId});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CommentInputController(
-      apiService: Get.find(),
-      tokenService: Get.find(),
-    ));
 
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -32,7 +28,7 @@ class CommentInputWidget extends StatelessWidget {
                 : const Icon(Icons.send),
             onPressed: controller.isSubmitting.value
                 ? null
-                : () => controller.submitComment(postId),
+                : () => {controller.submitComment(postId)},
           )),
         ],
       ),

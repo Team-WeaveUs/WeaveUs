@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../controllers/comment_controller.dart';
+import '../controllers/comment_input_controller.dart';
 import '../controllers/post_detail_contoller.dart';
 import '../services/api_service.dart';
 import '../services/token_service.dart';
@@ -13,7 +13,7 @@ class PostDetailBinding extends Bindings {
       apiService: Get.find(),
       tokenService: Get.find(),
     ));
-    Get.lazyPut<CommentController>(() => CommentController(
+    Get.lazyPut<CommentInputController>(() => CommentInputController(
       apiService: Get.find(),
       tokenService: Get.find(),
     ));
