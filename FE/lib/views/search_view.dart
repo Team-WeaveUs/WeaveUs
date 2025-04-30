@@ -51,8 +51,9 @@ class _SearchViewState extends State<SearchView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomSearchBar(
-                  controller: _textSearchController,
+                  textController: _textSearchController,
                   onSearch: _performSearch,
+                  searchController: _viewModel,
                 ),
                 Obx(() =>
                 !_viewModel.isShowMap.value
@@ -68,6 +69,7 @@ class _SearchViewState extends State<SearchView> {
               ],
             ),
           ),
+
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
