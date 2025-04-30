@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:weave_us/bindings/auth_binding.dart';
-import 'package:weave_us/bindings/post_detail_binding.dart';
 import 'package:weave_us/views/owner_login_view.dart';
 import 'package:weave_us/views/splash_view.dart';
 import '../bindings/home_binding.dart';
@@ -10,7 +9,6 @@ import '../bindings/profile_binding.dart';
 import '../bindings/reward_binding.dart';
 import '../bindings/search_binding.dart';
 
-import '../controllers/post_detail_contoller.dart';
 import '../middlewares/auth_middleware.dart';
 
 import '../views/auth_main_view.dart';
@@ -34,11 +32,11 @@ class AppRoutes {
   static const NEW_POST = '/new_post';
   static const REWARDS = '/rewards';
   static const PROFILE = '/profile';
-  static const POST_DETAIL = '/post/:post_id';
   static const AUTH = '/auth';
   static const OWNERS = '/auth/owners';
   static const NEW_USER = '/auth/login/registration';
   static const NEW_OWNER = '/auth/owners/registration';
+  static const POST_DETAIL = '/post/:id';
 
   static final routes = [
     GetPage(name: SPLASH, page: () => SplashScreen(), binding: AuthBinding()),
@@ -68,14 +66,13 @@ class AppRoutes {
       middlewares: [AuthMiddleware()],
       transition: Transition.noTransition,
     ),
-    GetPage(
-      name: AppRoutes.POST_DETAIL,
-      page: () => PostDetailView(),
-      binding: PostDetailBinding(),
-      middlewares: [AuthMiddleware()],
-      transition: Transition.noTransition,
-    ),
-
+    // GetPage(
+    //   name: POST_DETAIL,
+    //   page: () => PostDetailView(),
+    //   binding: AuthBinding(),
+    //   middlewares: [AuthMiddleware()],
+    //   transition: Transition.noTransition,
+    // ),
     GetPage(
       name: NEW_WEAVE,
       page: () => NewWeaveView(),

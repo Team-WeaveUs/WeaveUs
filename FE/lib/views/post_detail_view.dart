@@ -1,46 +1,62 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:weave_us/views/widgets/comment_input_widget.dart';
-import 'package:weave_us/views/widgets/comment_section_widget.dart';
-import '../controllers/post_detail_contoller.dart';
-
-class PostDetailView extends GetView<PostDetailController> {
-  const PostDetailView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('게시물 상세')),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        final post = controller.post.value;
-
-        print('PostDetail 이미지 URL: ${post.mediaUrl}');
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.network(post.mediaUrl, fit: BoxFit.cover),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(
-                  post.textContent, style: const TextStyle(fontSize: 16)),
-            ),
-            const Divider(),
-
-            // 🔻 댓글 표시
-            Expanded(
-              child: CommentSectionWidget(postId: post.id),
-            ),
-
-            // 🔻 댓글 입력창
-            CommentInputWidget(postId: post.id),
-          ],
-        );
-      }),
-    );
-  }
-}
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import '../../controllers/post_detail_controller.dart';
+// import '../../models/post_model.dart';
+//
+// class PostDetailView extends StatelessWidget {
+//   const PostDetailView({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final post = Get.arguments['post'] as Post;
+//     final controller = Get.put(PostDetailController(postId: post.id));
+//
+//     return Scaffold(
+//       appBar: AppBar(title: Text(post.nickname)),
+//       body: Column(
+//         children: [
+//           Expanded(
+//             child: SingleChildScrollView(
+//               padding: const EdgeInsets.all(16),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Image.network(post.mediaUrl),
+//                   const SizedBox(height: 10),
+//                   Text(post.textContent,
+//                       style: const TextStyle(fontSize: 16)),
+//                   const Divider(height: 30),
+//                   const Text('댓글', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+//                   const SizedBox(height: 10),
+//                   Obx(() => Column(
+//                     children: controller.comments.map((comment) => ListTile(
+//                       title: Text(comment.nickname),
+//                       subtitle: Text(comment.content),
+//                     )).toList(),
+//                   ))
+//                 ],
+//               ),
+//             ),
+//           ),
+//           Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+//             child: Row(
+//               children: [
+//                 Expanded(
+//                   child: TextField(
+//                     controller: controller.commentController,
+//                     decoration: const InputDecoration(hintText: '댓글을 입력하세요'),
+//                   ),
+//                 ),
+//                 IconButton(
+//                   icon: const Icon(Icons.send),
+//                   onPressed: controller.submitComment,
+//                 )
+//               ],
+//             ),
+//           )
+//         ],
+//       ),
+//     );
+//   }
+// }

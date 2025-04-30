@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 import 'package:weave_us/views/components/app_nav_bar.dart';
 import '../controllers/home_controller.dart';
 import '../models/post_model.dart';
@@ -159,7 +158,6 @@ class HomeView extends GetView<HomeController> {
                                             Text('${verticalPost.likes}'),
                                             const SizedBox(width: 6),
                                             GestureDetector(
-
                                               onTap: () =>
                                                   controller.toggleSubscribe(
                                                       verticalPost),
@@ -203,20 +201,13 @@ class HomeView extends GetView<HomeController> {
                                             fontFamily: 'Pretendard',
                                           ),
                                         ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            Get.toNamed('/post/${verticalPost.id}',
-                                              arguments: {'postUserId': verticalPost.userId},
-                                            );
-                                          },
-                                          child: Text(
-                                            '${verticalPost.commentCount.toString()}개의 댓글',
-                                            style: const TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.grey,
-                                              fontFamily: 'Pretendard',
-                                            ),
+                                        Text(
+                                          '${verticalPost.commentCount.toString()}개의 댓글',
+                                          style: const TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.grey,
+                                            fontFamily: 'Pretendard',
                                           ),
                                         ),
                                       ],
