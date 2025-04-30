@@ -18,6 +18,8 @@ class PostDetailView extends GetView<PostDetailController> {
 
         final post = controller.post.value;
 
+        print('PostDetail 이미지 URL: ${post.mediaUrl}');
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

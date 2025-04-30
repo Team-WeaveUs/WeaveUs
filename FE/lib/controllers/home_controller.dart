@@ -33,9 +33,7 @@ class HomeController extends GetxController {
 
       postList1.value = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
 
-      for (var post in postList1) {
-        if (post.isSubscribed) subscribedUserIds.add(post.userId);
-      }
+
 
       if (postList1.isNotEmpty) {
         _initializePostListMap();
@@ -63,9 +61,6 @@ class HomeController extends GetxController {
       final postResponse = await apiService.postRequest('Post/Simple', {'post_id': postIdList2});
       final fetchedPostList2 = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
 
-      for (var post in fetchedPostList2) {
-        if (post.isSubscribed) subscribedUserIds.add(post.userId);
-      }
 
       nextStartAt[currentIndex.value] = response['next_startat'];
       _updatePostListMap(currentIndex.value, fetchedPostList2);
@@ -165,7 +160,6 @@ class HomeController extends GetxController {
         if (match) {
           postList[i] = p.copyWith(
             isLiked: isLiked ?? p.isLiked,
-            isSubscribed: isSubscribed ?? p.isSubscribed,
             likes: likes ?? p.likes,
           );
         }

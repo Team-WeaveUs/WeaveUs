@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:weave_us/views/components/app_nav_bar.dart';
 import '../controllers/home_controller.dart';
 import '../models/post_model.dart';
@@ -137,11 +138,10 @@ class HomeView extends GetView<HomeController> {
                                               child: Container(
                                                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                                                 decoration: BoxDecoration(
-                                                  color: verticalPost.isSubscribed ? Colors.grey : const Color(0xFFFF8000),
+                                                  color: Colors.grey,
                                                   borderRadius: BorderRadius.circular(6),
                                                 ),
-                                                child: Text(
-                                                  verticalPost.isSubscribed ? "구독 중" : "구독",
+                                                child: Text( "구독",
                                                   style: const TextStyle(
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.bold,
@@ -162,7 +162,9 @@ class HomeView extends GetView<HomeController> {
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            Get.toNamed('/post/${verticalPost.id}');
+                                            Get.toNamed('/post/${verticalPost.id}',
+                                              arguments: {'postUserId': verticalPost.userId},
+                                            );
                                           },
                                           child: Text(
                                             '${verticalPost.commentCount.toString()}개의 댓글',
