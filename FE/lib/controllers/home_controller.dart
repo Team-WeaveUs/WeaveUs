@@ -138,7 +138,6 @@ class HomeController extends GetxController {
       } else {
         subscribedUserIds.remove(post.userId);
       }
-      update();
       print('구독 상태 반영 완료');
     } catch (e) {
       print('구독 처리 실패: $e');
