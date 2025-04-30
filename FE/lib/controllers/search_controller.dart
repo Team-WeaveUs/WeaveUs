@@ -5,30 +5,38 @@ import '../services/api_service.dart';
 class WeaveSearchController extends GetxController {
   final ApiService _apiService = Get.find<ApiService>();
 
-  // 📌 검색창 텍스트 컨트롤러
   final TextEditingController textController = TextEditingController();
 
-  // 📌 상태값
   final RxList<Map<String, dynamic>> searchResults = <Map<String, dynamic>>[].obs;
   final RxList<String> recentSearches = <String>[].obs;
   final RxBool isNoResults = false.obs;
   final RxBool isShowMap = false.obs;
   final RxBool isMapFolded = false.obs;
+  final RxBool isLoading = false.obs;
+
+  late Worker _debouncer;
 
   @override
   void onInit() {
     super.onInit();
-    print('WeaveSearchController initialized');
+
+    _debouncer = debounce(
+      RxString(''),
+          (_) => search(textController.text),
+      time: const Duration(milliseconds: 500),
+    );
   }
 
   // 📌 검색 실행
   Future<void> search(String query) async {
     if (query.isEmpty) {
-      print("🚨 검색어를 입력하세요!");
+      print("검색어를 입력하세요!");
       return;
     }
 
-    print("🔄 API 호출 시작: $query");
+    isLoading.value = true;
+
+    print("API 호출 시작: $query");
 
     try {
       Map<String, dynamic> response;
@@ -62,6 +70,8 @@ class WeaveSearchController extends GetxController {
       print("❌ 검색 실패: $e");
       searchResults.clear();
       isNoResults.value = true;
+    } finally{
+      isLoading.value = false;
     }
   }
 
