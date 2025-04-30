@@ -14,51 +14,35 @@ class PostDetailController extends GetxController {
   final post = Post
       .empty()
       .obs;
-  final comments = <Comment>[].obs;
+  final RxList<Comment> comments = <Comment>[].obs;
   final commentController = TextEditingController();
   final isLoading = true.obs;
 
   @override
-  void onInit() {
+  onInit() {
+    super.onInit();
     final postId = int.tryParse(Get.parameters['post_id'] ?? '');
     final postUserId = Get.arguments['postUserId'];
 
-    print('📌 받은 post_id: $postId');
-    print('📌 받은 postUserId: $postUserId');
-
     if (postId != null && postUserId != null) {
-      _fetchPost(postId, postUserId);
+      _fetchPost(postId);
     } else {
       print('❌ postId 또는 postUserId 누락');
     }
   }
 
-  Future<void> _fetchPost(int postId, int postUserId) async {
+  Future<void> _fetchPost(int postId) async {
     try {
       isLoading.value = true;
       final userId = await tokenService.loadUserId();
+      final List<int>list = [postId];
 
-      print('📤 요청 보내는 중: user_id=$userId, target_user_id=$postUserId');
-
-      final postRes = await apiService.postRequest('ProfileInfo', {
+      final postResponse = await apiService.postRequest('Post/Simple', {
         'user_id': userId,
-        'target_user_id': postUserId,
+        'post_id': list,
       });
 
-      print('📦 응답: $postRes');
-
-      // ❗ 여기 수정됨: body 안에 post_list가 있는 게 아님!
-      final postList = postRes['post_list'] as List;
-
-      final matchedPost = postList.firstWhere(
-            (p) => p['post_id'] == postId,
-        orElse: () => null,
-      );
-
-      final imageUrl = matchedPost != null ? (matchedPost['img'] ?? '') : '';
-      print('✅ 최종 imageUrl: $imageUrl');
-
-      post.value = post.value.copyWith(id: postId, mediaUrl: imageUrl);
+    post.value = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList()[0];
 
       final commentRes = await apiService.postRequest('comment/get', {
         'user_id': userId,
@@ -74,7 +58,21 @@ class PostDetailController extends GetxController {
       isLoading.value = false;
     }
   }
-
+  Future<void> fetchComments(int postId) async {
+    try {
+      final userId = await tokenService.loadUserId();
+      final res = await apiService.postRequest('comment/get', {
+        'user_id': userId,
+        'post_id': postId,
+      });
+      comments.value = (res['comments'] as List)
+          .map((e) => Comment.fromJson(e))
+          .toList();
+      print('✅ 댓글 가져오기 성공: $res');
+    } catch (e) {
+      print('❌ 댓글 가져오기 실패: $e');
+    }
+  }
 
   Future<void> submitComment(String content) async {
     if (post.value.id == 0 || content.isEmpty) {
@@ -91,7 +89,17 @@ class PostDetailController extends GetxController {
       });
 
       print('✅ 댓글 작성 성공: $res');
+      final cores = res['comment'];
+      // 받은 comment_id를 사용하여 새로운 댓글 생성
+      final newComment = Comment(
+        commentId: cores['comment_id'],   // 서버에서 받은 comment_id
+        nickname: cores['nickname'],  // 실제 앱에서는 사용자 닉네임을 넣어야 함
+        content: cores['content'],
+      );
+
+      comments.add(newComment); // 댓글을 리스트 맨 위에 추가
       commentController.clear();
+      comments.refresh(); // 댓글 목록 UI 업데이트
 
     } catch (e) {
       print('❌ 댓글 작성 실패: $e');
