@@ -160,13 +160,18 @@ class HomeView extends GetView<HomeController> {
                                             fontFamily: 'Pretendard',
                                           ),
                                         ),
-                                        Text(
-                                          '${verticalPost.commentCount.toString()}개의 댓글',
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.grey,
-                                            fontFamily: 'Pretendard',
+                                        GestureDetector(
+                                          onTap: () {
+                                            Get.toNamed('/post/${verticalPost.id}');
+                                          },
+                                          child: Text(
+                                            '${verticalPost.commentCount.toString()}개의 댓글',
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey,
+                                              fontFamily: 'Pretendard',
+                                            ),
                                           ),
                                         ),
                                       ],

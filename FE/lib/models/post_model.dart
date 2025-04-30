@@ -145,7 +145,33 @@ class Post {
 
     };
   }
+  factory Post.empty() {
+    return Post(
+      id: 0,
+      userId: 0,
+      privacyId: 0,
+      weaveId: 0,
+      thumbnailMediaId: 0,
+      textContent: '',
+      location: null,
+      areaId: null,
+      likes: 0,
+      createdAt: '',
+      updatedAt: '',
+      weaveTitle: '',
+      nickname: '',
+      userMediaUrl: null,
+      subValid: 0,
+      commentCount: 0,
+      mediaUrl: '',
+      weaveType: 0,
+      subscribeStatus: 0,
+      isLiked: false,
+      isSubscribed: false,
+    );
+  }
 }
+
 
 
 class PostList {
