@@ -13,13 +13,10 @@ class Post {
   final String weaveTitle;
   final String nickname;
   final String? userMediaUrl;
-  final int subValid;
   final int commentCount;
   final String mediaUrl;
   final int weaveType;
-  final int subscribeStatus;
   final bool isLiked; // 좋아요 상태값
-  final bool isSubscribed;
 
 
   Post({
@@ -37,13 +34,10 @@ class Post {
     required this.weaveTitle,
     required this.nickname,
     this.userMediaUrl,
-    required this.subValid,
     required this.commentCount,
     required this.mediaUrl,
     required this.weaveType,
-    required this.subscribeStatus,
     required this.isLiked,
-    required this.isSubscribed,
   });
 
   // JSON 변환을 위한 factory constructor
@@ -63,13 +57,10 @@ class Post {
       weaveTitle: json['weave_title'],
       nickname: json['nickname'],
       userMediaUrl: json['user_media_url'],
-      subValid: json['sub_valid'],
       commentCount: json['comment_count'],
       mediaUrl: json['media_url'],
       weaveType: json['weave_type'],
-      subscribeStatus: json['subscribe_status'] ?? 0,
       isLiked: json['like_status'] == 1,
-      isSubscribed: json['subscribe_status'] == 1,
     );
   }
 
@@ -89,7 +80,6 @@ class Post {
     String? weaveTitle,
     String? nickname,
     String? userMediaUrl,
-    int? subValid,
     int? commentCount,
     String? mediaUrl,
     int? weaveType,
@@ -112,13 +102,10 @@ class Post {
       weaveTitle: weaveTitle ?? this.weaveTitle,
       nickname: nickname ?? this.nickname,
       userMediaUrl: userMediaUrl ?? this.userMediaUrl,
-      subValid: subValid ?? this.subValid,
       commentCount: commentCount ?? this.commentCount,
       mediaUrl: mediaUrl ?? this.mediaUrl,
       weaveType: weaveType ?? this.weaveType,
-      subscribeStatus: subscribeStatus ?? this.subscribeStatus,
       isLiked: isLiked ?? this.isLiked,
-      isSubscribed: isSubscribed ?? this.isSubscribed,
     );
   }
   // JSON으로 변환하는 메서드
@@ -138,7 +125,6 @@ class Post {
       'weave_title': weaveTitle,
       'nickname': nickname,
       'user_media_url': userMediaUrl,
-      'sub_valid': subValid,
       'comment_count': commentCount,
       'media_url': mediaUrl,
       'weave_type': weaveType,
@@ -161,13 +147,10 @@ class Post {
       weaveTitle: '',
       nickname: '',
       userMediaUrl: null,
-      subValid: 0,
       commentCount: 0,
       mediaUrl: '',
       weaveType: 0,
-      subscribeStatus: 0,
       isLiked: false,
-      isSubscribed: false,
     );
   }
 }
