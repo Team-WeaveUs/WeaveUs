@@ -17,6 +17,7 @@ class Post {
   final String mediaUrl;
   final int weaveType;
   final bool isLiked; // 좋아요 상태값
+  final bool isSubscribed;
 
 
   Post({
@@ -38,6 +39,7 @@ class Post {
     required this.mediaUrl,
     required this.weaveType,
     required this.isLiked,
+    required this.isSubscribed
   });
 
   // JSON 변환을 위한 factory constructor
@@ -61,6 +63,7 @@ class Post {
       mediaUrl: json['media_url'],
       weaveType: json['weave_type'],
       isLiked: json['like_status'] == 1,
+      isSubscribed: json['subscribe_status'] == 1,
     );
   }
 
@@ -106,6 +109,7 @@ class Post {
       mediaUrl: mediaUrl ?? this.mediaUrl,
       weaveType: weaveType ?? this.weaveType,
       isLiked: isLiked ?? this.isLiked,
+      isSubscribed: isSubscribed ?? this.isSubscribed,
     );
   }
   // JSON으로 변환하는 메서드
@@ -128,7 +132,8 @@ class Post {
       'comment_count': commentCount,
       'media_url': mediaUrl,
       'weave_type': weaveType,
-
+      'like_status': isLiked ? 1 : 0,
+      'subscribe_status': isSubscribed ? 1 : 0,
     };
   }
   factory Post.empty() {
@@ -151,6 +156,7 @@ class Post {
       mediaUrl: '',
       weaveType: 0,
       isLiked: false,
+      isSubscribed: false,
     );
   }
 }

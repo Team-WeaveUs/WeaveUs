@@ -19,7 +19,13 @@ class MyPostWidget extends GetView<ProfileController> {
               itemCount: controller.postList.length,
               itemBuilder: (context, index) {
                 final post = controller.postList[index];
-                return Image.network(post.img);
+                return GestureDetector(
+                    onTap: () {
+                  Get.toNamed('/post/${post.postId}',
+                    arguments: {'postUserId': controller.profile.value.userId},
+                  );
+                },
+                child:Image.network(post.img));
               },
             );
       }
