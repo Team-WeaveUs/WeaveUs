@@ -31,6 +31,13 @@ class NewPostController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    // ✅ NewPostView 진입 시 arguments 받기
+    if (Get.arguments != null) {
+      selectedWeaveId.value = Get.arguments['weaveId']?.toString();
+      selectedWeaveText.value = Get.arguments['weaveTitle'] ?? '';
+    }
+
     descriptionController.addListener(() {
       descriptionText.value = descriptionController.text.trim();
     });

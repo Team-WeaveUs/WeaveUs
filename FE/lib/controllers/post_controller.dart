@@ -40,5 +40,4 @@ class PostController extends GetxController {
       print('Error fetching post: $e');
     }
   }
-
 }

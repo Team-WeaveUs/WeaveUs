@@ -59,8 +59,9 @@ class HomeView extends GetView<HomeController> {
                                             : "Weave")
                                       ]),
                                       IconButton(
-                                          onPressed: null,
-                                          icon: Icon(Icons.add_circle_outline))
+                                        onPressed: controller.goToNewWeave,
+                                        icon: Icon(Icons.add_circle_outline),
+                                      )
                                     ])),
                             Expanded(
                                 child: PageView.builder(

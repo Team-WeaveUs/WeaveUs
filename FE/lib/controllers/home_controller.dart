@@ -100,5 +100,15 @@ class HomeController extends GetxController {
       print('Warning: Index $index not found in postListMap');
     }
   }
+  void goToNewWeave() {
+    final currentPost = postList1[currentIndex.value];
+    Get.toNamed(
+      '/new_post',
+      arguments: {
+        'weaveId': currentPost.weaveId,
+        'weaveTitle': currentPost.weaveTitle,
+      },
+    );
+  }
 }
 
