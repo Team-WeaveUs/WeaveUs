@@ -48,6 +48,7 @@ dependencies:
   shared_preferences_web:
   localstorage:
   bcrypt:
+  textfield_tags:
 
 dev_dependencies:
   flutter_test:

@@ -18,6 +18,7 @@ import '../views/common_login_view.dart';
 import '../views/new_post_view.dart';
 import '../views/new_weave_view.dart';
 import '../views/owner_registration_view.dart';
+import '../views/post_detail_view.dart';
 import '../views/profile_view.dart';
 import '../views/reward_view.dart';
 import '../views/search_view.dart';
@@ -35,6 +36,7 @@ class AppRoutes {
   static const OWNERS = '/auth/owners';
   static const NEW_USER = '/auth/login/registration';
   static const NEW_OWNER = '/auth/owners/registration';
+  static const POST_DETAIL = '/post/:id';
 
   static final routes = [
     GetPage(name: SPLASH, page: () => SplashScreen(), binding: AuthBinding()),
@@ -64,6 +66,13 @@ class AppRoutes {
       middlewares: [AuthMiddleware()],
       transition: Transition.noTransition,
     ),
+    // GetPage(
+    //   name: POST_DETAIL,
+    //   page: () => PostDetailView(),
+    //   binding: AuthBinding(),
+    //   middlewares: [AuthMiddleware()],
+    //   transition: Transition.noTransition,
+    // ),
     GetPage(
       name: NEW_WEAVE,
       page: () => NewWeaveView(),

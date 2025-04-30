@@ -9,26 +9,7 @@ class PostController extends GetxController {
   final TokenService tokenService;
   PostController({required this.apiService, required this.tokenService});
 
-  final post = Post(
-    id: 0,
-    userId: 0,
-    privacyId: 0,
-    weaveId: 0,
-    thumbnailMediaId: 0,
-    textContent: '',
-    location: '',
-    areaId: 0,
-    likes: 0,
-    createdAt: '',
-    updatedAt: '',
-    weaveTitle: '',
-    nickname: '',
-    userMediaUrl: '',
-    subValid: 0,
-    commentCount: 0,
-    mediaUrl: '',
-    weaveType: 0,
-  ).obs;
+  final post = Rx<Post?>(null);
 
   Future<void> fetchPost(int postId) async {
     try {
@@ -40,5 +21,4 @@ class PostController extends GetxController {
       print('Error fetching post: $e');
     }
   }
-
 }

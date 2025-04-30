@@ -5,6 +5,8 @@ import 'package:weave_us/views/widgets/new_post_widgets/post_content.input.dart'
 import 'package:weave_us/views/widgets/new_post_widgets/post_tag.input.dart';
 import 'package:weave_us/views/widgets/new_post_widgets/weave_selector_widget.dart';
 import '../controllers/new_post_controller.dart';
+import '../controllers/weave_dialog_controller.dart';
+import '../services/api_service.dart';
 import '../views/components/app_nav_bar.dart';
 import 'widgets/new_post_widgets/weave_select_dialog.dart';
 
@@ -27,6 +29,14 @@ class NewPostView extends GetView<NewPostController> {
             Obx(() => WeaveSelector(
               selectedWeave: controller.selectedWeaveText.value,
               onWeaveSelected: () {
+                if (!Get.isRegistered<ApiService>()) {
+                  Get.put(ApiService());
+                }
+
+                if (!Get.isRegistered<WeaveDialogController>()) {
+                  Get.put(WeaveDialogController(apiService: Get.find<ApiService>()));
+                }
+
                 Get.dialog(
                   WeaveDialog(
                     onWeaveSelected: (selected) {
@@ -82,6 +92,7 @@ class NewPostView extends GetView<NewPostController> {
                 ),
               );
             }),
+
             Divider(color: Colors.grey[850], thickness: 1),
 
             // 이미지 설명 부분
@@ -90,7 +101,7 @@ class NewPostView extends GetView<NewPostController> {
             Divider(color: Colors.grey[850], thickness: 1),
 
             // 태그 입력 부분
-            PostTagInput(controller: controller.tagsController),
+            PostTagInput(controller: controller.tagController),
 
             Padding(
               padding: const EdgeInsets.all(20),
@@ -98,7 +109,7 @@ class NewPostView extends GetView<NewPostController> {
                 width: double.infinity, // 가로 전체 채움
                 child: ElevatedButton(
                   onPressed: controller.images.isNotEmpty &&
-                      controller.descriptionText.value.isNotEmpty && // ✅ 여기를 이걸로!
+                      controller.descriptionText.value.isNotEmpty &&
                       controller.selectedWeaveId.value != null
                       ? controller.sharePost
                       : null,
