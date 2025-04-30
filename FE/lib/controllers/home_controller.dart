@@ -145,10 +145,20 @@ class HomeController extends GetxController {
         'target_user_id': post.userId,
       });
 
+      final index = postListMap[currentIndex.value]!
+          .indexWhere((p) => p.id == post.id);
+
       if (isNowSubscribed) {
         subscribedUserIds.add(post.userId);
+        final updatedPost = post.copyWith(isSubscribed: true);
+        postListMap[currentIndex.value]![index] = updatedPost;
+        postListMap.refresh();
+
       } else {
         subscribedUserIds.remove(post.userId);
+        final updatedPost = post.copyWith(isSubscribed: false);
+        postListMap[currentIndex.value]![index] = updatedPost;
+        postListMap.refresh();
       }
       print('구독 상태 반영 완료');
     } catch (e) {
