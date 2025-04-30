@@ -14,7 +14,5 @@ class PostBinding extends Bindings {
       apiService: Get.find(),
       tokenService: Get.find(),
     ));
-
   }
-
 }
