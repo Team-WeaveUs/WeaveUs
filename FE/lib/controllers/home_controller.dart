@@ -21,12 +21,12 @@ class HomeController extends GetxController {
   final postListMap = <int, RxList<Post>>{}.obs;
   final nextStartAt = <int>[].obs;
   final subscribedUserIds = <int>{}.obs;
-  final myUId = "".obs;
+  final myUId = ''.obs;
 
   Future<void> _fetchPostList1() async {
     try {
       final userId = await tokenService.loadUserId();
-      myUId.value = userId.toString();
+      myUId.value = userId;
       final response = await apiService.postRequest('main', {'user_id': userId});
       final postIdList1 = List<int>.from(response['post_id']);
 
@@ -66,7 +66,9 @@ class HomeController extends GetxController {
       final fetchedPostList2 = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
 
       for (var post in fetchedPostList2) {
-        if (post.isSubscribed) subscribedUserIds.add(post.userId);
+        if (post.isSubscribed) {
+          subscribedUserIds.add(post.userId);
+        }
       }
 
       nextStartAt[currentIndex.value] = response['next_startat'];
@@ -117,6 +119,16 @@ class HomeController extends GetxController {
         'user_id': userId,
         'post_id': post.id,
       });
+
+      final index = postListMap[currentIndex.value]!
+          .indexWhere((p) => p.id == post.id);
+
+      if (index != -1) {
+        final updatedPost = post.copyWith(isLiked: !post.isLiked, likes: post.isLiked ? post.likes - 1 : post.likes + 1);
+        postListMap[currentIndex.value]![index] = updatedPost;
+        postListMap.refresh();
+      }
+
       print('좋아요 반영 완료');
     } catch (e) {
       print('좋아요 처리 실패: $e');
