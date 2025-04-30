@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:bcrypt/bcrypt.dart';
 import '../models/token_model.dart';
 import '../routes/app_routes.dart';
 import '../services/auth_service.dart';
@@ -65,6 +66,8 @@ class AuthController extends GetxController {
     }
 
     final success = await _authService.login(email, password);
+    print(password);
+    print(BCrypt.hashpw(password, BCrypt.gensalt()));
 
     if (success) {
       await _tokenService.loadToken();

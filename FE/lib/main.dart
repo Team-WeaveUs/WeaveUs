@@ -10,6 +10,7 @@ void main() {
   Get.put(AuthController(), permanent: true);
   Get.put(TokenService(), permanent: true);
   Get.put(ApiService(), permanent: true);
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
