@@ -18,7 +18,6 @@ class TokenService extends GetxService {
   Future<void> saveToken(String accessToken, String refreshToken, String userId) async {
     if (kIsWeb) {
       final prefs = await SharedPreferences.getInstance();
-      print("saveToken");
       prefs.setString(_accessTokenKey, accessToken);
       prefs.setString(_refreshTokenKey, refreshToken);
       prefs.setString(_userId, userId);
@@ -38,7 +37,6 @@ class TokenService extends GetxService {
 
     if (kIsWeb) {
       final prefs = await SharedPreferences.getInstance();
-      print("getToken");
       accessToken = prefs.getString(_accessTokenKey);
       refreshToken = prefs.getString(_refreshTokenKey);
       userId = prefs.getString(_userId);

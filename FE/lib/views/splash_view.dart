@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (isValid) {
       Get.offAllNamed(AppRoutes.HOME); // 자동 로그인 성공 시 메인 페이지로 이동
     } else {
-      Get.offAllNamed(AppRoutes.LOGIN); // 로그인 필요 시 로그인 페이지로 이동
+      Get.offAllNamed(AppRoutes.AUTH); // 로그인 필요 시 로그인 페이지로 이동
     }
   }
 
