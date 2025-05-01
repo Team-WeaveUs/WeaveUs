@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
+import 'package:weave_us/routes/app_routes.dart';
 
 import '../models/subscribe_data_model.dart';
+import '../models/weave_data_model.dart';
 import '../services/api_service.dart';
 import '../services/token_service.dart';
 
@@ -30,28 +32,45 @@ class ProfileController extends GetxController {
     data: [],
   ).obs;
 
+  final weaveData = WeaveData(
+    message: '',
+    data: [],
+  ).obs;
+  final myWeaveData = MyWeaveData(
+    message: '',
+    data: [],
+  ).obs;
+
   final toggleButton = false.obs;
 
   final postList = <ProfilePostList>[].obs;
   final iSubscribeList = <SubscribeDataList>[].obs;
   final mySubscribeList = <SubscribeDataList>[].obs;
+  final weaveList = <WeaveDataList>[].obs;
+  final myWeaveList = <WeaveDataList>[].obs;
 
 
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
+
+    int? parsedUserId = int.tryParse(Get.parameters['user_id'] ?? '');
+    final targetId = parsedUserId?.toString() ?? await tokenService.loadUserId();
+
     Future.microtask(() {
-      _fetchMyProfile();
+      _fetchProfile(targetId);
       fetchMySubscriber();
       fetchISubscribe();
+      fetchWeaveList(targetId);
+      fetchMyWeaveList();
     });
   }
 
-  Future<void> _fetchMyProfile() async {
+  Future<void> _fetchProfile(String? targetUserId) async {
     try {
       String userId = await tokenService.loadUserId();
-      var response = await apiService.postRequest('ProfileInfo', {'target_user_id': userId, 'user_id': userId, 'post_count':20});
+      var response = await apiService.postRequest('ProfileInfo', {'target_user_id': targetUserId, 'user_id': userId, 'post_count':20});
       final Profile fetchedProfile = Profile.fromJson(response);
       profile.value = fetchedProfile;
       postList.value = fetchedProfile.postList;
@@ -83,18 +102,35 @@ class ProfileController extends GetxController {
       print('Error fetching profile: $e');
     }
   }
-
-  Future<void> fetchProfile(int targetUserId) async {
+  Future<void> fetchWeaveList(String targetUserId) async {
     try {
       String userId = await tokenService.loadUserId();
-      var response = await apiService.postRequest('ProfileInfo', {'target_user_id': targetUserId, 'user_id': userId, 'post_count':20});
-      final Profile fetchedProfile = Profile.fromJson(response);
-      profile.value = fetchedProfile;
-    } catch (e) {
+      var response = await apiService.postRequest('weave/get/user', {'target_user_id': targetUserId, 'user_id': userId});
+      final WeaveData fetchedWeave = WeaveData.fromJson(response);
+      weaveData.value = fetchedWeave;
+      weaveList.value = fetchedWeave.data;
+
+
+    }catch (e) {
       print('Error fetching profile: $e');
     }
   }
+  Future<void> fetchMyWeaveList() async {
+    try {
+      String userId = await tokenService.loadUserId();
+      var response = await apiService.postRequest('weave/get/user-post', {'user_id': userId});
+      final MyWeaveData fetchedWeave = MyWeaveData.fromJson(response);
+      myWeaveData.value = fetchedWeave;
+      myWeaveList.value = fetchedWeave.data;
+    } catch (e) {
+      print('Error fetching myweavelisg: $e');
+    }
+  }
+
   void toggleTabs() {
     isToggled.value = !isToggled.value;
+  }
+  void goToNewWeave(int weaveId, String weaveTitle) {
+    Get.toNamed(AppRoutes.NEW_POST, arguments: {'weaveId': weaveId, 'weaveTitle': weaveTitle});
   }
 }

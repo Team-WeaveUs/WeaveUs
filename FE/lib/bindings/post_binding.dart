@@ -1,8 +1,6 @@
 import 'package:get/get.dart';
-
 import '../services/api_service.dart';
 import '../services/token_service.dart';
-
 import '../controllers/post_controller.dart';
 
 class PostBinding extends Bindings {

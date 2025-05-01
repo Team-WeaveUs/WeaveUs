@@ -35,9 +35,7 @@ class HomeController extends GetxController {
 
       postList1.value = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
 
-      for (var post in postList1) {
-        if (post.isSubscribed) subscribedUserIds.add(post.userId);
-      }
+
 
       if (postList1.isNotEmpty) {
         _initializePostListMap();
@@ -52,6 +50,7 @@ class HomeController extends GetxController {
     try {
       final userId = await tokenService.loadUserId();
       final weaveId = postList1[currentIndex.value].weaveId;
+      final postId = postList1[currentIndex.value].id;
       final startAt = nextStartAt[currentIndex.value];
 
       final response = await apiService.postRequest('weave', {
@@ -61,9 +60,12 @@ class HomeController extends GetxController {
         'offset': 10
       });
 
-      final postIdList2 = List<int>.from(response['post_id']);
+      var postIdList2 = List<int>.from(response['post_id']);
+      postIdList2.remove(postId);
+
       final postResponse = await apiService.postRequest('Post/Simple', {'post_id': postIdList2});
       final fetchedPostList2 = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList();
+
 
       for (var post in fetchedPostList2) {
         if (post.isSubscribed) {

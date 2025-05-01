@@ -158,6 +158,7 @@ class HomeView extends GetView<HomeController> {
                                             Text('${verticalPost.likes}'),
                                             const SizedBox(width: 6),
                                             GestureDetector(
+
                                               onTap: () =>
                                                   controller.toggleSubscribe(
                                                       verticalPost),
@@ -201,13 +202,20 @@ class HomeView extends GetView<HomeController> {
                                             fontFamily: 'Pretendard',
                                           ),
                                         ),
-                                        Text(
-                                          '${verticalPost.commentCount.toString()}개의 댓글',
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.grey,
-                                            fontFamily: 'Pretendard',
+                                        GestureDetector(
+                                          onTap: () {
+                                            Get.toNamed('/post/${verticalPost.id}',
+                                              arguments: {'postUserId': verticalPost.userId},
+                                            );
+                                          },
+                                          child: Text(
+                                            '${verticalPost.commentCount.toString()}개의 댓글',
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey,
+                                              fontFamily: 'Pretendard',
+                                            ),
                                           ),
                                         ),
                                       ],

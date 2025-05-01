@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/search_controller.dart';
-import '../../../models/post_model.dart';
 
 class SearchResultList extends StatelessWidget {
   const SearchResultList({super.key});
@@ -31,44 +30,66 @@ class SearchResultList extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         children: [
           if (results.isEmpty) ...[
-            const Text(
-              "@를 붙여서 친구를 검색할 수 있습니다.",
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF868583),
-                fontFamily: 'Pretendard',
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "@를 붙여서 친구를 검색할 수 있습니다.",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF868583),
+                    fontFamily: 'Pretendard',
+                  ),
+                ),
+              ],
             ),
           ],
           if (results.isNotEmpty) ...[
-            const Text(
-              "검색 결과",
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF000000),
-                fontFamily: 'Pretendard',
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "검색 결과",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF000000),
+                    fontFamily: 'Pretendard',
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             ...results.map((result) {
-              final String? title = result['title'] ?? result['nickname'];
-              final String? subtitle = result['description'] ?? result['email'];
-              final bool isSubscribed = result['isSubscribed'] ?? false;
+              final title = result['nickname'] ?? '제목 없음';
+              final isSubscribed = result['subscribe_status'] == 1 ? true : false;
 
               return ListTile(
-                title: Text(
-                  (title != null && title.isNotEmpty) ? title : '제목 없음',
+                leading: result['media_url'] == null
+                ? const CircleAvatar(
+                  radius: 20,
+                    backgroundColor: Colors.grey,
+                    child: Icon(
+                    Icons.person,
+                    color: Colors.white,)
+                )
+                : CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(
+                    result['mediaUrl'],
+                  )
                 ),
-                subtitle: Text(
-                  (subtitle != null && subtitle.isNotEmpty) ? subtitle : '',
-                ),
-                trailing: controller.isUserSearch.value
-                    ? GestureDetector(
+                title: GestureDetector(
                   onTap: () {
-                    final post = Post.fromJson(result);
-                    controller.toggleSubscribe(post);
+                    Get.toNamed('/profile/${result['user_id']}');
+                  },
+                  child:Text(title),
+
+                ),
+                trailing: GestureDetector(
+                  onTap: () {
+                    controller.toggleSubscribe(result['user_id']);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -84,12 +105,11 @@ class SearchResultList extends StatelessWidget {
                       ),
                     ),
                   ),
-                )
-                    : null,
+                ),
               );
             }).toList(),
             const SizedBox(height: 80),
-          ]
+          ],
         ],
       );
     });

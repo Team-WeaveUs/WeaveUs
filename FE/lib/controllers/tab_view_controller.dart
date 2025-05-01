@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:weave_us/views/widgets/profile_view/my_post_widget.dart';
 import 'package:weave_us/views/widgets/profile_view/my_subscriber_widget.dart';
+import 'package:weave_us/views/widgets/profile_view/my_weave_widget.dart';
 import '../views/widgets/profile_view/i_subscribe_widget.dart';
+import '../views/widgets/profile_view/posted_weave_widget.dart';
 import 'profile_controller.dart';
 
 class TabViewController extends GetxController with GetTickerProviderStateMixin{
@@ -52,8 +54,8 @@ class TabViewController extends GetxController with GetTickerProviderStateMixin{
       ];
       tabViews = [
         Center(child: MyPostWidget()),
-        Center(child: Text('위브 리스트')),
-        Center(child: Text('내 위브 리스트')),
+        Center(child: MyWeaveWidget()),
+        Center(child: PostedWeaveWidget()),
       ];
     }
   }
