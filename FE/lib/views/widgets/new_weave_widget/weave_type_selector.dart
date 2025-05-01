@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import '../../../controllers/friend_invite_dialog_controller.dart';
-import '../../../models/friend_invite_model.dart';
 import '../../../models/weave_type_model.dart';
 import 'friend_invite.dialog.dart';
 
@@ -17,7 +16,7 @@ class WeaveTypeSelector extends StatefulWidget {
 }
 
 class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
-  final List<String> weaveTypes = ['Weave', '내 Weave', 'Global', 'Private'];
+  final List<String> weaveTypes = ['Global', 'Join', 'Local'];
   final List<String> openRanges = ['모두 공개', '초대한 사용자', '나만 보기'];
 
   late final FriendInviteDialogController inviteController;
@@ -131,7 +130,7 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
           ),
         ),
 
-        if (selectedWeave == '내 Weave') ...[
+        if (selectedWeave == 'Local') ...[
           Divider(color: Colors.grey[850], thickness: 1),
 
           // 공개 범위
