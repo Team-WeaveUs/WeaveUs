@@ -3,9 +3,11 @@ import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/routes/app_routes.dart';
 
-class BottomNavigation extends StatelessWidget {
-  const BottomNavigation({super.key});
+import '../../services/token_service.dart';
 
+class BottomNavigation extends StatelessWidget {
+  BottomNavigation({super.key});
+  var tokenService = TokenService();
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(

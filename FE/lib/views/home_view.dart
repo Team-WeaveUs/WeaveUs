@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 import 'package:weave_us/views/components/app_nav_bar.dart';
 import '../controllers/home_controller.dart';
 import '../models/post_model.dart';
@@ -31,7 +30,8 @@ class HomeView extends GetView<HomeController> {
                   List<Post> currentPostList = controller.postListMap[index]!;
 
                   return Container(
-                    padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                    padding:
+                        const EdgeInsets.only(top: 10, left: 10, right: 10),
                     child: Column(
                       children: [
                         Container(
@@ -62,7 +62,9 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                   ),
                                   Text(
-                                    controller.postList1[index].weaveId == 1 ? "else weave" : "Weave",
+                                    controller.postList1[index].weaveId == 1
+                                        ? "else weave"
+                                        : "Weave",
                                     style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w500,
@@ -106,17 +108,38 @@ class HomeView extends GetView<HomeController> {
                                       ),
                                       color: Colors.white,
                                       border: Border(
-                                        left: BorderSide(color: Colors.black, width: 1),
-                                        right: BorderSide(color: Colors.black, width: 1),
-                                        bottom: BorderSide(color: Colors.black, width: 1),
+                                        left: BorderSide(
+                                            color: Colors.black, width: 1),
+                                        right: BorderSide(
+                                            color: Colors.black, width: 1),
+                                        bottom: BorderSide(
+                                            color: Colors.black, width: 1),
                                       ),
                                     ),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
-                                            Text(verticalPost.userMediaUrl ?? ""),
+                                            verticalPost.userMediaUrl == ""
+                                                ? CircleAvatar(
+                                                    radius: 15,
+                                                    backgroundImage:
+                                                        NetworkImage(verticalPost
+                                                                .userMediaUrl ??
+                                                            ""),
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                  )
+                                                : const CircleAvatar(
+                                                    radius: 15,
+                                                    backgroundColor:
+                                                        Colors.grey,
+                                                    child: Icon(Icons.person, color: Colors.white,),
+                                                  ),
+                                            Text(verticalPost.userMediaUrl ??
+                                                ""),
                                             const SizedBox(width: 6),
                                             Text(verticalPost.nickname),
                                             const SizedBox(width: 6),
@@ -129,25 +152,44 @@ class HomeView extends GetView<HomeController> {
                                                     ? const Color(0xFFFF8000)
                                                     : Colors.grey,
                                               ),
-                                              onPressed: () => controller.toggleLike(verticalPost),
+                                              onPressed: () => controller
+                                                  .toggleLike(verticalPost),
                                             ),
                                             Text('${verticalPost.likes}'),
                                             const SizedBox(width: 6),
                                             GestureDetector(
-                                              onTap: () => controller.toggleSubscribe(verticalPost),
-                                              child: Container(
-                                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey,
-                                                  borderRadius: BorderRadius.circular(6),
-                                                ),
-                                                child: Text( "구독",
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
+
+                                              onTap: () =>
+                                                  controller.toggleSubscribe(
+                                                      verticalPost),
+                                              child: (verticalPost
+                                                          .isSubscribed ||
+                                                      (verticalPost.userId
+                                                              .toString() ==
+                                                          controller
+                                                              .myUId.value))
+                                                  ? Container()
+                                                  : Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 16,
+                                                          vertical: 6),
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(
+                                                            0xFFFF8000),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                      ),
+                                                      child: const Text(
+                                                        "구독",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
                                             ),
                                           ],
                                         ),
@@ -169,7 +211,7 @@ class HomeView extends GetView<HomeController> {
                                           child: Text(
                                             '${verticalPost.commentCount.toString()}개의 댓글',
                                             style: const TextStyle(
-                                              fontSize: 10,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.w500,
                                               color: Colors.grey,
                                               fontFamily: 'Pretendard',

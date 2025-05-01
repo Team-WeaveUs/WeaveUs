@@ -30,9 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_dotenv: ^5.1.0
   dropdown_button2: ^2.3.9
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -43,13 +41,13 @@ dependencies:
   file_picker: ^8.0.0
   google_maps_flutter: ^2.5.0
   video_player: ^2.8.2
-  dio: ^5.8.0+1
   flutter_secure_storage: ^9.2.4
-  cookie_jar: ^4.0.8
   get: ^4.7.2
   hugeicons:
-  js:
-  jwt_decoder:
+  shared_preferences: ^2.5.3
+  shared_preferences_web:
+  localstorage:
+  bcrypt:
   textfield_tags:
 
 dev_dependencies:
