@@ -120,7 +120,6 @@ class ProfileController extends GetxController {
       String userId = await tokenService.loadUserId();
       var response = await apiService.postRequest('weave/get/user-post', {'user_id': userId});
       final MyWeaveData fetchedWeave = MyWeaveData.fromJson(response);
-      print(fetchedWeave.data);
       myWeaveData.value = fetchedWeave;
       myWeaveList.value = fetchedWeave.data;
     } catch (e) {

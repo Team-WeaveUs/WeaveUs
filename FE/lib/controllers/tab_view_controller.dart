@@ -54,8 +54,8 @@ class TabViewController extends GetxController with GetTickerProviderStateMixin{
       ];
       tabViews = [
         Center(child: MyPostWidget()),
-        Center(child: PostedWeaveWidget()),
         Center(child: MyWeaveWidget()),
+        Center(child: PostedWeaveWidget()),
       ];
     }
   }
