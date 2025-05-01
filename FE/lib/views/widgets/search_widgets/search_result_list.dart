@@ -62,15 +62,35 @@ class SearchResultList extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             ...results.map((result) {
-              final title = result['title'] ?? result['nickname'] ?? '제목 없음';
-              final subtitle = result['description'] ?? result['email'] ?? '';
-              final isSubscribed = result['isSubscribed'] ?? false;
+              final title = result['nickname'] ?? '제목 없음';
+              final isSubscribed = result['subscribe_status'] == 1 ? true : false;
 
               return ListTile(
-                title: Text(title),
-                subtitle: Text(subtitle),
+                leading: result['media_url'] == null
+                ? const CircleAvatar(
+                  radius: 20,
+                    backgroundColor: Colors.grey,
+                    child: Icon(
+                    Icons.person,
+                    color: Colors.white,)
+                )
+                : CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(
+                    result['mediaUrl'],
+                  )
+                ),
+                title: GestureDetector(
+                  onTap: () {
+                    Get.toNamed('/profile/${result['user_id']}');
+                  },
+                  child:Text(title),
+
+                ),
                 trailing: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    controller.toggleSubscribe(result['user_id']);
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                     decoration: BoxDecoration(

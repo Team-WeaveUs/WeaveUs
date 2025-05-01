@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:weave_us/services/token_service.dart';
 import '../services/api_service.dart';
 
 class WeaveSearchController extends GetxController {
   final ApiService _apiService = Get.find<ApiService>();
+  final TokenService _tokenService = Get.find<TokenService>();
 
   final TextEditingController textController = TextEditingController();
 
@@ -35,8 +37,6 @@ class WeaveSearchController extends GetxController {
     }
 
     isLoading.value = true;
-
-    print("API 호출 시작: $query");
 
     try {
       Map<String, dynamic> response;
@@ -88,6 +88,25 @@ class WeaveSearchController extends GetxController {
   // 📌 최근 검색 초기화
   void clearRecentSearches() {
     recentSearches.clear();
+  }
+  void toggleSubscribe(int targetUserId) async {
+    try {
+      final userId = await _tokenService.loadUserId();
+      await _apiService.postRequest('user/subscribe/update', {
+        'user_id': userId,
+        'target_user_id': targetUserId,
+      });
+
+      // 상태 반전 (0 -> 1, 1 -> 0)
+      final index = searchResults.indexWhere((result) => result['user_id'] == targetUserId);
+      if (index != -1) {
+        final currentStatus = searchResults[index]['subscribe_status'] ?? 0;
+        searchResults[index]['subscribe_status'] = currentStatus == 1 ? 0 : 1;
+        searchResults.refresh();
+      }
+    } catch (e) {
+      print('구독 처리 실패: $e');
+    }
   }
 
   // 📌 지도 상태 토글

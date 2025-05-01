@@ -1,4 +1,4 @@
-class SubscribeData {
+  class SubscribeData {
   final String message;
   final List<SubscribeDataList> data;
 

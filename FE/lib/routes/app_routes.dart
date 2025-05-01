@@ -10,7 +10,6 @@ import '../bindings/profile_binding.dart';
 import '../bindings/reward_binding.dart';
 import '../bindings/search_binding.dart';
 
-import '../controllers/post_detail_contoller.dart';
 import '../middlewares/auth_middleware.dart';
 
 import '../views/auth_main_view.dart';
@@ -33,7 +32,7 @@ class AppRoutes {
   static const NEW_WEAVE = '/new_weave';
   static const NEW_POST = '/new_post';
   static const REWARDS = '/rewards';
-  static const PROFILE = '/profile';
+  static const PROFILE = '/profile/:user_id';
   static const POST_DETAIL = '/post/:post_id';
   static const AUTH = '/auth';
   static const OWNERS = '/auth/owners';
