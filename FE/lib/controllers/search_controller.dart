@@ -1,34 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:weave_us/services/token_service.dart';
 import '../services/api_service.dart';
 
 class WeaveSearchController extends GetxController {
   final ApiService _apiService = Get.find<ApiService>();
+  final TokenService _tokenService = Get.find<TokenService>();
 
-  // 📌 검색창 텍스트 컨트롤러
   final TextEditingController textController = TextEditingController();
 
-  // 📌 상태값
   final RxList<Map<String, dynamic>> searchResults = <Map<String, dynamic>>[].obs;
   final RxList<String> recentSearches = <String>[].obs;
   final RxBool isNoResults = false.obs;
   final RxBool isShowMap = false.obs;
   final RxBool isMapFolded = false.obs;
+  final RxBool isLoading = false.obs;
+
+  late Worker _debouncer;
 
   @override
   void onInit() {
     super.onInit();
-    print('WeaveSearchController initialized');
+
+    _debouncer = debounce(
+      RxString(''),
+          (_) => search(textController.text),
+      time: const Duration(milliseconds: 500),
+    );
   }
 
   // 📌 검색 실행
   Future<void> search(String query) async {
     if (query.isEmpty) {
-      print("🚨 검색어를 입력하세요!");
+      print("검색어를 입력하세요!");
       return;
     }
 
-    print("🔄 API 호출 시작: $query");
+    isLoading.value = true;
 
     try {
       Map<String, dynamic> response;
@@ -62,6 +70,8 @@ class WeaveSearchController extends GetxController {
       print("❌ 검색 실패: $e");
       searchResults.clear();
       isNoResults.value = true;
+    } finally{
+      isLoading.value = false;
     }
   }
 
@@ -78,6 +88,25 @@ class WeaveSearchController extends GetxController {
   // 📌 최근 검색 초기화
   void clearRecentSearches() {
     recentSearches.clear();
+  }
+  void toggleSubscribe(int targetUserId) async {
+    try {
+      final userId = await _tokenService.loadUserId();
+      await _apiService.postRequest('user/subscribe/update', {
+        'user_id': userId,
+        'target_user_id': targetUserId,
+      });
+
+      // 상태 반전 (0 -> 1, 1 -> 0)
+      final index = searchResults.indexWhere((result) => result['user_id'] == targetUserId);
+      if (index != -1) {
+        final currentStatus = searchResults[index]['subscribe_status'] ?? 0;
+        searchResults[index]['subscribe_status'] = currentStatus == 1 ? 0 : 1;
+        searchResults.refresh();
+      }
+    } catch (e) {
+      print('구독 처리 실패: $e');
+    }
   }
 
   // 📌 지도 상태 토글

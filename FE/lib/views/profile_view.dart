@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/controllers/profile_controller.dart';
-import 'package:weave_us/views/widgets/profile_view/my_post_widget.dart';
 
 import '../controllers/tab_view_controller.dart';
 import 'components/app_nav_bar.dart';
@@ -53,7 +52,7 @@ class ProfileView extends GetView<ProfileController> {
                           color: Colors.black, size: 20),
                       const SizedBox(width: 5),
                       Text(
-                        controller.profile.value.likes.toString(),
+                        controller.profile.value.subscribes.toString(),
                         style: const TextStyle(
                           fontSize: 20,
                           color: Colors.black,
@@ -62,10 +61,10 @@ class ProfileView extends GetView<ProfileController> {
                     ],
                   ),
                   Row(children: [
-                    const Icon(HugeIcons.strokeRoundedHeartAdd,
-                        color: Colors.black, size: 20),
+                    const Icon(Icons.favorite,
+                        color: Colors.orange, size: 20),
                     const SizedBox(width: 5),
-                    Text(controller.profile.value.subscribes.toString(),
+                    Text(controller.profile.value.likes.toString(),
                         style: const TextStyle(
                           fontSize: 20,
                           color: Colors.black,

@@ -7,8 +7,28 @@ class MyWeaveWidget extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      return const Placeholder();
-    });
+    return Obx(
+          () {
+        if (controller.profile.value.nickname == '') {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return ListView.builder(
+            itemCount: controller.myWeaveList.length,
+            itemBuilder: (context, index) {
+              final weave = controller.myWeaveList[index];
+              return ListTile(
+                  title: Text(weave.title),
+                  subtitle: Text(weave.typeId == 1
+                      ? '내 위브'
+                      : weave.typeId == 2
+                      ? 'Global'
+                      : 'Private'),
+                  trailing: IconButton(
+                      onPressed: () =>
+                          controller.goToNewWeave(weave.weaveId, weave.title),
+                      icon: Icon(Icons.add_circle_outline)));
+            });
+      },
+    );
   }
 }

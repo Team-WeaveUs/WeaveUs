@@ -11,17 +11,23 @@ class MyPostWidget extends GetView<ProfileController> {
     return Obx(() {
       if (controller.profile.value.nickname == '') {
         return const Center(child: CircularProgressIndicator());
-      }
-      else {
+      } else {
         return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, childAspectRatio: 1),
-              itemCount: controller.postList.length,
-              itemBuilder: (context, index) {
-                final post = controller.postList[index];
-                return Image.network(post.img);
-              },
-            );
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3, childAspectRatio: 1),
+          itemCount: controller.postList.length,
+          itemBuilder: (context, index) {
+            final post = controller.postList[index];
+            return GestureDetector(
+                onTap: () {
+                  Get.toNamed(
+                    '/post/${post.postId}',
+                    arguments: {'postUserId': controller.profile.value.userId},
+                  );
+                },
+                child: Image.network(post.img));
+          },
+        );
       }
     });
   }
