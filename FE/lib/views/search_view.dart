@@ -5,7 +5,10 @@ import 'package:weave_us/views/widgets/search_widgets/map_section.dart';
 import 'package:weave_us/views/widgets/search_widgets/recent_search.dart';
 import 'package:weave_us/views/widgets/search_widgets/search_result_list.dart';
 import 'package:weave_us/views/widgets/search_widgets/search_bar.dart';
+
 import '../controllers/search_controller.dart';
+import '../controllers/location_controller.dart';
+
 import 'components/app_nav_bar.dart';
 import 'components/bottom_nav_bar.dart';
 
@@ -19,6 +22,7 @@ class SearchView extends StatefulWidget {
 
 class _SearchViewState extends State<SearchView> {
   final TextEditingController _textSearchController = TextEditingController();
+  final LocationController locationController = Get.put(LocationController());
   late final WeaveSearchController _viewModel;
 
   @override
@@ -66,6 +70,28 @@ class _SearchViewState extends State<SearchView> {
                       ? const MapSection()
                       : const SearchResultList()),
                 ),
+                Obx(() {
+                  if (locationController.isLoading.value) {
+                    return CircularProgressIndicator();
+                  }
+
+                  if (locationController.error.isNotEmpty) {
+                    return Text("에러: ${locationController.error.value}");
+                  }
+
+                  final position = locationController.position.value;
+                  if (position == null) {
+                    return ElevatedButton(
+                      onPressed: () => locationController.fetchLocation(),
+                      child: Text("현재 위치 가져오기"),
+                    );
+                  }
+
+                  return Text(
+                    "위도: ${position.latitude}, 경도: ${position.longitude}",
+                    style: TextStyle(fontSize: 18),
+                  );
+                }),
               ],
             ),
           ),
