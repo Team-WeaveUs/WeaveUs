@@ -72,7 +72,7 @@ class _SearchViewState extends State<SearchView> {
                 ),
                 Obx(() {
                   if (locationController.isLoading.value) {
-                    return CircularProgressIndicator();
+                    return Center(child: CircularProgressIndicator());
                   }
 
                   if (locationController.error.isNotEmpty) {
@@ -87,11 +87,29 @@ class _SearchViewState extends State<SearchView> {
                     );
                   }
 
-                  return Text(
-                    "위도: ${position.latitude}, 경도: ${position.longitude}",
-                    style: TextStyle(fontSize: 18),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "위도: ${position.latitude}, 경도: ${position.longitude}",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      SizedBox(height: 12),
+                      if (locationController.closestAreaName.isNotEmpty) ...[
+                        Text(
+                          "가장 가까운 읍면동: ${locationController.closestAreaName.value}",
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 8),
+                        Text("인접 읍면동들:"),
+                        ...locationController.neighbors.map(
+                              (name) => Text("- $name"),
+                        ),
+                      ]
+                    ],
                   );
-                }),
+                })
+
               ],
             ),
           ),
