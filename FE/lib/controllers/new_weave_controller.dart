@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 import '../models/friend_invite_model.dart';
+
 import '../services/api_service.dart';
 import '../services/token_service.dart';
 

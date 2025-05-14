@@ -109,7 +109,6 @@ class _SearchViewState extends State<SearchView> {
                     ],
                   );
                 })
-
               ],
             ),
           ),
@@ -123,8 +122,7 @@ class _SearchViewState extends State<SearchView> {
                   _viewModel.toggleMapView();
                   _viewModel.unfoldMap();
                 },
-                child: Obx(() =>
-                    Icon(
+                child: Obx(() => Icon(
                       _viewModel.isShowMap.value
                           ? HugeIcons.strokeRoundedListView
                           : HugeIcons.strokeRoundedMapsCircle01,

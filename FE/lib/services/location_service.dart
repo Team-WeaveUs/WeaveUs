@@ -1,6 +1,10 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationService {
+  //현재 위치 반환
   Future<Position> getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -21,4 +25,30 @@ class LocationService {
 
     return await Geolocator.getCurrentPosition();
   }
+
+  //읍면동 데이터 불러오기.
+  Future<List<dynamic>> loadData() async {
+    final String response = await rootBundle.loadString('assets/emd_touch_neighbors.json');
+    return json.decode(response);
+  }
+
+  double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
+    final distance = Geolocator.distanceBetween(lat1, lng1, lat2, lng2);
+    return distance / 1000; // meter to kilometer
+  }
+
+  Future<String> findClosestArea(double lat, double lng) async {
+    final data = await loadData();
+    double minDistance = double.infinity;
+    String closestArea = '';
+    for (var area in data) {
+      double distance = calculateDistance(lat, lng, area['lat'], area['lng']);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestArea = area['name'];
+      }
+    }
+    return closestArea;
+  }
+
 }

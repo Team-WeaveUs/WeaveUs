@@ -30,6 +30,7 @@ class AppRoutes {
   static const HOME = '/home';
   static const SEARCH = '/search';
   static const NEW_WEAVE = '/new_weave';
+  static const NEW_JOIN_WEAVE = '/new_join_weave';
   static const NEW_POST = '/new_post';
   static const REWARDS = '/rewards';
   static const PROFILE = '/profile/:user_id';
@@ -81,6 +82,12 @@ class AppRoutes {
       binding: NewWeaveBinding(),
       middlewares: [AuthMiddleware()],
       transition: Transition.noTransition,
+    ),
+    GetPage(
+      name: NEW_JOIN_WEAVE,
+      page: () => NewWeaveView(),
+      binding: NewWeaveBinding(),
+      middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: REWARDS,

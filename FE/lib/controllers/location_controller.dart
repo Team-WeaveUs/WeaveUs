@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import '../services/location_service.dart';  // 위치를 받아오는 서비스
@@ -13,29 +11,17 @@ class LocationController extends GetxController {
   RxString closestAreaName = ''.obs;
   RxList<String> neighbors = <String>[].obs;
 
-  // JSON 데이터를 로드하는 함수
-  Future<List<dynamic>> loadData() async {
-    final String response = await rootBundle.loadString('assets/emd_touch_neighbors.json');
-    return json.decode(response);
-  }
-
-  // 두 위치 간의 거리 계산 함수 (단위: km)
-  double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
-    final distance = Geolocator.distanceBetween(lat1, lng1, lat2, lng2);
-    return distance / 1000; // meter to kilometer
-  }
-
   // 가장 가까운 읍면동을 찾는 함수
   Future<void> findClosestArea() async {
     if (position.value == null) return;
 
-    final data = await loadData();
+    final data = await _locationService.loadData();
 
     double minDistance = double.infinity;
     Map<String, dynamic> closestArea = {};
 
     for (var area in data) {
-      double distance = calculateDistance(
+      double distance = _locationService.calculateDistance(
         position.value!.latitude,
         position.value!.longitude,
         area['lat'],
