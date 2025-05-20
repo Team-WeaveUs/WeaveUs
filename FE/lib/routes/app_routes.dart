@@ -5,6 +5,7 @@ import 'package:weave_us/views/owner_login_view.dart';
 import 'package:weave_us/views/owner_nav/owner_main_view.dart';
 import 'package:weave_us/views/splash_view.dart';
 import '../bindings/home_binding.dart';
+import '../bindings/new_join_weave_binding.dart';
 import '../bindings/new_post_binding.dart';
 import '../bindings/new_weave_binding.dart';
 import '../bindings/owner_main_binding.dart';
@@ -21,6 +22,7 @@ import '../views/auth_main_view.dart';
 import '../views/common_registration_view.dart';
 import '../views/home_view.dart';
 import '../views/common_login_view.dart';
+import '../views/new_join_weave_view.dart';
 import '../views/new_post_view.dart';
 import '../views/new_weave_view.dart';
 import '../views/owner_nav/owner_new_weave_view.dart';
@@ -38,6 +40,7 @@ class AppRoutes {
   static const HOME = '/home';
   static const SEARCH = '/search';
   static const NEW_WEAVE = '/new_weave';
+  static const NEW_JOIN_WEAVE = '/new_join_weave';
   static const NEW_POST = '/new_post';
   static const REWARDS = '/rewards';
   static const PROFILE = '/profile/:user_id';
@@ -114,6 +117,12 @@ class AppRoutes {
       binding: NewWeaveBinding(),
       middlewares: [AuthMiddleware()],
       transition: Transition.noTransition,
+    ),
+    GetPage(
+      name: NEW_JOIN_WEAVE,
+      page: () => NewJoinWeaveView(),
+      binding: NewJoinWeaveBinding(),
+      middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: REWARDS,

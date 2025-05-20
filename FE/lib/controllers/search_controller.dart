@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:weave_us/services/token_service.dart';
+import 'package:geolocator/geolocator.dart';
+
+import '../services/token_service.dart';
 import '../services/api_service.dart';
+import '../services/location_service.dart';
+
 
 class WeaveSearchController extends GetxController {
   final ApiService _apiService = Get.find<ApiService>();
   final TokenService _tokenService = Get.find<TokenService>();
+  final LocationService locationService;
 
   final TextEditingController textController = TextEditingController();
 
@@ -15,13 +20,18 @@ class WeaveSearchController extends GetxController {
   final RxBool isShowMap = false.obs;
   final RxBool isMapFolded = false.obs;
   final RxBool isLoading = false.obs;
+  final Rxn<Position> position = Rxn<Position>();
 
   late Worker _debouncer;
+
+  WeaveSearchController({
+    required this.locationService,
+});
 
   @override
   void onInit() {
     super.onInit();
-
+    getRecentLocation();
     _debouncer = debounce(
       RxString(''),
           (_) => search(textController.text),
@@ -106,6 +116,17 @@ class WeaveSearchController extends GetxController {
       }
     } catch (e) {
       print('구독 처리 실패: $e');
+    }
+  }
+
+  Future<void> getRecentLocation() async {
+    isLoading.value = true;
+    try {
+      position.value = await locationService.getCurrentLocation();
+    } catch (e) {
+      print("locationerror : $e");
+    } finally {
+      isLoading.value = false;
     }
   }
 
