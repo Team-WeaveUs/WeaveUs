@@ -30,14 +30,10 @@ class NewJoinWeaveController extends NewWeaveController {
     fetchLocation();
   }
 
-  void onMapTap(NLatLng latLng) async {
+  void onMapTap(NPoint point, NLatLng latLng) async {
     mapService.setSelectedPosition(latLng);
     closestAreaName.value = await locationService.findClosestArea(latLng.latitude, latLng.longitude);
     selectedLatLng.value = latLng;
-  }
-
-  void onMarkerTap(NMarker marker) {
-
   }
 
   Future<void> fetchLocation() async {
@@ -46,6 +42,7 @@ class NewJoinWeaveController extends NewWeaveController {
     try {
       final location = await locationService.getCurrentLocation();
       selectedLatLng.value = NLatLng(location.latitude, location.longitude);
+      closestAreaName.value = await locationService.findClosestArea(location.latitude, location.longitude);
       position.value = location;
     } catch (e) {
       error.value = e.toString();
@@ -53,5 +50,8 @@ class NewJoinWeaveController extends NewWeaveController {
     } finally {
       isLoading.value = false;
     }
+  }
+  Future<void> createWeave() async {
+
   }
 }

@@ -5,6 +5,7 @@ import 'package:weave_us/views/widgets/search_widgets/map_section.dart';
 import 'package:weave_us/views/widgets/search_widgets/recent_search.dart';
 import 'package:weave_us/views/widgets/search_widgets/search_result_list.dart';
 import 'package:weave_us/views/widgets/search_widgets/search_bar.dart';
+import 'package:weave_us/views/widgets/search_widgets/test_set_latlng_on_map.dart';
 
 import '../controllers/search_controller.dart';
 import '../controllers/location_controller.dart';
@@ -67,7 +68,8 @@ class _SearchViewState extends State<SearchView> {
                 Expanded(
                   child: Obx(() =>
                   _viewModel.isShowMap.value
-                      ? const MapSection()
+                      ? const MapSelectPin()
+                      // ? const MapSection()
                       : const SearchResultList()),
                 ),
                 Obx(() {
