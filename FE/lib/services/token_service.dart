@@ -14,18 +14,21 @@ class TokenService extends GetxService {
   static const String _accessTokenKey = 'access_token';
   static const String _refreshTokenKey = 'refresh_token';
   static const String _userId = 'user_id';
+  static const String _isOwner = 'is_owner';
   // 토큰 저장
-  Future<void> saveToken(String accessToken, String refreshToken, String userId) async {
+  Future<void> saveToken(String accessToken, String refreshToken, String userId, String isOwner) async {
     if (kIsWeb) {
       final prefs = await SharedPreferences.getInstance();
       prefs.setString(_accessTokenKey, accessToken);
       prefs.setString(_refreshTokenKey, refreshToken);
       prefs.setString(_userId, userId);
+      prefs.setString(_isOwner, isOwner);
 
     } else {
       await _storage.write(key: _accessTokenKey, value: accessToken);
       await _storage.write(key: _refreshTokenKey, value: refreshToken);
       await _storage.write(key: _userId, value: userId);
+      await _storage.write(key: _isOwner, value: isOwner);
     }
   }
 
@@ -34,20 +37,25 @@ class TokenService extends GetxService {
     String? accessToken;
     String? refreshToken;
     String? userId;
+    String? isOwner;
 
     if (kIsWeb) {
       final prefs = await SharedPreferences.getInstance();
       accessToken = prefs.getString(_accessTokenKey);
       refreshToken = prefs.getString(_refreshTokenKey);
       userId = prefs.getString(_userId);
+      isOwner = prefs.getString(_isOwner);
     }
     else {
       accessToken = await _storage.read(key: _accessTokenKey);
       refreshToken = await _storage.read(key: _refreshTokenKey);
       userId = await _storage.read(key: _userId);
+      isOwner = await _storage.read(key: _isOwner);
     }
-    if (accessToken != null && refreshToken != null && userId != null) {
-      return Token(accessToken: accessToken, refreshToken: refreshToken, userId: userId);
+    if (accessToken != null && refreshToken != null && userId != null &&
+        isOwner != null) {
+      return Token(accessToken: accessToken, refreshToken: refreshToken, userId: userId,
+        isOwner: int.tryParse(isOwner) ?? 0,);
     }
     return null;
   }
@@ -70,11 +78,13 @@ class TokenService extends GetxService {
       prefs.remove(_accessTokenKey);
       prefs.remove(_refreshTokenKey);
       prefs.remove(_userId);
+      prefs.remove(_isOwner);
     }
     else {
       await _storage.delete(key: _accessTokenKey);
       await _storage.delete(key: _refreshTokenKey);
       await _storage.delete(key: _userId);
+      await _storage.delete(key: _isOwner);
     }
   }
 
@@ -93,7 +103,7 @@ class TokenService extends GetxService {
     final LambdaResponse response = LambdaResponse.fromJson(jsonDecode(lambdaResponse.body));
     if (response.statusCode == 200) {
       final data = response.body;
-      await saveToken(data['accessToken'], data['refreshToken'], data['user_id'].toString());
+      await saveToken(data['accessToken'], data['refreshToken'], data['user_id'].toString(), data['is_owner'].toString());
       return true; // 갱신 성공
     } else {
       await clearToken();

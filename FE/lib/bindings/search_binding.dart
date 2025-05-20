@@ -2,9 +2,11 @@ import 'package:get/get.dart';
 import 'package:weave_us/services/map_service.dart';
 import '../services/location_service.dart';
 import '../controllers/search_controller.dart';
+
 import '../controllers/new_join_weave_controller.dart';
 import '../../services/api_service.dart';
 import '../services/token_service.dart';
+
 
 class SearchBinding extends Bindings {
   @override

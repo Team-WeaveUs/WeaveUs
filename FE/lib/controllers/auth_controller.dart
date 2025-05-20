@@ -32,7 +32,7 @@ class AuthController extends GetxController {
 
   Future<void> _checkAuthStatus() async {
     Token token = await _tokenService.loadToken() ??
-        Token(accessToken: '', refreshToken: '', userId: '');
+        Token(accessToken: '', refreshToken: '', userId: '', isOwner: 0);
     bool isValid = token.accessToken != '';
     isAuthenticated.value = isValid;
     if (isValid) {
@@ -43,7 +43,6 @@ class AuthController extends GetxController {
   Future<void> login(String email, String password) async {
     isLoading.value = true;
 
-    // 로그인 다이얼로그 띄우기
     if (!Get.isDialogOpen!) {
       Get.dialog(
         const PopScope(
@@ -66,14 +65,23 @@ class AuthController extends GetxController {
       );
     }
 
+    // 실제 로그인 요청
     final success = await _authService.login(email, password);
+
     print(BCrypt.hashpw(password, BCrypt.gensalt()));
 
     if (success) {
-      await _tokenService.loadToken();
+      final token = await _tokenService.loadToken();
       isAuthenticated.value = true;
       isLoading.value = false;
-      Get.offAllNamed(AppRoutes.HOME);
+
+      if (token != null && token.isOwner == 1) {
+        print("✅ 오너니까 OwnerHome으로 이동!");
+        Get.offAllNamed(AppRoutes.OWNER_HOME);
+      } else {
+        print("🧍 일반 유저니까 Home으로 이동!");
+        Get.offAllNamed(AppRoutes.HOME);
+      }
     } else {
       isLoading.value = false;
       Get.snackbar("로그인 실패", "아이디나 비밀번호를 확인하세요");

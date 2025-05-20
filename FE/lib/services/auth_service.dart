@@ -24,13 +24,23 @@ class AuthService {
         final data = response.body;
         if (data.containsKey('accessToken') &&
             data.containsKey('refreshToken') &&
-            data.containsKey('user_id')) {
+            data.containsKey('user_id') &&
+            data.containsKey('is_owner')) {
+
           token = Token(
-              accessToken: data['accessToken'],
-              refreshToken: data['refreshToken'],
-              userId: data['user_id'].toString());
+            accessToken: data['accessToken'],
+            refreshToken: data['refreshToken'],
+            userId: data['user_id'].toString(),
+            isOwner: data['is_owner'], // 서버에서 int로 내려오므로 그대로
+          );
+
           await tokenController.saveToken(
-              token.accessToken, token.refreshToken, token.userId);
+            token.accessToken,
+            token.refreshToken,
+            token.userId,
+            token.isOwner.toString(), // ✅ 반드시 toString()
+          );
+
           return true;
         } else {
           return false;
