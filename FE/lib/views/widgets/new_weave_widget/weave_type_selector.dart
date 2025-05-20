@@ -16,7 +16,7 @@ class WeaveTypeSelector extends StatefulWidget {
 }
 
 class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
-  final List<String> weaveTypes = ['Global', 'Join', 'Local'];
+  final List<String> weaveTypes = ['Global', 'Local'];
   final List<String> openRanges = ['모두 공개', '초대한 사용자', '나만 보기'];
 
   late final FriendInviteDialogController inviteController;

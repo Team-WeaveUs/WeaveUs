@@ -87,7 +87,7 @@ class ProfileController extends GetxController {
       subscribeData.value = fetchedProfile;
       mySubscribeList.value = fetchedProfile.data;
     } catch (e) {
-      print('Error fetching profile: $e');
+      print('Error fetching mySubscriber: $e');
     }
   }
 
@@ -99,7 +99,7 @@ class ProfileController extends GetxController {
       subscribeData.value = fetchedProfile;
       iSubscribeList.value = fetchedProfile.data;
     } catch (e) {
-      print('Error fetching profile: $e');
+      print('Error fetching iSubscribe: $e');
     }
   }
   Future<void> fetchWeaveList(String targetUserId) async {
@@ -112,7 +112,7 @@ class ProfileController extends GetxController {
 
 
     }catch (e) {
-      print('Error fetching profile: $e');
+      print('Error fetching weaveList: $e');
     }
   }
   Future<void> fetchMyWeaveList() async {
@@ -123,7 +123,7 @@ class ProfileController extends GetxController {
       myWeaveData.value = fetchedWeave;
       myWeaveList.value = fetchedWeave.data;
     } catch (e) {
-      print('Error fetching myweavelisg: $e');
+      print('Error fetching myWeaveList: $e');
     }
   }
 
