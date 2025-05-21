@@ -12,6 +12,7 @@ class AuthController extends GetxController {
   final AuthService _authService = AuthService();
 
   var isAuthenticated = false.obs;
+  var isOwner = false.obs;
   var isLoading = false.obs;
   var isLoginSuccess = false.obs;
 
@@ -19,7 +20,6 @@ class AuthController extends GetxController {
   onInit() {
     super.onInit();
     _checkAuthStatus();
-
   }
 
   // ✅ 앱 실행 시 토큰 검증 및 자동 로그인 처리
@@ -30,11 +30,19 @@ class AuthController extends GetxController {
     return isValid;
   }
 
+  Future<bool> checkIsOwner() async {
+    Token token = await _tokenService.loadToken() ??
+        Token(accessToken: '', refreshToken: '', userId: '', isOwner: 0);
+    isOwner.value = token.isOwner == 1;
+    return isOwner.value;
+  }
+
   Future<void> _checkAuthStatus() async {
     Token token = await _tokenService.loadToken() ??
         Token(accessToken: '', refreshToken: '', userId: '', isOwner: 0);
     bool isValid = token.accessToken != '';
     isAuthenticated.value = isValid;
+    isOwner.value = token.isOwner == 1;
     if (isValid) {
       Get.offAllNamed(AppRoutes.HOME);
     }
@@ -74,14 +82,8 @@ class AuthController extends GetxController {
       final token = await _tokenService.loadToken();
       isAuthenticated.value = true;
       isLoading.value = false;
-
-      if (token != null && token.isOwner == 1) {
-        print("✅ 오너니까 OwnerHome으로 이동!");
-        Get.offAllNamed(AppRoutes.OWNER_HOME);
-      } else {
-        print("🧍 일반 유저니까 Home으로 이동!");
-        Get.offAllNamed(AppRoutes.HOME);
-      }
+      isOwner.value = token!.isOwner == 1;
+      Get.offAllNamed(AppRoutes.HOME);
     } else {
       isLoading.value = false;
       Get.snackbar("로그인 실패", "아이디나 비밀번호를 확인하세요");
@@ -133,6 +135,7 @@ class AuthController extends GetxController {
       Get.snackbar("회원가입 실패", "회원가입에 실패했습니다");
     }
   }
+
   Future<void> ownerRegistration(String id, String pw, String name,
       String nickname, String number, String gender) async {
     isLoading.value = true;

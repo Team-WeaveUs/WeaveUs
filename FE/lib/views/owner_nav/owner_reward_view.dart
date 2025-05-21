@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:weave_us/views/components/bottom_nav_bar.dart';
 import 'package:weave_us/views/widgets/new_post_widgets/post_content.input.dart';
 import 'package:weave_us/views/widgets/owner_reward_post_widgets/reward_content_input.dart';
 import '../../controllers/owner_reward_controller.dart';
 import '../components/app_nav_bar.dart';
-import '../components/owner_nav_bar.dart';
+
 
 class OwnerRewardView extends GetView<OwnerRewardController> {
   const OwnerRewardView({super.key});
@@ -70,7 +71,7 @@ class OwnerRewardView extends GetView<OwnerRewardController> {
           ],
         ),
       ),
-      bottomNavigationBar: OwnerNavBar(),
+      bottomNavigationBar: BottomNavigation(),
     );
   }
 }
