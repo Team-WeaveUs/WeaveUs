@@ -12,6 +12,7 @@ class AuthController extends GetxController {
   final AuthService _authService = AuthService();
 
   var isAuthenticated = false.obs;
+  var isOwner = false.obs;
   var isLoading = false.obs;
   var isLoginSuccess = false.obs;
 
@@ -19,7 +20,6 @@ class AuthController extends GetxController {
   onInit() {
     super.onInit();
     _checkAuthStatus();
-
   }
 
   // ✅ 앱 실행 시 토큰 검증 및 자동 로그인 처리
@@ -30,11 +30,19 @@ class AuthController extends GetxController {
     return isValid;
   }
 
+  Future<bool> checkIsOwner() async {
+    Token token = await _tokenService.loadToken() ??
+        Token(accessToken: '', refreshToken: '', userId: '', isOwner: 0);
+    isOwner.value = token.isOwner == 1;
+    return isOwner.value;
+  }
+
   Future<void> _checkAuthStatus() async {
     Token token = await _tokenService.loadToken() ??
-        Token(accessToken: '', refreshToken: '', userId: '');
+        Token(accessToken: '', refreshToken: '', userId: '', isOwner: 0);
     bool isValid = token.accessToken != '';
     isAuthenticated.value = isValid;
+    isOwner.value = token.isOwner == 1;
     if (isValid) {
       Get.offAllNamed(AppRoutes.HOME);
     }
@@ -43,7 +51,6 @@ class AuthController extends GetxController {
   Future<void> login(String email, String password) async {
     isLoading.value = true;
 
-    // 로그인 다이얼로그 띄우기
     if (!Get.isDialogOpen!) {
       Get.dialog(
         const PopScope(
@@ -66,13 +73,16 @@ class AuthController extends GetxController {
       );
     }
 
+    // 실제 로그인 요청
     final success = await _authService.login(email, password);
+
     print(BCrypt.hashpw(password, BCrypt.gensalt()));
 
     if (success) {
-      await _tokenService.loadToken();
+      final token = await _tokenService.loadToken();
       isAuthenticated.value = true;
       isLoading.value = false;
+      isOwner.value = token!.isOwner == 1;
       Get.offAllNamed(AppRoutes.HOME);
     } else {
       isLoading.value = false;
@@ -125,6 +135,7 @@ class AuthController extends GetxController {
       Get.snackbar("회원가입 실패", "회원가입에 실패했습니다");
     }
   }
+
   Future<void> ownerRegistration(String id, String pw, String name,
       String nickname, String number, String gender) async {
     isLoading.value = true;

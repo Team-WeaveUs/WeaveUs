@@ -51,6 +51,7 @@ class HomeView extends GetView<HomeController> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     controller.postList1[index].weaveTitle,
@@ -62,9 +63,11 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                   ),
                                   Text(
-                                    controller.postList1[index].weaveId == 1
-                                        ? "else weave"
-                                        : "Weave",
+                                    controller.postList1[index].weaveType == 1
+                                        ? 'Global'
+                                        : controller.postList1[index].weaveType == 2
+                                        ? 'Join'
+                                        : 'Local',
                                     style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w500,

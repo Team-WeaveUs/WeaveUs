@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../../controllers/owner_reward_controller.dart';
 
-class PostContentInput extends StatelessWidget {
+class RewardContentInput extends StatelessWidget {
   final TextEditingController controller;
-  final ValueChanged<String>? onChanged;
 
-  const PostContentInput({
-    super.key,
-    required this.controller,
-    this.onChanged,
-  });
+  const RewardContentInput({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +13,9 @@ class PostContentInput extends StatelessWidget {
       padding: const EdgeInsets.only(right: 20, left: 20),
       child: TextField(
         controller: controller,
-        onChanged: onChanged,
+        onChanged: (value) {
+          Get.find<OwnerRewardController>().setTitle(value);
+        },
         style: const TextStyle(
           fontSize: 20,
           fontFamily: 'Pretendard',
@@ -24,7 +23,7 @@ class PostContentInput extends StatelessWidget {
           letterSpacing: 0.5,
         ),
         decoration: const InputDecoration(
-          hintText: '게시물에 대한 설명을 적어주세요.',
+          hintText: '리워드 이름을 적어주세요.',
           hintStyle: TextStyle(
             fontSize: 20,
             fontFamily: 'Pretendard',

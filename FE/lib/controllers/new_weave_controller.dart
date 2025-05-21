@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 import '../models/friend_invite_model.dart';
+
 import '../services/api_service.dart';
 import '../services/token_service.dart';
-import 'friend_invite_dialog_controller.dart';
 
 class NewWeaveController extends GetxController {
   final nameController = TextEditingController();
@@ -25,17 +25,17 @@ class NewWeaveController extends GetxController {
   final RxBool isFormValid = false.obs;
 
   int get typeId => switch (selectedWeave.value) {
-    '내 Weave' => 1,
-    'Global' => 2,
-    'Private' => 3,
+    'Global' => 1,
+    'Join' => 2,
+    'Local' => 3,
     _ => 1,
   };
 
   int get privacyId => switch (selectedOpenRange.value) {
-    '모두 공개' => 1,
+    '나만 보기' => 1,
     '초대한 사용자' => 2,
-    '나만 보기' => 3,
-    _ => 1,
+    '모두 보기' => 3,
+    _ => 3,
   };
 
   void updateSelections({String? weave, String? range, String? invite}) {
@@ -85,6 +85,8 @@ class NewWeaveController extends GetxController {
     }
 
     try {
+      print(privacyId);
+      print(typeId);
       final res = await apiService.postRequest("WeaveUpload", {
         "title": nameController.text.trim(),
         "description": descriptionController.text.trim(),
