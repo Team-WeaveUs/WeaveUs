@@ -2,13 +2,10 @@ import 'package:get/get.dart';
 import 'package:weave_us/bindings/auth_binding.dart';
 import 'package:weave_us/bindings/post_detail_binding.dart';
 import 'package:weave_us/views/owner_login_view.dart';
-import 'package:weave_us/views/owner_nav/owner_main_view.dart';
 import 'package:weave_us/views/splash_view.dart';
 import '../bindings/home_binding.dart';
-import '../bindings/new_join_weave_binding.dart';
 import '../bindings/new_post_binding.dart';
 import '../bindings/new_weave_binding.dart';
-import '../bindings/owner_main_binding.dart';
 import '../bindings/owner_new_weave_binding.dart';
 import '../bindings/owner_reward_binding.dart';
 import '../bindings/profile_binding.dart';
@@ -22,7 +19,6 @@ import '../views/auth_main_view.dart';
 import '../views/common_registration_view.dart';
 import '../views/home_view.dart';
 import '../views/common_login_view.dart';
-import '../views/new_join_weave_view.dart';
 import '../views/new_post_view.dart';
 import '../views/new_weave_view.dart';
 import '../views/owner_nav/owner_new_weave_view.dart';
@@ -49,8 +45,6 @@ class AppRoutes {
   static const OWNERS = '/auth/owners';
   static const NEW_USER = '/auth/login/registration';
   static const NEW_OWNER = '/auth/owners/registration';
-  static const OWNER_HOME = '/owner/home';
-  static const OWNER_NEW_POST = '/owner/new_post';
   static const OWNER_NEW_WEAVE = '/owner/new_weave';
   static const OWNER_REWARDS = '/owner/rewards';
 
@@ -68,14 +62,6 @@ class AppRoutes {
       middlewares: [AuthMiddleware()],
       transition: Transition.noTransition,
     ),
-    // 오너 홈 추가
-    GetPage(
-      name: OWNER_HOME,
-      page: () => OwnerMainView(),
-      binding: OwnerMainBinding(),
-      middlewares: [OwnerMiddleware()],
-      transition: Transition.noTransition,
-    ),
     GetPage(
       name: SEARCH,
       page: () => SearchView(),
@@ -91,13 +77,6 @@ class AppRoutes {
       transition: Transition.noTransition,
     ),
     GetPage(
-      name: OWNER_NEW_POST,
-      page: () => NewPostView(),
-      binding: NewPostBinding(),
-      middlewares: [OwnerMiddleware()],
-      transition: Transition.noTransition,
-    ),
-    GetPage(
       name: AppRoutes.POST_DETAIL,
       page: () => PostDetailView(),
       binding: PostDetailBinding(),
@@ -108,34 +87,28 @@ class AppRoutes {
       name: OWNER_NEW_WEAVE,
       page: () => OwnerNewWeaveView(),
       binding: OwnerNewWeaveBinding(),
-      middlewares: [OwnerMiddleware()],
+      middlewares: [AuthMiddleware(), OwnerMiddleware()],
       transition: Transition.noTransition,
     ),
     GetPage(
       name: NEW_WEAVE,
       page: () => NewWeaveView(),
       binding: NewWeaveBinding(),
-      middlewares: [AuthMiddleware()],
+      middlewares: [AuthMiddleware(), OwnerMiddleware()],
       transition: Transition.noTransition,
-    ),
-    GetPage(
-      name: NEW_JOIN_WEAVE,
-      page: () => NewJoinWeaveView(),
-      binding: NewJoinWeaveBinding(),
-      middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: REWARDS,
       page: () => RewardView(),
       binding: RewardBinding(),
-      middlewares: [AuthMiddleware()],
+      middlewares: [AuthMiddleware(), OwnerMiddleware()],
       transition: Transition.noTransition,
     ),
     GetPage(
         name: OWNER_REWARDS,
         page: () => OwnerRewardView(),
         binding: OwnerRewardBinding(),
-        middlewares: [OwnerMiddleware()],
+        middlewares: [AuthMiddleware(), OwnerMiddleware()],
         transition: Transition.noTransition,
     ),
     GetPage(

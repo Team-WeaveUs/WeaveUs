@@ -2,30 +2,27 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../controllers/auth_controller.dart';
 import '../routes/app_routes.dart';
-import '../services/token_service.dart';
 
 class OwnerMiddleware extends GetMiddleware {
-  final TokenService _tokenService = TokenService();
-
   @override
-  Future<RouteSettings?> redirectFuture(String? route) async {
+  RouteSettings? redirect(String? route) {
     final authController = Get.find<AuthController>();
-
-    if (!authController.isAuthenticated.value) {
-      return const RouteSettings(name: AppRoutes.SPLASH);
+    authController.checkIsOwner();
+    print('위치 : $route');
+    print("오너? ${authController.isOwner.value}");
+    if (route == AppRoutes.NEW_WEAVE) {
+      if (authController.isOwner.value) {
+        return const RouteSettings(name: AppRoutes.OWNER_NEW_WEAVE);
+      } else {
+        return null;
+      }
+    } else if (route == AppRoutes.REWARDS) {
+      if (authController.isOwner.value) {
+        return const RouteSettings(name: AppRoutes.OWNER_REWARDS);
+      } else {
+        return null;
+      }
     }
-
-    final token = await _tokenService.loadToken();
-    if (token == null) {
-      return const RouteSettings(name: AppRoutes.HOME);
-    }
-
-    print("👉 현재 route: $route, isOwner: ${token.isOwner}");
-
-    if (token.isOwner == 1 && !(route?.contains(AppRoutes.OWNER_HOME) ?? false)) {
-      return const RouteSettings(name: AppRoutes.OWNER_HOME);
-    }
-
     return null;
   }
 }
