@@ -19,10 +19,10 @@ class MyWeaveWidget extends GetView<ProfileController> {
               return ListTile(
                   title: Text(weave.title),
                   subtitle: Text(weave.typeId == 1
-                      ? '내 위브'
-                      : weave.typeId == 2
                       ? 'Global'
-                      : 'Private'),
+                      : weave.typeId == 2
+                      ? 'Join'
+                      : 'Local'),
                   trailing: IconButton(
                       onPressed: () =>
                           controller.goToNewWeave(weave.weaveId, weave.title),

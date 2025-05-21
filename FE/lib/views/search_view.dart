@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/views/widgets/search_widgets/map_section.dart';
+
 import 'package:weave_us/views/widgets/search_widgets/recent_search.dart';
 import 'package:weave_us/views/widgets/search_widgets/search_result_list.dart';
 import 'package:weave_us/views/widgets/search_widgets/search_bar.dart';
+
 import '../controllers/search_controller.dart';
+
 import 'components/app_nav_bar.dart';
 import 'components/bottom_nav_bar.dart';
 
@@ -66,6 +69,7 @@ class _SearchViewState extends State<SearchView> {
                       ? const MapSection()
                       : const SearchResultList()),
                 ),
+
               ],
             ),
           ),
@@ -79,8 +83,7 @@ class _SearchViewState extends State<SearchView> {
                   _viewModel.toggleMapView();
                   _viewModel.unfoldMap();
                 },
-                child: Obx(() =>
-                    Icon(
+                child: Obx(() => Icon(
                       _viewModel.isShowMap.value
                           ? HugeIcons.strokeRoundedListView
                           : HugeIcons.strokeRoundedMapsCircle01,
