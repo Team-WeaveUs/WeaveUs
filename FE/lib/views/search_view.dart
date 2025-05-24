@@ -78,17 +78,17 @@ class _SearchViewState extends State<SearchView> {
             alignment: Alignment.bottomRight,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 36, right: 36),
-              child: FloatingActionButton(
+              child: Obx(() => _viewModel.mapLoading.value ? const CircularProgressIndicator() : FloatingActionButton(
                 onPressed: () {
                   _viewModel.toggleMapView();
                   _viewModel.unfoldMap();
                 },
-                child: Obx(() => Icon(
+                child: Icon(
                       _viewModel.isShowMap.value
                           ? HugeIcons.strokeRoundedListView
                           : HugeIcons.strokeRoundedMapsCircle01,
-                    )),
-              ),
+                    ),
+              )),
             ),
           ),
         ],

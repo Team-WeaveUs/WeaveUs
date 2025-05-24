@@ -64,8 +64,8 @@ class JoinWeave {
   final int areaId;
   final int rewardId;
   final int rewardConditionId;
-  late final double lat;
-  late final double lng;
+  late double lat;
+  late double lng;
 
   JoinWeave(
       {required this.weaveId,

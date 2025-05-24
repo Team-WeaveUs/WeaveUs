@@ -23,6 +23,7 @@ class WeaveSearchController extends GetxController {
   final RxBool isShowMap = false.obs;
   final RxBool isMapFolded = false.obs;
   final RxBool isLoading = false.obs;
+  final RxBool mapLoading = false.obs;
   final Rxn<Position> position = Rxn<Position>();
   final RxList<JoinWeave> joinWeaveData = <JoinWeave>[].obs;
   final mapMarkers = <NMarker>{}.obs;
@@ -128,6 +129,7 @@ class WeaveSearchController extends GetxController {
 
   Future<void> getRecentLocation() async {
     isLoading.value = true;
+    mapLoading.value = true;
     try {
       position.value = await locationService.getCurrentLocation();
     } catch (e) {
@@ -150,12 +152,14 @@ class WeaveSearchController extends GetxController {
     joinWeaveData.value =
         (response['weaves'] as List).map((e) => JoinWeave.fromJson(e)).toList();
     print(joinWeaveData.length);
+    print(response['weaves']);
     mapMarkers.assignAll(joinWeaveData.map((group) {
       return NMarker(
         id: group.weaveId.toString(),
         position: NLatLng(group.lat, group.lng),
       );
     }));
+    mapLoading.value = false;
   }
 
   // 📌 지도 상태 토글
