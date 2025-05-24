@@ -28,7 +28,8 @@ class LocationService {
 
   //읍면동 데이터 불러오기.
   Future<List<dynamic>> loadData() async {
-    final String response = await rootBundle.loadString('assets/emd_touch_neighbors.json');
+    final String response = await rootBundle.loadString(
+        'assets/emd_touch_neighbors.json');
     return json.decode(response);
   }
 
@@ -45,10 +46,26 @@ class LocationService {
       double distance = calculateDistance(lat, lng, area['lat'], area['lng']);
       if (distance < minDistance) {
         minDistance = distance;
-        closestArea = area['name'];
+        closestArea = area['adm_cd'];
       }
     }
     return closestArea;
   }
 
+  Future<List<dynamic>> findNeighbors(double lat, double lng) async {
+    final data = await loadData();
+    String closestArea = '';
+    List<dynamic> neighbors = [];
+    closestArea = await findClosestArea(lat, lng);
+    print(closestArea);
+
+    for (var neighbor in data) {
+      if (neighbor['adm_cd'] == closestArea) {
+        neighbors = neighbor['neighbors'].map((n) => n['adm_cd']).toList();
+        break;
+      }
+    }
+    neighbors.add(closestArea);
+    return neighbors;
+  }
 }

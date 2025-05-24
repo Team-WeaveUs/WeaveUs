@@ -54,50 +54,42 @@ class WeaveDataList {
   }
 }
 
-class JoinWeaveData {
-  final String message;
-  final List<JoinWeaveList> data;
 
-  JoinWeaveData({required this.message, required this.data});
 
-  factory JoinWeaveData.fromJson(Map<String, dynamic> json) {
-    return JoinWeaveData(
-        message: json['message'],
-        data: List<JoinWeaveList>.from(
-            json['weaves'].map((x) => JoinWeaveList.fromJson(x))));
-  }
-}
-
-class JoinWeaveList {
+class JoinWeave {
   final int weaveId;
   final String title;
   final String description;
-  final int typeId;
-  final int privacyId;
-  final String createdAt;
-  final double lat;
-  final double lng;
+  final String? location;
+  final int areaId;
+  final int rewardId;
+  final int rewardConditionId;
+  late final double lat;
+  late final double lng;
 
-  JoinWeaveList(
+  JoinWeave(
       {required this.weaveId,
       required this.title,
       required this.description,
-      required this.typeId,
-      required this.privacyId,
-      required this.createdAt,
-      required this.lat,
-      required this.lng});
+      required this.location,
+      required this.areaId,
+      required this.rewardId,
+      required this.rewardConditionId,
+      this.lat = 0.0,
+      this.lng = 0.0});
 
-  factory JoinWeaveList.fromJson(Map<String, dynamic> json) {
-    return JoinWeaveList(
+  factory JoinWeave.fromJson(Map<String, dynamic> json) {
+    JoinWeave data = JoinWeave(
       weaveId: json['weave_id'],
       title: json['title'],
       description: json['description'],
-      typeId: json['type_id'],
-      privacyId: json['privacy_id'],
-      createdAt: json['created_at'],
-      lat: json['lat'],
-      lng: json['lng'],
+      location: json['location'],
+      areaId: json['area_id'],
+      rewardId: json['reward_id'],
+      rewardConditionId: json['reward_condition_id'],
     );
+    data.lat = data.location!.contains(' ') ? double.parse(data.location!.split(' ')[0]) : 0.0;
+    data.lng = data.location!.contains(' ') ? double.parse(data.location!.split(' ')[1]) : 0.0;
+    return data;
   }
 }

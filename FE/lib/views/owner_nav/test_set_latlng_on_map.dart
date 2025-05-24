@@ -3,7 +3,6 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:get/get.dart';
 import 'package:weave_us/controllers/owner_new_weave_controller.dart';
 
-
 class MapSelectPin extends StatelessWidget {
   const MapSelectPin({super.key});
 
