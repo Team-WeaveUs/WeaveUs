@@ -56,9 +56,6 @@ class RewardInviteDialog extends StatelessWidget {
                   itemBuilder: (_, index) {
                     final user = filteredList[index];
                     return ListTile(
-                      leading: user.mediaUrl.isEmpty
-                          ? const CircleAvatar(child: Icon(Icons.person))
-                          : CircleAvatar(backgroundImage: NetworkImage(user.mediaUrl)),
                       title: Text(user.reward),
                       trailing: IconButton(
                         icon: const Icon(Icons.add_circle_outline),
