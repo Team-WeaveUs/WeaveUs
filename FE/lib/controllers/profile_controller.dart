@@ -25,6 +25,7 @@ class ProfileController extends GetxController {
     likes: 0,
     subscribes: 0,
     postList: [],
+    isOwner: 0,
   ).obs;
 
   final subscribeData = SubscribeData(
@@ -36,6 +37,7 @@ class ProfileController extends GetxController {
     message: '',
     data: [],
   ).obs;
+
   final myWeaveData = MyWeaveData(
     message: '',
     data: [],
@@ -65,6 +67,26 @@ class ProfileController extends GetxController {
       fetchWeaveList(targetId);
       fetchMyWeaveList();
     });
+  }
+
+  void loadProfile(int userId) {
+    _fetchProfile(userId.toString());
+    fetchMySubscriber();
+    fetchISubscribe();
+    fetchWeaveList(userId.toString());
+    fetchMyWeaveList();
+  }
+
+  Future<void> fetchProfileById(int targetUserId) async {
+    final myId = await tokenService.loadUserId();
+    final response = await apiService.postRequest('ProfileInfo', {
+      'user_id': myId,
+      'target_user_id': targetUserId,
+      'post_count': 20,
+    });
+
+    profile.value = Profile.fromJson(response);
+    postList.value = profile.value.postList;
   }
 
   Future<void> _fetchProfile(String? targetUserId) async {
