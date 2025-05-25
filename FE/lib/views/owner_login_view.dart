@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:weave_us/views/widgets/owner_login_dialog.dart';
 import '../controllers/auth_controller.dart';
 import '../routes/app_routes.dart';
 
@@ -46,7 +47,7 @@ class OwnerLoginView extends StatelessWidget {
                 SizedBox(width: 10,),
                 TextButton(
                   onPressed: () {
-                    Get.offAllNamed(AppRoutes.NEW_OWNER);
+                    showOwnerLoginDialog(context); // 다이얼로그 호출
                   },
                   child: Text("New Owner"),
                 )
