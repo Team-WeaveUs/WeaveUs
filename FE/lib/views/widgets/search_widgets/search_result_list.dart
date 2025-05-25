@@ -29,22 +29,6 @@ class SearchResultList extends StatelessWidget {
       return ListView(
         padding: const EdgeInsets.all(12),
         children: [
-          if (results.isEmpty) ...[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "@를 붙여서 친구를 검색할 수 있습니다.",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF868583),
-                    fontFamily: 'Pretendard',
-                  ),
-                ),
-              ],
-            ),
-          ],
           if (results.isNotEmpty) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,25 +51,41 @@ class SearchResultList extends StatelessWidget {
 
               return ListTile(
                 leading: result['media_url'] == null
-                ? const CircleAvatar(
-                  radius: 20,
+                    ? const CircleAvatar(
+                    radius: 20,
                     backgroundColor: Colors.grey,
                     child: Icon(
-                    Icons.person,
-                    color: Colors.white,)
+                      Icons.person,
+                      color: Colors.white,)
                 )
-                : CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(
-                    result['mediaUrl'],
-                  )
+                    : CircleAvatar(
+                    radius: 20,
+                    backgroundImage: NetworkImage(
+                      result['mediaUrl'],
+                    )
                 ),
                 title: GestureDetector(
                   onTap: () {
-                    Get.toNamed('/profile/${result['user_id']}');
-                  },
-                  child:Text(title),
+                    final isOwner = result['is_owner'] == 1;
+                    final userId = result['user_id'];
+                    final nickname = result['nickname'] ?? '닉네임';
+                    final weaveTitle = result['title'] ?? '';
 
+                    if (isOwner) {
+                      Get.toNamed('/owner/profile/$userId', arguments: {
+                        'userId': userId,
+                        'nickname': nickname,
+                        'title': weaveTitle,
+                      });
+                    } else {
+                      Get.toNamed('/profile/$userId', arguments: {
+                        'userId': userId,
+                        'nickname': nickname,
+                        'title': weaveTitle,
+                      });
+                    }
+                  },
+                  child: Text(result['title'] ?? result['nickname'] ?? '제목 없음'),
                 ),
                 trailing: GestureDetector(
                   onTap: () {
