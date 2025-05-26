@@ -6,6 +6,7 @@ class Profile {
   final int likes;
   final int subscribes;
   final List<ProfilePostList> postList;
+  final int isOwner;
 
   Profile({
     required this.message,
@@ -15,6 +16,7 @@ class Profile {
     required this.likes,
     required this.subscribes,
     required this.postList,
+    required this.isOwner,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class Profile {
       img: json['img'] ?? "",
       likes: json['likes'],
       subscribes: json['subscribes'],
+      isOwner: json['is_owner'] ?? 0,
       postList: List<ProfilePostList>.from(
         json['post_list'].map((x) => ProfilePostList.fromJson(x)),
       ),
