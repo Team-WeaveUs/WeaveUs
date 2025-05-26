@@ -6,7 +6,7 @@ import '../widgets/new_weave_widget/new_name.input.dart';
 import '../widgets/new_weave_widget/weave_explanation.dart';
 import '../widgets/reward_invite_dialog.dart';
 import '../widgets/owner_reward_post_widgets/reward_selector_widget.dart';
-import 'test_set_latlng_on_map.dart';
+import 'set_latlng_on_map.dart';
 
 class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
   const OwnerNewWeaveView({super.key});

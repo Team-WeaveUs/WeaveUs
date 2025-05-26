@@ -38,6 +38,7 @@ class MapSection extends StatelessWidget {
                   // final marker = NMarker(id: "test", position: NLatLng(controller.position.value!.latitude, controller.position.value!.longitude));
                   r.addOverlayAll(controller.mapMarkers);
                 }
+
             ),
           ),
           if (hasResults) ...[
