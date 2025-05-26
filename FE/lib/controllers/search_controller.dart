@@ -28,15 +28,13 @@ class WeaveSearchController extends GetxController {
   final RxList<JoinWeave> joinWeaveData = <JoinWeave>[].obs;
   final mapMarkers = <NMarker>{}.obs;
 
-  late Worker _debouncer;
-
   WeaveSearchController({required this.locationService});
 
   @override
   void onInit() {
     super.onInit();
     getRecentLocation();
-    _debouncer = debounce(
+    debounce(
       RxString(''),
       (_) => search(textController.text),
       time: const Duration(milliseconds: 500),
@@ -151,13 +149,18 @@ class WeaveSearchController extends GetxController {
         'weave/join/get/area', {'user_id': userId, 'area_ids': areaId});
     joinWeaveData.value =
         (response['weaves'] as List).map((e) => JoinWeave.fromJson(e)).toList();
-    print(joinWeaveData.length);
-    print(response['weaves']);
     mapMarkers.assignAll(joinWeaveData.map((group) {
-      return NMarker(
+      final marker = NMarker(
         id: group.weaveId.toString(),
         position: NLatLng(group.lat, group.lng),
       );
+      marker.setOnTapListener((NMarker marker) {
+        Get.toNamed('/new_post', arguments: {
+          'weaveId': group.weaveId,
+          'weaveTitle': group.title,
+        });
+      });
+      return marker;
     }));
     mapLoading.value = false;
   }

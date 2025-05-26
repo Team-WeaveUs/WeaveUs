@@ -20,7 +20,6 @@ class MapSelectPin extends StatelessWidget {
         // position이 null일 때는 로딩 인디케이터를 표시
         return const Center(child: CircularProgressIndicator());
       }
-
       return Column(
         children: [
           SizedBox(
