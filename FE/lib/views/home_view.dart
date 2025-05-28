@@ -53,30 +53,21 @@ class HomeView extends GetView<HomeController> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      final weaveId =
-                                          controller.postList1[index].weaveId;
-                                      Get.toNamed("/weave/$weaveId");
-                                    },
-                                    child: Text(
-                                      controller.postList1[index].weaveTitle,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black,
-                                        fontFamily: 'Pretendard',
-                                      ),
+                                  Text(
+                                    controller.postList1[index].weaveTitle,
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                      fontFamily: 'Pretendard',
                                     ),
                                   ),
                                   Text(
                                     controller.postList1[index].weaveType == 1
                                         ? 'Global'
-                                        : controller.postList1[index]
-                                                    .weaveType ==
-                                                2
-                                            ? 'Join'
-                                            : 'Local',
+                                        : controller.postList1[index].weaveType == 2
+                                        ? 'Join'
+                                        : 'Local',
                                     style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w500,
@@ -148,22 +139,12 @@ class HomeView extends GetView<HomeController> {
                                                     radius: 15,
                                                     backgroundColor:
                                                         Colors.grey,
-                                                    child: Icon(
-                                                      Icons.person,
-                                                      color: Colors.white,
-                                                    ),
+                                                    child: Icon(Icons.person, color: Colors.white,),
                                                   ),
                                             Text(verticalPost.userMediaUrl ??
                                                 ""),
                                             const SizedBox(width: 6),
-                                            GestureDetector(
-                                              onTap: () {
-                                                Get.toNamed(
-                                                    "/profile/${verticalPost.userId}");
-                                              },
-                                              child:
-                                                  Text(verticalPost.nickname),
-                                            ),
+                                            Text(verticalPost.nickname),
                                             const SizedBox(width: 6),
                                             IconButton(
                                               icon: Icon(
@@ -180,6 +161,7 @@ class HomeView extends GetView<HomeController> {
                                             Text('${verticalPost.likes}'),
                                             const SizedBox(width: 6),
                                             GestureDetector(
+
                                               onTap: () =>
                                                   controller.toggleSubscribe(
                                                       verticalPost),
@@ -225,12 +207,8 @@ class HomeView extends GetView<HomeController> {
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            Get.toNamed(
-                                              '/post/${verticalPost.id}',
-                                              arguments: {
-                                                'postUserId':
-                                                    verticalPost.userId
-                                              },
+                                            Get.toNamed('/post/${verticalPost.id}',
+                                              arguments: {'postUserId': verticalPost.userId},
                                             );
                                           },
                                           child: Text(

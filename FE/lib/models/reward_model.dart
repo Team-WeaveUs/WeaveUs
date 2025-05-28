@@ -4,7 +4,7 @@ class Reward {
   final int grantedBy;
   final int rewardId;
   final String rewardConditionId;
-  late final int weaveId;
+  final int weaveId;
   final int postId;
   final DateTime awardedAt;
   final int isUsed;
@@ -13,7 +13,22 @@ class Reward {
   final String grantedByNickname;
   final String description;
   final String validity;
-  final String weaveTitle;
+
+
+  //        "id": 10,
+  //         "user_id": 1,
+  //         "granted_by": 16,
+  //         "reward_id": 2,
+  //         "reward_condition_id": 1,
+  //         "weave_id": 40,
+  //         "post_id": 80,
+  //         "awarded_at": "2025-05-28T22:20:41.000Z",
+  //         "is_used": 0,
+  //         "used_at": null,
+  //         "title": "포카리스웨트 쿠폰",
+  //         "granted_by_nickname": "JEKKY",
+  //         "description": "포카리 전용 쿠폰입니다.",
+  //         "validity": "12d"
 
   Reward({
     required this.title,
@@ -30,51 +45,24 @@ class Reward {
     required this.isUsed,
     required this.usedAt,
     required this.grantedByNickname,
-    required this.weaveTitle,
   });
 
   factory Reward.fromJson(Map<String, dynamic> json) {
-    // 기본값 설정
-    final now = DateTime.now();
-
     return Reward(
       title: json['title']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       rewardId: json['reward_id'] ?? 0,
       validity: json['validity']?.toString() ?? '',
-      // 선택적 필드들에 대한 기본값 처리
       id: json['id'] ?? 0,
       userId: json['user_id'] ?? 0,
       grantedBy: json['granted_by'] ?? 0,
-      rewardConditionId: json['reward_condition_id']?.toString() ?? '0',
+      rewardConditionId: json['reward_condition_id']?.toString() ?? '',
       weaveId: json['weave_id'] ?? 0,
       postId: json['post_id'] ?? 0,
-      awardedAt:
-          json['awarded_at'] != null ? DateTime.parse(json['awarded_at']) : now,
+      awardedAt: DateTime.parse(json['awarded_at']),
       isUsed: json['is_used'] ?? 0,
       usedAt: json['used_at'] != null ? DateTime.parse(json['used_at']) : null,
       grantedByNickname: json['granted_by_nickname']?.toString() ?? '',
-      weaveTitle: json['weave_title']?.toString() ?? '',
-    );
-  }
-
-  factory Reward.empty() {
-    return Reward(
-      title: '',
-      description: '',
-      rewardId: 0,
-      validity: '',
-      id: 0,
-      userId: 0,
-      grantedBy: 0,
-      rewardConditionId: '',
-      weaveId: 0,
-      postId: 0,
-      awardedAt: DateTime.now(),
-      isUsed: 0,
-      usedAt: null,
-      grantedByNickname: '',
-      weaveTitle: '',
     );
   }
 }

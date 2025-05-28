@@ -55,13 +55,6 @@ class OwnerRewardView extends GetView<NewRewardController> {
                     ),
                   ],
                 )),
-            TextField(
-              controller: controller.passwordController,
-              decoration: const InputDecoration(
-                labelText: '비밀번호',
-                hintText: '비밀번호를 입력해주세요',
-              ),
-            ),
             const SizedBox(height: 32),
             Center(
               child: ElevatedButton(

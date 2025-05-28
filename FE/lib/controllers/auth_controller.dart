@@ -45,7 +45,11 @@ class AuthController extends GetxController {
     isAuthenticated.value = isValid;
     isOwner.value = token.isOwner == 1;
     if (isValid) {
-      Get.offAllNamed(AppRoutes.HOME);
+      if (token.isOwner == 1) {
+        Get.offAllNamed('/owner/profile/${token.userId}');
+      } else {
+        Get.offAllNamed(AppRoutes.HOME);
+      }
     }
   }
 
