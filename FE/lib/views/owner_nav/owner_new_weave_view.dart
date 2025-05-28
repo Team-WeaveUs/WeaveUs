@@ -5,7 +5,7 @@ import '../../controllers/owner_new_weave_controller.dart';
 import '../widgets/new_weave_widget/new_name.input.dart';
 import '../widgets/new_weave_widget/weave_explanation.dart';
 import '../widgets/reward_invite_dialog.dart';
-import '../widgets/owner_reward_post_widgets/reward_selector_widget.dart';
+import '../widgets/new_reward_widgets/reward_selector_widget.dart';
 import 'set_latlng_on_map.dart';
 
 class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
@@ -49,7 +49,7 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                       RewardInviteDialog(
                         onRewardSelected: (rewardModel) {
                           controller.selectReward(// 표시용 텍스트
-                            rewardModel.reward,
+                            rewardModel.title,
                             rewardModel.rewardId,// 실제 rewardId
                           );
                         },
@@ -66,6 +66,34 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                         padding: EdgeInsets.symmetric(horizontal: 20),
                       child: MapSelectPin(),
                     )),
+                ElevatedButton(
+                  onPressed: () async {
+                    final DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(2099),
+                    );
+                    if (picked != null) {
+                      controller.selectedDate.value = picked;
+                      print(controller.selectedDate.value);
+                    }
+                  }, child: Text("날짜 선택"),
+                ),
+                Obx(() => DropdownButton<int>(
+                  value: controller.rewardConditionId.value,
+                  onChanged: (int? newValue) {
+                    if (newValue != null) {
+                      controller.rewardConditionId.value = newValue;
+                    }
+                  },
+                  items: [
+                    DropdownMenuItem(
+                      value: 2,
+                      child: Text('직접 지급'),
+                    ),
+                  ]
+                )),
                 const SizedBox(height: 30),
                 // ✅ 생성 버튼
                 SizedBox(

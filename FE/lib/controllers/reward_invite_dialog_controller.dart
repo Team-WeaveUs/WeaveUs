@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../models/reward_invite_model.dart';
+import '../models/reward_model.dart';
 import '../services/api_service.dart';
 import '../services/token_service.dart';
 
@@ -13,8 +13,8 @@ class RewardInviteDialogController extends GetxController {
     required this.tokenService,
   });
 
-  final RxList<RewardInviteModel> myRewardList = <RewardInviteModel>[].obs;
-  final RxList<RewardInviteModel> selectedRewards = <RewardInviteModel>[].obs;
+  final RxList<Reward> myRewardList = <Reward>[].obs;
+  final RxList<Reward> selectedRewards = <Reward>[].obs;
   final RxString searchQuery = ''.obs;
   final RxBool isLoading = false.obs;
 
@@ -30,22 +30,22 @@ class RewardInviteDialogController extends GetxController {
   }
 
   /// 필터링된 검색 리스트
-  List<RewardInviteModel> get filteredList {
+  List<Reward> get filteredList {
     if (searchQuery.value.isEmpty) return myRewardList;
     return myRewardList
-        .where((r) => r.reward.contains(searchQuery.value))
+        .where((r) => r.title.contains(searchQuery.value))
         .toList();
   }
 
   /// 리워드 추가
-  void addReward(RewardInviteModel reward) {
+  void addReward(Reward reward) {
     if (!selectedRewards.contains(reward)) {
       selectedRewards.add(reward);
     }
   }
 
   /// 리워드 제거
-  void removeReward(RewardInviteModel reward) {
+  void removeReward(Reward reward) {
     selectedRewards.remove(reward);
   }
 
@@ -64,9 +64,9 @@ class RewardInviteDialogController extends GetxController {
         },
       );
 
-      if (response is Map && response['rewards'] is List) {
+      if (response['rewards'] is List) {
         myRewardList.value = List<Map<String, dynamic>>.from(response['rewards'])
-            .map((e) => RewardInviteModel.fromJson(e))
+            .map((e) => Reward.fromJson(e))
             .toList();
       } else {
         print("⚠️ 서버 응답 형식 오류: $response");

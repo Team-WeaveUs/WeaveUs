@@ -15,22 +15,19 @@ class PostDetailView extends GetView<PostDetailController> {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
-
         final post = controller.post.value;
-
-        print('PostDetail 이미지 URL: ${post.mediaUrl}');
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(post.mediaUrl, fit: BoxFit.cover),
+            Expanded(child: Image.network(post.mediaUrl, fit: BoxFit.fitWidth)),
             Padding(
               padding: const EdgeInsets.all(12),
               child: Text(
                   post.textContent, style: const TextStyle(fontSize: 16)),
             ),
             const Divider(),
-
+            controller.canReward.value ? TextButton(onPressed: controller.giveReward, child: const Text('리워드 주기')) : const SizedBox.shrink(),
             // 🔻 댓글 표시
             Expanded(
               child: CommentSectionWidget(postId: post.id),

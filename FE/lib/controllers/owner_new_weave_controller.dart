@@ -14,7 +14,9 @@ class OwnerNewWeaveController extends GetxController {
 
   final selectedRewardText = ''.obs;
   final selectedRewardId = 0.obs;
+  final rewardGiveType = ''.obs;
 
+  final Rx<DateTime> selectedDate = DateTime.now().obs;
   // final selectedWeave = Rxn<String>();
   // final selectedRange = Rxn<String>();
   // final selectedInvite = Rxn<String>();
@@ -26,6 +28,7 @@ class OwnerNewWeaveController extends GetxController {
   Rxn<NLatLng> selectedLatLng = Rxn<NLatLng>();
   RxBool isLoading = false.obs;
   RxString error = ''.obs;
+  RxInt rewardConditionId = 2.obs;
 
   final ApiService apiService;
   final TokenService tokenService;
@@ -89,6 +92,7 @@ class OwnerNewWeaveController extends GetxController {
     final areaId = closestAreaName.value;
     final title = nameController.text;
     final description = descriptionController.text;
+    final date = selectedDate.value.toString().split(' ')[0];
 
     try {
       final bodies = {
@@ -96,8 +100,8 @@ class OwnerNewWeaveController extends GetxController {
         "title": title,
         "description": description,
         "reward_id": rewardId,
-        "reward_condition_id": 1,
-        "reward_validity": "30d",
+        "reward_condition_id": 2, // 지급 조건을 만들고, 그 아이디를 넣으면 된다.
+        "reward_validity": date,// 날짜 yyyy.mm.dd 형식으로 넣어야 한다.
         "location": locationString,
         "area_id": areaId
       };

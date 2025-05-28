@@ -21,11 +21,10 @@ class _SplashScreenState extends State<SplashScreen> {
     bool isValid = await _authController.isAuthenticated.value
         ? true
         : await _authController.checkAuthStatus();
-
     if (isValid) {
-      Get.offAllNamed(AppRoutes.HOME); // 자동 로그인 성공 시 메인 페이지로 이동
+        Get.offAllNamed(AppRoutes.HOME);
     } else {
-      Get.offAllNamed(AppRoutes.AUTH); // 로그인 필요 시 로그인 페이지로 이동
+      Get.offAllNamed(AppRoutes.AUTH);
     }
   }
 

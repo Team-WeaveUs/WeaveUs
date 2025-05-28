@@ -13,6 +13,7 @@ class AuthController extends GetxController {
 
   var isAuthenticated = false.obs;
   var isOwner = false.obs;
+  var userId = ''.obs;
   var isLoading = false.obs;
   var isLoginSuccess = false.obs;
 
@@ -44,7 +45,11 @@ class AuthController extends GetxController {
     isAuthenticated.value = isValid;
     isOwner.value = token.isOwner == 1;
     if (isValid) {
-      Get.offAllNamed(AppRoutes.HOME);
+      if (token.isOwner == 1) {
+        Get.offAllNamed('/owner/profile/${token.userId}');
+      } else {
+        Get.offAllNamed(AppRoutes.HOME);
+      }
     }
   }
 
@@ -83,6 +88,7 @@ class AuthController extends GetxController {
       isAuthenticated.value = true;
       isLoading.value = false;
       isOwner.value = token!.isOwner == 1;
+      userId.value = token.userId;
       Get.offAllNamed(AppRoutes.HOME);
     } else {
       isLoading.value = false;

@@ -46,7 +46,6 @@ class SearchResultList extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             ...results.map((result) {
-              final title = result['nickname'] ?? '제목 없음';
               final isSubscribed = result['subscribe_status'] == 1 ? true : false;
 
               return ListTile(
@@ -72,7 +71,7 @@ class SearchResultList extends StatelessWidget {
                     final weaveTitle = result['title'] ?? '';
 
                     if (isOwner) {
-                      Get.toNamed('/owner/profile/$userId', arguments: {
+                      Get.toNamed('/profile/$userId', arguments: {
                         'userId': userId,
                         'nickname': nickname,
                         'title': weaveTitle,
