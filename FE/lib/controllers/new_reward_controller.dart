@@ -14,6 +14,7 @@ class NewRewardController extends GetxController {
 
   final rewardContentController = TextEditingController();
   final postContentController = TextEditingController();
+  final passwordController = TextEditingController();
   final ApiService apiService;
   final TokenService tokenService;
 
@@ -58,8 +59,9 @@ class NewRewardController extends GetxController {
     final descriptionVal = descriptionController.text.trim();
     final validityVal = validityString.value;
     final userId = await tokenService.loadUserId();
+    final passwordVal = passwordController.text.trim();
 
-    if (titleVal.isEmpty || descriptionVal.isEmpty || validityVal == '0d') {
+    if (titleVal.isEmpty || descriptionVal.isEmpty || passwordVal.isEmpty) {
       print("❌ [submitReward] 유효하지 않은 입력값 있음");
       Get.snackbar("에러", "모든 항목을 입력해주세요");
       return;
@@ -70,6 +72,7 @@ class NewRewardController extends GetxController {
       title: titleVal,
       description: descriptionVal,
       validity: validityVal,
+      password: passwordVal,
     );
 
     print("📤 [submitReward] Payload → ${rewardPayload.toJson()}");

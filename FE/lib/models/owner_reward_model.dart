@@ -3,12 +3,14 @@ class CreateRewardRequest {
   final String title;
   final String description;
   final String validity;
+  final String password;
 
   CreateRewardRequest({
     required this.userId,
     required this.title,
     required this.description,
     required this.validity,
+    required this.password,
   });
 
   Map<String, dynamic> toJson() => {
@@ -16,5 +18,6 @@ class CreateRewardRequest {
     "title": title,
     "description": description,
     "validity": validity,
+    "password": password,
   };
 }

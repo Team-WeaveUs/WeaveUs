@@ -52,14 +52,14 @@ class RewardDetailController extends GetxController {
       final rewardHistoryId = reward.value.id;
       final rewardId = reward.value.rewardId;
       final password = passwordController.text;
-      final response = await apiService.postRequest('reward/use', {
+      await apiService.postRequest('reward/use', {
         "user_id": userId,
         "weave_id": weaveId,
         "reward_history_id": rewardHistoryId,
         "reward_id": rewardId,
         "password": password
       });
-      Get.offNamed(AppRoutes.REWARDS);
+      Get.offAllNamed(AppRoutes.REWARDS);
     } catch (e) {
       print("use reward error : $e");
     }
