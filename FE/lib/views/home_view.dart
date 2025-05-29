@@ -53,15 +53,23 @@ class HomeView extends GetView<HomeController> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    controller.postList1[index].weaveTitle,
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black,
-                                      fontFamily: 'Pretendard',
+                                  GestureDetector(
+                                    onTap: () {
+                                      final weaveId =
+                                          controller.postList1[index].weaveId;
+                                      Get.toNamed("/weave/$weaveId");
+                                    },
+                                    child: Text(
+                                      controller.postList1[index].weaveTitle,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black,
+                                        fontFamily: 'Pretendard',
+                                      ),
                                     ),
                                   ),
+
                                   Text(
                                     controller.postList1[index].weaveType == 1
                                         ? 'Global'
@@ -144,7 +152,14 @@ class HomeView extends GetView<HomeController> {
                                             Text(verticalPost.userMediaUrl ??
                                                 ""),
                                             const SizedBox(width: 6),
-                                            Text(verticalPost.nickname),
+                                            GestureDetector(
+                                              onTap: () {
+                                                Get.toNamed(
+                                                    "/profile/${verticalPost.userId}");
+                                              },
+                                              child:
+                                                  Text(verticalPost.nickname),
+                                            ),
                                             const SizedBox(width: 6),
                                             IconButton(
                                               icon: Icon(

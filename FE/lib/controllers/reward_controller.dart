@@ -56,9 +56,7 @@ class RewardController extends GetxController {
           .map((e) => Reward.fromJson(e))
           .toList();
     } catch (e) {
-      print('Error fetching rewards: $e');
+      print('Error fetching My rewards: $e');
     }
   }
-
-
 }
