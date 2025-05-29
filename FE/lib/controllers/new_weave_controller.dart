@@ -11,6 +11,8 @@ import '../services/token_service.dart';
 class NewWeaveController extends GetxController {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
+  final nameFocusNode = FocusNode();
+  final descriptionFocusNode = FocusNode();
 
   final ApiService apiService;
   final TokenService tokenService;
@@ -25,18 +27,18 @@ class NewWeaveController extends GetxController {
   final RxBool isFormValid = false.obs;
 
   int get typeId => switch (selectedWeave.value) {
-    'Global' => 1,
-    'Join' => 2,
-    'Local' => 3,
-    _ => 1,
-  };
+        'Global' => 1,
+        'Join' => 2,
+        'Local' => 3,
+        _ => 1,
+      };
 
   int get privacyId => switch (selectedOpenRange.value) {
-    '나만 보기' => 1,
-    '초대한 사용자' => 2,
-    '모두 보기' => 3,
-    _ => 3,
-  };
+        '나만 보기' => 1,
+        '초대한 사용자' => 2,
+        '모두 보기' => 3,
+        _ => 3,
+      };
 
   void updateSelections({String? weave, String? range, String? invite}) {
     selectedWeave.value = weave ?? '';
@@ -63,7 +65,8 @@ class NewWeaveController extends GetxController {
         PopScope(
           canPop: false,
           child: Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -108,7 +111,6 @@ class NewWeaveController extends GetxController {
     }
   }
 
-
   @override
   void onInit() {
     super.onInit();
@@ -120,6 +122,8 @@ class NewWeaveController extends GetxController {
   void onClose() {
     nameController.dispose();
     descriptionController.dispose();
+    nameFocusNode.dispose();
+    descriptionFocusNode.dispose();
     super.onClose();
   }
 }

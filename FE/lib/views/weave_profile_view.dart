@@ -82,11 +82,6 @@ class WeaveProfileView extends GetView<WeaveProfileController> {
             ),
 
             const SizedBox(height: 16),
-            const Text(
-              "쌓일 위브들",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
             Expanded(
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

@@ -12,6 +12,7 @@ import '../bindings/owner_new_weave_binding.dart';
 import '../bindings/new_reward_binding.dart';
 import '../bindings/profile_binding.dart';
 import '../bindings/reward_binding.dart';
+import '../bindings/reward_detail_binding.dart';
 import '../bindings/search_binding.dart';
 
 import '../middlewares/auth_middleware.dart';
@@ -28,6 +29,7 @@ import '../views/owner_registration_view.dart';
 import '../views/owner_nav/new_reward_view.dart';
 import '../views/post_detail_view.dart';
 import '../views/profile_view.dart';
+import '../views/reward_detail_view.dart';
 import '../views/reward_view.dart';
 import '../views/search_view.dart';
 
@@ -49,6 +51,7 @@ class AppRoutes {
   static const OWNER_NEW_WEAVE = '/owner/new_weave';
   static const NEW_REWARDS = '/new_rewards';
   static const WEAVE = '/weave/:weave_id';
+  static const REWARD_DETAIL = '/reward/detail';
 
   static final routes = [
     GetPage(name: SPLASH, page: () => SplashScreen(), binding: AuthBinding()),
@@ -148,6 +151,12 @@ class AppRoutes {
       binding: WeaveBinding(),
       middlewares: [AuthMiddleware()],
       transition: Transition.noTransition,
+    ),
+    GetPage(
+      name: REWARD_DETAIL,
+      page: () => RewardDetailView(),
+      binding: RewardDetailBinding(),
+      middlewares: [AuthMiddleware()],
     ),
   ];
 }

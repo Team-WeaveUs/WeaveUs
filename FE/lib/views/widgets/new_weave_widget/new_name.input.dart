@@ -2,15 +2,21 @@ import 'package:flutter/material.dart';
 
 class NewNameInput extends StatelessWidget {
   final TextEditingController controller;
+  final FocusNode focusNode;
 
-  const NewNameInput({super.key, required this.controller});
+  const NewNameInput({
+    super.key,
+    required this.controller,
+    required this.focusNode,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 20, left: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
         controller: controller,
+        focusNode: focusNode,
         style: const TextStyle(
           fontSize: 20,
           fontFamily: 'Pretendard',

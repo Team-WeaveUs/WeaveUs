@@ -39,12 +39,17 @@ class NewWeaveView extends GetView<NewWeaveController> {
               },
             ),
             Divider(color: Colors.grey[850], thickness: 1),
-            NewNameInput(controller: controller.nameController),
+            NewNameInput(
+              controller: controller.nameController,
+              focusNode: controller.nameFocusNode,
+            ),
             Divider(color: Colors.grey[850], thickness: 1),
-            WeaveExplanation(controller: controller.descriptionController),
+            WeaveExplanation(
+              controller: controller.descriptionController,
+              focusNode: controller.descriptionFocusNode,
+            ),
             Divider(color: Colors.grey[850], thickness: 1),
             const SizedBox(height: 30),
-
             Obx(() {
               return Column(
                 children: [
