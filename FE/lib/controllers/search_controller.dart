@@ -174,7 +174,7 @@ class WeaveSearchController extends GetxController {
         position: NLatLng(group.lat, group.lng),
       );
       marker.setOnTapListener((NMarker marker) {
-        Get.toNamed('/new_post', arguments: {
+        Get.toNamed('/weave/${group.weaveId}', arguments: {
           'weaveId': group.weaveId,
           'weaveTitle': group.title,
         });
