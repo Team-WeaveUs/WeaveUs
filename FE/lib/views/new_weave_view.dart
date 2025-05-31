@@ -50,6 +50,7 @@ class NewWeaveView extends GetView<NewWeaveController> {
             ),
             Divider(color: Colors.grey[850], thickness: 1),
             const SizedBox(height: 30),
+
             Obx(() {
               return Column(
                 children: [
