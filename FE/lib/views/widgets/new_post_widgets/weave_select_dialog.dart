@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 import '../../../controllers/weave_dialog_controller.dart';
 
 class WeaveDialog extends StatelessWidget {
@@ -19,8 +20,8 @@ class WeaveDialog extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text("위브를 검색하세요", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
+              const Text("위브를 검색하세요", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 25),
 
               // 검색 입력창
               Row(
@@ -28,21 +29,34 @@ class WeaveDialog extends StatelessWidget {
                   Expanded(
                     child: TextField(
                       controller: controller.searchController,
+                      onSubmitted: (_) => controller.fetchSearchResults(),
                       decoration: InputDecoration(
                         hintText: "검색어를 입력하세요",
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        hintStyle: const TextStyle(color: Colors.black),
+                        filled: true,
+                        fillColor: Color(0xFFD9D9D9),
+                        contentPadding: const EdgeInsets.only(left: 20, right: 20),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        suffixIcon: Obx(() => controller.isLoading.value
+                            ? const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        )
+                            : IconButton(
+                          icon: const Icon(HugeIcons.strokeRoundedSearch02, size: 20),
+                          onPressed: controller.fetchSearchResults,
+                        )),
                       ),
-                    ),
+                    )
                   ),
-                  const SizedBox(width: 8),
-                  Obx(() => controller.isLoading.value
-                      ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator())
-                      : IconButton(
-                    icon: const Icon(Icons.search),
-                    onPressed: controller.fetchSearchResults,
-                  )),
-                ],
+                    ],
               ),
               const SizedBox(height: 10),
 
@@ -55,7 +69,13 @@ class WeaveDialog extends StatelessWidget {
                 if (controller.searchResults.isEmpty) {
                   return const Padding(
                     padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Text("검색 결과가 없습니다."),
+                    child: Text("근처의 join 위브 입니다.",
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                        fontFamily: 'Pretendard',
+                      ),),
                   );
                 }
 
@@ -83,11 +103,11 @@ class WeaveDialog extends StatelessWidget {
                 );
               }),
 
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () => Get.back(),
-                child: const Text("닫기"),
-              ),
+              // const SizedBox(height: 10),
+              // ElevatedButton(
+              //   onPressed: () => Get.back(),
+              //   child: const Text("닫기"),
+              // ),
             ],
           ),
         ),
