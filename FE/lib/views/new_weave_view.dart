@@ -29,6 +29,14 @@ class NewWeaveView extends GetView<NewWeaveController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Divider(color: Colors.grey[850], thickness: 1),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, bottom: 2),
+              child: Text('위브 종류',style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Pretendard',
+              ),),
+            ),
             WeaveTypeSelector(
               onChanged: (model) {
                 controller.updateSelections(
@@ -39,8 +47,24 @@ class NewWeaveView extends GetView<NewWeaveController> {
               },
             ),
             Divider(color: Colors.grey[850], thickness: 1),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, bottom: 2),
+              child: Text('위브 이름',style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Pretendard',
+              ),),
+            ),
             NewNameInput(controller: controller.nameController),
             Divider(color: Colors.grey[850], thickness: 1),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, bottom: 2),
+              child: Text('소개',style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Pretendard',
+              ),),
+            ),
             WeaveExplanation(controller: controller.descriptionController),
             Divider(color: Colors.grey[850], thickness: 1),
             const SizedBox(height: 30),
