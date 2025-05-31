@@ -31,7 +31,7 @@ class OwnerProfileView extends StatelessWidget {
           else
             Column(children: [
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
+                margin: const EdgeInsets.all(20),
                 child: Row(children: [
                   profile.img == ""
                       ? const CircleAvatar(
@@ -95,11 +95,24 @@ class OwnerProfileView extends StatelessWidget {
                                 fontSize: 20,
                                 color: Colors.black,
                               )),
+                          SizedBox(width: 50),
                           TextButton(
                             onPressed: controller.toggleTabs,
-                            child: Text(controller.toggleLabel),
+                            style: TextButton.styleFrom(
+                                backgroundColor: Color(0xFF868583),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                )
+                            ),
+                            child: Text(controller.toggleLabel,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                )),
                           )
                         ]),
+                        SizedBox(height: 10),
                         const Text(
                           "위브 소개가 들어갈 예정입니다.",
                           style: TextStyle(
@@ -118,9 +131,25 @@ class OwnerProfileView extends StatelessWidget {
             return Expanded(
               child: GetBuilder<TabViewController>(
                 builder: (_) => Scaffold(
-                  appBar: TabBar(
-                    controller: tabController.tabController,
-                    tabs: tabController.tabs,
+                  appBar: PreferredSize( // ← TabBar PreferredSize
+                    preferredSize: const Size.fromHeight(50),
+                    child: TabBar(
+                      controller: tabController.tabController,
+                      tabs: tabController.tabs,
+                      labelStyle: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Pretendard',
+                      ),
+                      unselectedLabelStyle: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w300,
+                        fontFamily: 'Pretendard',
+                      ),
+                      labelColor: Colors.black,
+                      unselectedLabelColor: Colors.grey,
+                      indicatorColor: Colors.black,
+                    ),
                   ),
                   body: TabBarView(
                     controller: tabController.tabController,
