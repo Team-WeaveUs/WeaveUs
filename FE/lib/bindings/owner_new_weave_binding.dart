@@ -24,6 +24,6 @@ class OwnerNewWeaveBinding extends Bindings {
     Get.lazyPut<RewardInviteDialogController>(() => RewardInviteDialogController(
       apiService: Get.find<ApiService>(),
       tokenService: Get.find<TokenService>(),
-    ));
+    ), fenix: true);
   }
 }

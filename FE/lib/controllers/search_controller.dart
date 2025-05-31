@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
+
+import '../models/weave_data_model.dart';
 
 import '../services/token_service.dart';
 import '../services/api_service.dart';
 import '../services/location_service.dart';
-
 
 class WeaveSearchController extends GetxController {
   final ApiService _apiService = Get.find<ApiService>();
@@ -14,27 +16,27 @@ class WeaveSearchController extends GetxController {
 
   final TextEditingController textController = TextEditingController();
 
-  final RxList<Map<String, dynamic>> searchResults = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> searchResults =
+      <Map<String, dynamic>>[].obs;
   final RxList<String> recentSearches = <String>[].obs;
   final RxBool isNoResults = false.obs;
   final RxBool isShowMap = false.obs;
   final RxBool isMapFolded = false.obs;
   final RxBool isLoading = false.obs;
+  final RxBool mapLoading = false.obs;
   final Rxn<Position> position = Rxn<Position>();
+  final RxList<JoinWeave> joinWeaveData = <JoinWeave>[].obs;
+  final mapMarkers = <NMarker>{}.obs;
 
-  late Worker _debouncer;
-
-  WeaveSearchController({
-    required this.locationService,
-});
+  WeaveSearchController({required this.locationService});
 
   @override
   void onInit() {
     super.onInit();
     getRecentLocation();
-    _debouncer = debounce(
+    debounce(
       RxString(''),
-          (_) => search(textController.text),
+      (_) => search(textController.text),
       time: const Duration(milliseconds: 500),
     );
   }
@@ -63,10 +65,12 @@ class WeaveSearchController extends GetxController {
 
       if (response.isNotEmpty) {
         if (response['weaves'] is List && response['weaves'].isNotEmpty) {
-          searchResults.value = List<Map<String, dynamic>>.from(response['weaves']);
+          searchResults.value =
+              List<Map<String, dynamic>>.from(response['weaves']);
           isNoResults.value = false;
         } else if (response['users'] is List && response['users'].isNotEmpty) {
-          searchResults.value = List<Map<String, dynamic>>.from(response['users']);
+          searchResults.value =
+              List<Map<String, dynamic>>.from(response['users']);
           isNoResults.value = false;
         } else {
           searchResults.clear();
@@ -80,7 +84,7 @@ class WeaveSearchController extends GetxController {
       print("❌ 검색 실패: $e");
       searchResults.clear();
       isNoResults.value = true;
-    } finally{
+    } finally {
       isLoading.value = false;
     }
   }
@@ -99,6 +103,7 @@ class WeaveSearchController extends GetxController {
   void clearRecentSearches() {
     recentSearches.clear();
   }
+
   void toggleSubscribe(int targetUserId) async {
     try {
       final userId = await _tokenService.loadUserId();
@@ -108,7 +113,8 @@ class WeaveSearchController extends GetxController {
       });
 
       // 상태 반전 (0 -> 1, 1 -> 0)
-      final index = searchResults.indexWhere((result) => result['user_id'] == targetUserId);
+      final index = searchResults
+          .indexWhere((result) => result['user_id'] == targetUserId);
       if (index != -1) {
         final currentStatus = searchResults[index]['subscribe_status'] ?? 0;
         searchResults[index]['subscribe_status'] = currentStatus == 1 ? 0 : 1;
@@ -121,6 +127,7 @@ class WeaveSearchController extends GetxController {
 
   Future<void> getRecentLocation() async {
     isLoading.value = true;
+    mapLoading.value = true;
     try {
       position.value = await locationService.getCurrentLocation();
     } catch (e) {
@@ -128,10 +135,40 @@ class WeaveSearchController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+    fetchMapMarker();
+  }
+
+  Future<void> fetchMapMarker() async {
+    final userId = await _tokenService.loadUserId();
+    final areaId = await locationService.findNeighbors(
+        position.value!.latitude, position.value!.longitude);
+    areaId.forEach((a) => print(a));
+    print('areaid: $areaId');
+
+    final response = await _apiService.postRequest(
+        'weave/join/get/area', {'user_id': userId, 'area_ids': areaId});
+    joinWeaveData.value =
+        (response['weaves'] as List).map((e) => JoinWeave.fromJson(e)).toList();
+    mapMarkers.assignAll(joinWeaveData.map((group) {
+      final marker = NMarker(
+        id: group.weaveId.toString(),
+        position: NLatLng(group.lat, group.lng),
+      );
+      marker.setOnTapListener((NMarker marker) {
+        Get.toNamed('/new_post', arguments: {
+          'weaveId': group.weaveId,
+          'weaveTitle': group.title,
+        });
+      });
+      return marker;
+    }));
+    mapLoading.value = false;
   }
 
   // 📌 지도 상태 토글
   void toggleMapView() => isShowMap.toggle();
+
   void foldMap() => isMapFolded.value = true;
+
   void unfoldMap() => isMapFolded.value = false;
 }

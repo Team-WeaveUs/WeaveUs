@@ -1,49 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:weave_us/views/components/bottom_nav_bar.dart';
+import 'package:weave_us/views/widgets/new_post_widgets/post_content.input.dart';
+import 'package:weave_us/views/widgets/owner_reward_post_widgets/reward_content_input.dart';
+import '../../controllers/owner_reward_controller.dart';
+import '../../controllers/tab_view_controller.dart';
+import '../components/app_nav_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/controllers/profile_controller.dart';
-import '../controllers/tab_view_controller.dart';
-import 'components/app_nav_bar.dart';
-import 'components/bottom_nav_bar.dart';
 
-class ProfileView extends StatefulWidget {
-  const ProfileView({super.key});
 
-  @override
-  State<ProfileView> createState() => _ProfileViewState();
-}
-
-class _ProfileViewState extends State<ProfileView> {
-  final tabController = Get.find<TabViewController>();
+class OwnerProfileView extends StatelessWidget {
   final controller = Get.find<ProfileController>();
+  final tabController = Get.find<TabViewController>();
   final RxInt myUserId = 0.obs;
 
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserId();
-    _checkRedirectToOwnerProfile();
-  }
-
-  Future<void> _loadUserId() async {
-    final userIdStr = await controller.tokenService.loadUserId();
-    myUserId.value = int.tryParse(userIdStr) ?? 0;
-  }
-
-  Future<void> _checkRedirectToOwnerProfile() async {
-    await Future.delayed(Duration(milliseconds: 300)); // 데이터 로딩 기다리기
-    final isMine = myUserId.value == controller.profile.value.userId;
-    final isOwner = controller.profile.value.isOwner == 1;
-
-    if (!isMine && isOwner == 1) {
-      Get.offNamed('/owner/profile/${controller.profile.value.userId}',
-          arguments: {
-            'userId': controller.profile.value.userId,
-            'nickname': controller.profile.value.nickname,
-          });
-    }
-  }
+  OwnerProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +28,8 @@ class _ProfileViewState extends State<ProfileView> {
 
       return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppNavBar(title: isMine ? '내 프로필' : '$nickname 님의 프로필'),
+        appBar: AppNavBar(
+            title: isMine ? '내 프로필' : '$nickname 님의 프로필'),
         body: Column(children: [
           if (profile.nickname == '')
             const Center(child: CircularProgressIndicator())
@@ -74,30 +49,34 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                   )
                       : CircleAvatar(
-                    radius: 50,
                     backgroundImage: NetworkImage(profile.img),
+                    radius: 50,
                   ),
                   const SizedBox(width: 10),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(nickname,
-                            style: const TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                                fontFamily: 'Pretendard')),
-                         Row(children: [
-                          const Icon(Icons.favorite,
-                              color: Colors.orange, size: 20),
-                          const SizedBox(width: 5),
-                          Text(profile.likes.toString(),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(HugeIcons.strokeRoundedGift,
+                                  color: Colors.black),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              nickname,
                               style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
                                 color: Colors.black,
-                              )),
-                        ]),
+                                fontFamily: 'Pretendard',
+                              ),
+                            ),
+                          ],
+                        ),
                         Row(
                           children: [
                             const Icon(HugeIcons.strokeRoundedUser,
@@ -107,27 +86,44 @@ class _ProfileViewState extends State<ProfileView> {
                               profile.subscribes.toString(),
                               style: const TextStyle(
                                 fontSize: 20,
-                                fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
                             ),
-                            SizedBox(width: 50),
-                            TextButton(
-                              onPressed: controller.toggleTabs,
-                              style: TextButton.styleFrom(
-                                  backgroundColor: Color(0xFF868583),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  )
-                              ),
-                              child: Text(controller.toggleLabel,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                  )),
-                            )
                           ],
+                        ),
+                        Row(children: [
+                          const Icon(Icons.favorite,
+                              color: Colors.orange, size: 20),
+                          const SizedBox(width: 5),
+                          Text(profile.likes.toString(),
+                              style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                              )),
+                          SizedBox(width: 50),
+                          TextButton(
+                            onPressed: controller.toggleTabs,
+                            style: TextButton.styleFrom(
+                                backgroundColor: Color(0xFF868583),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                )
+                            ),
+                            child: Text(controller.toggleLabel,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                )),
+                          )
+                        ]),
+                        SizedBox(height: 10),
+                        const Text(
+                          "위브 소개가 들어갈 예정입니다.",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
                         ),
                       ])
                 ]),
@@ -160,17 +156,14 @@ class _ProfileViewState extends State<ProfileView> {
                       indicatorColor: Colors.black,
                     ),
                   ),
-                  body: Padding(
-                    padding: const EdgeInsets.all(3.0),
-                    child: TabBarView(
-                      controller: tabController.tabController,
-                      children: tabController.tabViews,
-                    ),
+                  body: TabBarView(
+                    controller: tabController.tabController,
+                    children: tabController.tabViews,
                   ),
                 ),
               ),
             );
-          }),
+          })
         ]),
         bottomNavigationBar: BottomNavigation(),
       );

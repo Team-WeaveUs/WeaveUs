@@ -23,7 +23,7 @@ class CustomSearchBar extends StatelessWidget {
           child: TextField(
             controller: textController,
             decoration: InputDecoration(
-              hintText: "@닉네임 또는 제목으로 검색",
+              hintText: "@닉네임 또는 위브로 검색",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

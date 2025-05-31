@@ -12,11 +12,9 @@ class SearchBinding extends Bindings {
     if (!Get.isRegistered<ApiService>()) {
       Get.put(ApiService());
     }
-    Get.lazyPut(() => LocationService());
-    if (!Get.isRegistered<WeaveSearchController>()) {
-      Get.put(WeaveSearchController(
+    Get.lazyPut(() => LocationService(), fenix: true);
+      Get.lazyPut(() => WeaveSearchController(
         locationService: Get.find<LocationService>(),
-      ), permanent: true);
-    }
+      ));
   }
 }

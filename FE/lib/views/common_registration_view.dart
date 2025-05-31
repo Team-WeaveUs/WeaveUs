@@ -17,15 +17,26 @@ class RegistrationView extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Registration"),
-        actions: [IconButton(onPressed: clickLogin, icon: Icon(Icons.login))],
-      ),
-      body: Container(
-        padding: EdgeInsets.all(16.0),
-        alignment: Alignment.center,
-        child: Column(
-          children: [
+      backgroundColor: Colors.white,
+      // appBar: AppBar(
+      //   title: Text("Registration"),
+      //   actions: [IconButton(onPressed: clickLogin, icon: Icon(Icons.login))],
+      // ),
+      body: Center(
+        child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 50),
+    child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+
+    children: [
+      Text('회원가입',
+          style: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.w900, // 폰트 Black
+            color: Color(0xFFFF8000),
+            fontFamily: 'Pretendard',
+          )),
+      SizedBox(height: 20),
             TextField(
               controller: emailController,
               decoration: const InputDecoration(labelText: "이메일"),
@@ -50,8 +61,20 @@ class RegistrationView extends GetView<AuthController> {
               controller: genderController,
               decoration: const InputDecoration(labelText: "성별"),
             ),
-            TextButton(
-                onPressed: () {
+            SizedBox(height: 20),
+            // TextButton(
+            //     onPressed: () {
+            //       controller.commonRegistration(
+            //           emailController.text,
+            //           passwordController.text,
+            //           nameController.text,
+            //           nicknameController.text,
+            //           numberController.text,
+            //           genderController.text);
+            //     },
+            //     child: Text("회원가입"))
+      ElevatedButton(
+        onPressed: () {
                   controller.commonRegistration(
                       emailController.text,
                       passwordController.text,
@@ -60,9 +83,27 @@ class RegistrationView extends GetView<AuthController> {
                       numberController.text,
                       genderController.text);
                 },
-                child: Text("회원가입"))
-          ],
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size.fromHeight(55), // 높이만 설정
+          backgroundColor: Color(0xFFFF8000),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
         ),
+        child: Text(
+          "이메일 인증하기",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+            fontFamily: 'Pretendard',
+          ),
+        ),
+      ),
+
+    ],
+        ),
+      ),
       ),
     );
   }

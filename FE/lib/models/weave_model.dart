@@ -8,11 +8,11 @@ import '../services/token_service.dart';
 
 import '../models/profile_model.dart';
 
-class ProfileController extends GetxController {
+class WeaveController extends GetxController {
   final ApiService apiService;
   final TokenService tokenService;
 
-  ProfileController({required this.apiService, required this.tokenService});
+  WeaveController({required this.apiService, required this.tokenService});
   var isToggled = false.obs;
 
   String get toggleLabel => isToggled.value ? "프로필" : "구독";
@@ -50,6 +50,9 @@ class ProfileController extends GetxController {
   final mySubscribeList = <SubscribeDataList>[].obs;
   final weaveList = <WeaveDataList>[].obs;
   final myWeaveList = <WeaveDataList>[].obs;
+  final args = Get.arguments;
+  final weaveId = ['weaveId'];
+  final weaveTitle = ['weaveTitle'];
 
 
 
@@ -66,6 +69,13 @@ class ProfileController extends GetxController {
       fetchISubscribe();
       fetchWeaveList(targetId);
       fetchMyWeaveList();
+    });
+  }
+
+  void goToWeave() {
+    Get.toNamed('/new_post', arguments: {
+      'weaveId': weaveId,
+      'weaveTitle': weaveTitle,
     });
   }
 

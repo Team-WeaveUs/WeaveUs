@@ -3,7 +3,6 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:get/get.dart';
 import 'package:weave_us/controllers/owner_new_weave_controller.dart';
 
-
 class MapSelectPin extends StatelessWidget {
   const MapSelectPin({super.key});
 
@@ -21,7 +20,6 @@ class MapSelectPin extends StatelessWidget {
         // position이 null일 때는 로딩 인디케이터를 표시
         return const Center(child: CircularProgressIndicator());
       }
-
       return Column(
         children: [
           SizedBox(

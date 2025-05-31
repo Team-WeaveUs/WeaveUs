@@ -67,7 +67,7 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
               decoration: const InputDecoration(
                 isDense: true,
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.only(top:10, bottom: 10), // ✨ 직접 패딩 지정
+                contentPadding: EdgeInsets.only(top:10, bottom: 10),
                 hintStyle: TextStyle(color: Colors.grey),
                 focusedBorder: InputBorder.none,
               ),
@@ -169,9 +169,17 @@ class _WeaveTypeSelectorState extends State<WeaveTypeSelector> {
                         _notifyParent();
                       });
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(option),
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      child: Text(
+                        option,
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   );
                 }).toList(),

@@ -15,7 +15,7 @@ class OwnerRewardView extends GetView<OwnerRewardController> {
     return Scaffold(
       appBar: AppNavBar(title: '새 리워드', centerTitle: true),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -26,6 +26,8 @@ class OwnerRewardView extends GetView<OwnerRewardController> {
               controller: controller.postContentController,
               onChanged: controller.setDescription,
             ),
+            SizedBox(height: 24,),
+            const Text('리워드 란'),
             const SizedBox(height: 16),
             const Text('시작 날짜'),
             Obx(() => ListTile(
@@ -50,22 +52,40 @@ class OwnerRewardView extends GetView<OwnerRewardController> {
               onTap: () => controller.pickDate(context, false),
             )),
             const SizedBox(height: 8),
-            Obx(() => Text(
-              '계산된 유효기간: ${controller.validityString}',
-              style: const TextStyle(color: Colors.redAccent),
-            )),
-            const SizedBox(height: 16),
-            const Text('조건'),
-            const SizedBox(height: 32),
-            Center(
+            const Text('조건란'),
+            // Center(
+            //   child: ElevatedButton(
+            //     onPressed: controller.submitReward,
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: Colors.black,
+            //       foregroundColor: Colors.white,
+            //       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 80),
+            //     ),
+            //     child: const Text('공유하기'),
+            //   ),
+            // ),
+            // 오너 회원가입 버튼
+            SizedBox(height: 24,),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
               child: ElevatedButton(
                 onPressed: controller.submitReward,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 80),
+                  minimumSize: Size.fromHeight(55), // 높이만 설정
+                  backgroundColor: Color(0xFF434343),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
-                child: const Text('공유하기'),
+                child: Text(
+                  "공유하기",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontFamily: 'Pretendard',
+                  ),
+                ),
               ),
             ),
           ],

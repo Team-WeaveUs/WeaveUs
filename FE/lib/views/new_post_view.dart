@@ -16,6 +16,7 @@ class NewPostView extends GetView<NewPostController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppNavBar(
         title: "새 게시물",
         centerTitle: true,
