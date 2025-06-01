@@ -11,6 +11,7 @@ class BottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      backgroundColor: Colors.white,
       type: BottomNavigationBarType.fixed,
       showSelectedLabels: false,
       showUnselectedLabels: false,
@@ -45,7 +46,7 @@ class BottomNavigation extends StatelessWidget {
           icon: GestureDetector(
             onTap: () => Get.toNamed(AppRoutes.NEW_POST),
             onLongPress: () => Get.toNamed(AppRoutes.NEW_WEAVE),
-            child: const Icon(Icons.add_circle_outline_sharp, color: Colors.black),
+            child: const Icon(Icons.add_circle_outline_sharp, size:40 ,color: Colors.black),
           ),
           label: "",
         ),

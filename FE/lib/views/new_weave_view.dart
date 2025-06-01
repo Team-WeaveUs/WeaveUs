@@ -29,6 +29,14 @@ class NewWeaveView extends GetView<NewWeaveController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Divider(color: Colors.grey[850], thickness: 1),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, bottom: 2),
+              child: Text('위브 종류',style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Pretendard',
+              ),),
+            ),
             WeaveTypeSelector(
               onChanged: (model) {
                 controller.updateSelections(
@@ -48,6 +56,7 @@ class NewWeaveView extends GetView<NewWeaveController> {
               controller: controller.descriptionController,
               focusNode: controller.descriptionFocusNode,
             ),
+
             Divider(color: Colors.grey[850], thickness: 1),
             const SizedBox(height: 30),
 
