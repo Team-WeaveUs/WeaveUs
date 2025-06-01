@@ -11,10 +11,14 @@ import '../services/token_service.dart';
 class OwnerNewWeaveController extends GetxController {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
+  final nameFocusNode = FocusNode();
+  final descriptionFocusNode = FocusNode();
 
   final selectedRewardText = ''.obs;
   final selectedRewardId = 0.obs;
+  final rewardGiveType = ''.obs;
 
+  final Rx<DateTime> selectedDate = DateTime.now().obs;
   // final selectedWeave = Rxn<String>();
   // final selectedRange = Rxn<String>();
   // final selectedInvite = Rxn<String>();
@@ -26,6 +30,7 @@ class OwnerNewWeaveController extends GetxController {
   Rxn<NLatLng> selectedLatLng = Rxn<NLatLng>();
   RxBool isLoading = false.obs;
   RxString error = ''.obs;
+  RxInt rewardConditionId = 2.obs;
 
   final ApiService apiService;
   final TokenService tokenService;
@@ -43,25 +48,58 @@ class OwnerNewWeaveController extends GetxController {
   void onInit() {
     super.onInit();
     fetchLocation();
+
+    // 텍스트 필드 리스너 추가
+    nameController.addListener(_validateForm);
+    descriptionController.addListener(_validateForm);
+
+    // 포커스 노드 리스너 추가
+    nameFocusNode.addListener(() {
+      if (!nameFocusNode.hasFocus) {
+        Get.focusScope?.unfocus();
+      }
+    });
+
+    descriptionFocusNode.addListener(() {
+      if (!descriptionFocusNode.hasFocus) {
+        Get.focusScope?.unfocus();
+      }
+    });
+  }
+
+  @override
+  void onClose() {
+    nameController.dispose();
+    descriptionController.dispose();
+    nameFocusNode.dispose();
+    descriptionFocusNode.dispose();
+    selectedRewardText.close();
+    selectedRewardId.close();
+    closestAreaName.close();
+    position.close();
+    selectedLatLng.close();
+    super.onClose();
   }
 
   void _validateForm() {
     isFormValid.value = nameController.text.trim().isNotEmpty &&
         descriptionController.text.trim().isNotEmpty &&
-    position.value != null;
+        selectedRewardId.value != 0 &&
+        selectedLatLng.value != null;
   }
 
   void selectReward(String title, int id) {
     selectedRewardText.value = title;
     selectedRewardId.value = id;
+    _validateForm();
   }
 
   void onMapTap(NPoint point, NLatLng latLng) async {
-    _validateForm();
     mapService.setSelectedPosition(latLng);
     closestAreaName.value = await locationService.findClosestArea(
         latLng.latitude, latLng.longitude);
     selectedLatLng.value = latLng;
+    _validateForm();
   }
 
   Future<void> fetchLocation() async {
@@ -89,6 +127,7 @@ class OwnerNewWeaveController extends GetxController {
     final areaId = closestAreaName.value;
     final title = nameController.text;
     final description = descriptionController.text;
+    final date = selectedDate.value.toString().split(' ')[0];
 
     try {
       final bodies = {
@@ -96,8 +135,8 @@ class OwnerNewWeaveController extends GetxController {
         "title": title,
         "description": description,
         "reward_id": rewardId,
-        "reward_condition_id": 1,
-        "reward_validity": "30d",
+        "reward_condition_id": 2, // 지급 조건을 만들고, 그 아이디를 넣으면 된다.
+        "reward_validity": date, // 날짜 yyyy.mm.dd 형식으로 넣어야 한다.
         "location": locationString,
         "area_id": areaId
       };
@@ -109,17 +148,5 @@ class OwnerNewWeaveController extends GetxController {
       Get.snackbar('성공', '위브 생성 완료!');
       Get.offAllNamed('/home');
     }
-  }
-
-  @override
-  void onClose() {
-    nameController.dispose();
-    descriptionController.dispose();
-    selectedRewardText.close();
-    selectedRewardId.close();
-    closestAreaName.close();
-    position.close();
-    selectedLatLng.close();
-    super.onClose();
   }
 }

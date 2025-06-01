@@ -54,8 +54,6 @@ class WeaveDataList {
   }
 }
 
-
-
 class JoinWeave {
   final int weaveId;
   final String title;
@@ -66,6 +64,7 @@ class JoinWeave {
   final int rewardConditionId;
   late double lat;
   late double lng;
+  double distance = 0.0;
 
   JoinWeave(
       {required this.weaveId,
@@ -76,7 +75,8 @@ class JoinWeave {
       required this.rewardId,
       required this.rewardConditionId,
       this.lat = 0.0,
-      this.lng = 0.0});
+      this.lng = 0.0,
+      this.distance = 0.0});
 
   factory JoinWeave.fromJson(Map<String, dynamic> json) {
     JoinWeave data = JoinWeave(
@@ -88,8 +88,12 @@ class JoinWeave {
       rewardId: json['reward_id'],
       rewardConditionId: json['reward_condition_id'],
     );
-    data.lat = data.location!.contains(' ') ? double.parse(data.location!.split(' ')[0]) : 0.0;
-    data.lng = data.location!.contains(' ') ? double.parse(data.location!.split(' ')[1]) : 0.0;
+    data.lat = data.location!.contains(' ')
+        ? double.parse(data.location!.split(' ')[0])
+        : 0.0;
+    data.lng = data.location!.contains(' ')
+        ? double.parse(data.location!.split(' ')[1])
+        : 0.0;
     return data;
   }
 }

@@ -17,6 +17,7 @@ class MyWeaveWidget extends GetView<ProfileController> {
             itemBuilder: (context, index) {
               final weave = controller.myWeaveList[index];
               return ListTile(
+                  onTap: () => Get.toNamed('/weave/${weave.weaveId}'),
                   title: Text(weave.title),
                   subtitle: Text(weave.typeId == 1
                       ? 'Global'

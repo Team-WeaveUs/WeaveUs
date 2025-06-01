@@ -1,46 +1,32 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
-import '../../controllers/weave_controller.dart';
+
+import '../../controllers/weave_profile_controller.dart';
+import '../routes/app_routes.dart';
 import 'components/app_nav_bar.dart';
 
-class WeaveProfileView extends StatelessWidget {
+class WeaveProfileView extends GetView<WeaveProfileController> {
   const WeaveProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final weaveId = 17;
-    final title = "Local weave";
-    final location = "";
-    final description = "로컬위브 입니다.";
-    final likeCount = 123;
-    final contributorCount = 5;
-    final participantImages = [
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150'
-    ];
-    final controller = Get.find<WeaveController>();
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppNavBar(title: 'Weave 정보'),
-      body: Padding(
+      body: Obx(() => controller.weaveProfile.value.weaveId == 0 ? const Center(child: CircularProgressIndicator()) : Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
+            Text(controller.weaveProfile.value.weaveTitle,
                 style: const TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                     fontFamily: 'Pretendard')),
+            Text(controller.weaveProfile.value.createUserNickname,),
             const SizedBox(height: 8),
-            Text(description,
+            Text(controller.weaveProfile.value.weaveDescription,
                 style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black87,
@@ -61,7 +47,7 @@ class WeaveProfileView extends StatelessWidget {
                           const Icon(Icons.favorite_border, color: Colors.orange),
                           const SizedBox(width: 4),
                           Text(
-                            '$likeCount',
+                            controller.weaveProfile.value.weaveLikes.toString(),
                             style: const TextStyle(fontSize: 16, color: Colors.black),
                           ),
                         ],
@@ -72,7 +58,7 @@ class WeaveProfileView extends StatelessWidget {
                           const Icon(Icons.person_outline, color: Colors.black),
                           const SizedBox(width: 4),
                           Text(
-                            '$contributorCount',
+                            controller.weaveProfile.value.weaveContributers.toString(),
                             style: const TextStyle(fontSize: 16, color: Colors.black),
                           ),
                         ],
@@ -86,7 +72,7 @@ class WeaveProfileView extends StatelessWidget {
                     height: 36,
                     child: IconButton(
                       onPressed: () {
-                        controller.goToNewWeave(weaveId, title);
+                        Get.toNamed(AppRoutes.NEW_POST, arguments: {'weaveId': controller.weaveProfile.value.weaveId, 'weaveTitle': controller.weaveProfile.value.weaveTitle});
                       },
                       icon: const Icon(Icons.add_circle_outline),
                     ),
@@ -96,11 +82,6 @@ class WeaveProfileView extends StatelessWidget {
             ),
 
             const SizedBox(height: 16),
-            const Text(
-              "쌓일 위브들",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
             Expanded(
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -108,18 +89,24 @@ class WeaveProfileView extends StatelessWidget {
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                 ),
-                itemCount: participantImages.length,
+                itemCount: controller.postList.length,
                 itemBuilder: (context, index) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(participantImages[index], fit: BoxFit.cover),
+                  return GestureDetector(
+                    onTap: () {
+                      Get.toNamed("/post/${controller.postList[index].postId}", arguments: {
+                        'postUserId': controller.userId.value
+                        ,'rewardConditionId': controller.weaveProfile.value.rewardConditionId
+                        ,'rewardId': controller.weaveProfile.value.rewardId
+                        ,'grantUser': controller.weaveProfile.value.weaveUserId.toString(),
+                      });
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(controller.postList[index].img, fit: BoxFit.cover),
+                    ),
                   );
+
                 },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+              ),),],),),));
   }
 }
