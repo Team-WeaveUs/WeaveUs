@@ -32,9 +32,6 @@ class HomeView extends GetView<HomeController> {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      // padding:
-                      //     const EdgeInsets.only(top: 10, left: 10, right: 10),
-                      //
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: Colors.black,
@@ -52,42 +49,40 @@ class HomeView extends GetView<HomeController> {
                                 topRight: Radius.circular(10),
                               ),
                             ),
-                          ),
-                          padding: const EdgeInsets.all(10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      final weaveId =
-                                          controller.postList1[index].weaveId;
-                                      Get.toNamed("/weave/$weaveId");
-                                    },
-                                    child: Text(
-                                      controller.postList1[index].weaveTitle,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black,
-                                        fontFamily: 'Pretendard',
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        final weaveId = controller.postList1[index].weaveId;
+                                        Get.toNamed("/weave/$weaveId");
+                                      },
+                                      child: Text(
+                                        controller.postList1[index].weaveTitle,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black,
+                                          fontFamily: 'Pretendard',
+                                        ),
                                       ),
                                     ),
-                                  ),
-
-                                  Text(
-                                    controller.postList1[index].weaveType == 1
-                                        ? 'Global'
-                                        : controller.postList1[index].weaveType == 2
-                                        ? 'Join'
-                                        : 'Local',
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                      color: Color(0xFF868583),
-                                      fontFamily: 'Pretendard',
+                                    Text(
+                                      controller.postList1[index].weaveType == 1
+                                          ? 'Global'
+                                          : controller.postList1[index].weaveType == 2
+                                          ? 'Join'
+                                          : 'Local',
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF868583),
+                                        fontFamily: 'Pretendard',
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -115,14 +110,12 @@ class HomeView extends GetView<HomeController> {
                                     Expanded(
                                       child: Stack(
                                         children: [
-                                          // Expanded( // 선택사항
                                           Positioned.fill(
-                                          child: Image.network(
+                                            child: Image.network(
                                               verticalPost.mediaUrl,
                                               fit: BoxFit.cover,
                                             ),
                                           ),
-
                                           Positioned(
                                             bottom: 10,
                                             right: 10,
@@ -139,8 +132,7 @@ class HomeView extends GetView<HomeController> {
                                                         ? const Color(0xFFFF8000)
                                                         : Colors.grey,
                                                   ),
-                                                  onPressed: () => controller
-                                                      .toggleLike(verticalPost),
+                                                  onPressed: () => controller.toggleLike(verticalPost),
                                                 ),
                                               ],
                                             ),
@@ -148,106 +140,68 @@ class HomeView extends GetView<HomeController> {
                                         ],
                                       ),
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            verticalPost.userMediaUrl == ""
-                                                ? CircleAvatar(
-                                                    radius: 15,
-                                                    backgroundImage:
-                                                        NetworkImage(verticalPost
-                                                                .userMediaUrl ??
-                                                            ""),
-                                                    backgroundColor:
-                                                        Colors.transparent,
-                                                  )
-                                                : const CircleAvatar(
-                                                    radius: 15,
-                                                    backgroundColor:
-                                                        Colors.grey,
-                                                    child: Icon(Icons.person, color: Colors.white,),
-                                                  ),
-                                            Text(verticalPost.userMediaUrl ??
-                                                ""),
-                                            const SizedBox(width: 6),
-                                            GestureDetector(
-                                              onTap: () {
-                                                Get.toNamed(
-                                                    "/profile/${verticalPost.userId}");
-                                              },
-                                              child:
-                                                  Text(verticalPost.nickname),
-                                            ),
-                                            const SizedBox(width: 6),
-                                            IconButton(
-                                              icon: Icon(
-                                                verticalPost.isLiked
-                                                    ? Icons.favorite
-                                                    : Icons.favorite_border,
-                                                color: verticalPost.isLiked
-                                                    ? const Color(0xFFFF8000)
-                                                    : Colors.grey,
-                                              ),
-                                              Text(verticalPost.userMediaUrl ??
-                                                  ""),
-                                              const SizedBox(width: 6),
-                                              Text(verticalPost.nickname),
-                                              const SizedBox(width: 6),
-                                              // IconButton(
-                                              //   icon: Icon(
-                                              //     verticalPost.isLiked
-                                              //         ? Icons.favorite
-                                              //         : Icons.favorite_border,
-                                              //     color: verticalPost.isLiked
-                                              //         ? const Color(0xFFFF8000)
-                                              //         : Colors.grey,
-                                              //   ),
-                                              //   onPressed: () => controller
-                                              //       .toggleLike(verticalPost),
-                                              // ),
-                                              // Text('${verticalPost.likes}'),
-                                              const Spacer(),
-                                              GestureDetector(
 
-                                                onTap: () =>
-                                                    controller.toggleSubscribe(
-                                                        verticalPost),
-                                                child: (verticalPost
-                                                    .isSubscribed ||
-                                                    (verticalPost.userId
-                                                        .toString() ==
-                                                        controller
-                                                            .myUId.value))
-                                                    ? Container()
-                                                    : Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    horizontal: 24,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: const Color(
-                                                        0xFFFF8000),
-                                                    borderRadius:
-                                                    BorderRadius
-                                                        .circular(10),
-                                                  ),
-                                                  child: const Text(
-                                                    "구독",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 18,
-                                                      fontFamily: 'Pretendard',
-                                                      fontWeight:
-                                                      FontWeight.w400,
+                                    Divider(color: Colors.grey[850], height: 1, thickness: 1),
+
+                                    Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(10),
+                                          bottomRight: Radius.circular(10),
+                                        ),
+                                        color: Colors.white,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              verticalPost.userMediaUrl != null
+                                                  ? CircleAvatar(
+                                                radius: 15,
+                                                backgroundImage:
+                                                NetworkImage(verticalPost.userMediaUrl!),
+                                                backgroundColor: Colors.transparent,
+                                              )
+                                                  : const CircleAvatar(
+                                                radius: 15,
+                                                backgroundColor: Colors.grey,
+                                                child: Icon(Icons.person, color: Colors.white),
+                                              ),
+                                              const SizedBox(width: 6),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Get.toNamed("/profile/${verticalPost.userId}");
+                                                },
+                                                child: Text(verticalPost.nickname),
+                                              ),
+                                              const Spacer(),
+                                              if (!verticalPost.isSubscribed &&
+                                                  verticalPost.userId.toString() !=
+                                                      controller.myUId.value)
+                                                GestureDetector(
+                                                  onTap: () =>
+                                                      controller.toggleSubscribe(verticalPost),
+                                                  child: Container(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 16, vertical: 6),
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(0xFFFF8000),
+                                                      borderRadius: BorderRadius.circular(6),
+                                                    ),
+                                                    child: const Text(
+                                                      "구독",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
                                             ],
                                           ),
+                                          const SizedBox(height: 8),
                                           Text(
                                             verticalPost.textContent,
                                             style: const TextStyle(
@@ -257,14 +211,15 @@ class HomeView extends GetView<HomeController> {
                                               fontFamily: 'Pretendard',
                                             ),
                                           ),
+                                          const SizedBox(height: 6),
                                           GestureDetector(
                                             onTap: () {
-                                              Get.toNamed('/post/${verticalPost.id}',
-                                                arguments: {'postUserId': verticalPost.userId},
-                                              );
+                                              Get.toNamed('/post/${verticalPost.id}', arguments: {
+                                                'postUserId': verticalPost.userId,
+                                              });
                                             },
                                             child: Text(
-                                              '${verticalPost.commentCount.toString()}개의 댓글',
+                                              '${verticalPost.commentCount}개의 댓글',
                                               style: const TextStyle(
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.w500,
