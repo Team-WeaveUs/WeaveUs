@@ -7,12 +7,15 @@ import 'bindings/auth_binding.dart';
 import 'controllers/auth_controller.dart';
 import 'routes/app_routes.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await _initializeNaverMap();
+
   Get.put(AuthController(), permanent: true);
   Get.put(TokenService(), permanent: true);
   Get.put(ApiService(), permanent: true);
-  WidgetsFlutterBinding.ensureInitialized();
-  _initialize();
+
   runApp(MyApp());
 }
 
@@ -31,16 +34,19 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Future<void> _initialize() async{
-  await FlutterNaverMap().init(
+Future<void> _initializeNaverMap() async {
+  try {
+    await FlutterNaverMap().init(
       clientId: '8h5ay3tumv',
-      onAuthFailed: (ex) =>
-      switch (ex) {
-        NQuotaExceededException(:final message) =>
-            print("사용량 초과 (message: $message)"),
-        NUnauthorizedClientException() ||
-        NClientUnspecifiedException() ||
-        NAnotherAuthFailedException() =>
-            print("인증 실패: $ex"),
-      });
+      onAuthFailed: (ex) {
+        print("네이버 지도 인증 실패: $ex");
+        if (ex is NQuotaExceededException) {
+          print("사용량 초과 (message: ${ex.message})");
+        }
+      },
+    );
+    print("네이버 지도 초기화 성공");
+  } catch (e) {
+    print("네이버 지도 초기화 실패: $e");
+  }
 }

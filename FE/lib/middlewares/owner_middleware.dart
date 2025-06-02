@@ -8,21 +8,20 @@ class OwnerMiddleware extends GetMiddleware {
   RouteSettings? redirect(String? route) {
     final authController = Get.find<AuthController>();
     authController.checkIsOwner();
-    print('위치 : $route');
-    print("오너? ${authController.isOwner.value}");
     if (route == AppRoutes.NEW_WEAVE) {
       if (authController.isOwner.value) {
         return const RouteSettings(name: AppRoutes.OWNER_NEW_WEAVE);
       } else {
         return null;
       }
-    } else if (route == AppRoutes.REWARDS) {
+    }
+    if (route == AppRoutes.REWARDS) {
       if (authController.isOwner.value) {
         return const RouteSettings(name: AppRoutes.OWNER_REWARDS);
       } else {
         return null;
       }
     }
-    return null;
+    return null; // 기본적으로 리다이렉트하지 않음
   }
 }

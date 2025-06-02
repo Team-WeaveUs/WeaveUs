@@ -70,6 +70,16 @@ class TokenService extends GetxService {
       return userId ?? '';
     }
   }
+  Future<bool> loadIsOwner() async {
+    if (kIsWeb) {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(_isOwner) == "1" ? true : false;
+    }
+    else {
+      String? isOwner = await _storage.read(key: _isOwner);
+      return isOwner == "1" ? true : false;
+    }
+  }
 
   // 토큰 삭제 (로그아웃 시 사용)
   Future<void> clearToken() async {

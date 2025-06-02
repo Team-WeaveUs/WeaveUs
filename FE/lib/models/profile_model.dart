@@ -1,3 +1,5 @@
+import './profile_post_list_model.dart';
+
 class Profile {
   final String message;
   final int userId;
@@ -6,6 +8,7 @@ class Profile {
   final int likes;
   final int subscribes;
   final List<ProfilePostList> postList;
+  final int isOwner;
 
   Profile({
     required this.message,
@@ -15,6 +18,7 @@ class Profile {
     required this.likes,
     required this.subscribes,
     required this.postList,
+    required this.isOwner,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
@@ -25,6 +29,7 @@ class Profile {
       img: json['img'] ?? "",
       likes: json['likes'],
       subscribes: json['subscribes'],
+      isOwner: json['is_owner'] ?? 0,
       postList: List<ProfilePostList>.from(
         json['post_list'].map((x) => ProfilePostList.fromJson(x)),
       ),
@@ -44,27 +49,3 @@ class Profile {
 }
 
 
-class ProfilePostList {
-  final int postId;
-  final String img;
-  final String loc;
-  ProfilePostList({
-    required this.postId,
-    required this.img,
-    required this.loc,
-  });
-  factory ProfilePostList.fromJson(Map<String, dynamic> json) {
-    return ProfilePostList(
-      postId: json['post_id'],
-      img: json['img'],
-      loc: json['loc']??"",
-    );
-  }
-  Map<String, dynamic> toJson() {
-    return {
-      'post_id': postId,
-      'img': img,
-      'loc': loc,
-    };
-  }
-}

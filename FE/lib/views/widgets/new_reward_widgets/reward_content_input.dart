@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../controllers/owner_reward_controller.dart';
+import '../../../controllers/new_reward_controller.dart';
 
 class RewardContentInput extends StatelessWidget {
   final TextEditingController controller;
@@ -14,7 +14,7 @@ class RewardContentInput extends StatelessWidget {
       child: TextField(
         controller: controller,
         onChanged: (value) {
-          Get.find<OwnerRewardController>().setTitle(value);
+          Get.find<NewRewardController>().setTitle(value);
         },
         style: const TextStyle(
           fontSize: 20,
