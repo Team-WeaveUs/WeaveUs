@@ -3,6 +3,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
+import '../models/reward_condition_model.dart';
 import '../services/api_service.dart';
 import '../services/location_service.dart';
 import '../services/map_service.dart';
@@ -17,6 +18,7 @@ class OwnerNewWeaveController extends GetxController {
   final selectedRewardText = ''.obs;
   final selectedRewardId = 0.obs;
   final rewardGiveType = ''.obs;
+  final rewardConditionList = <RewardCondition>[].obs;
 
   final Rx<DateTime> selectedDate = DateTime.now().obs;
   // final selectedWeave = Rxn<String>();
@@ -30,7 +32,7 @@ class OwnerNewWeaveController extends GetxController {
   Rxn<NLatLng> selectedLatLng = Rxn<NLatLng>();
   RxBool isLoading = false.obs;
   RxString error = ''.obs;
-  RxInt rewardConditionId = 2.obs;
+  RxInt rewardConditionId = 0.obs;
 
   final ApiService apiService;
   final TokenService tokenService;
@@ -48,6 +50,7 @@ class OwnerNewWeaveController extends GetxController {
   void onInit() {
     super.onInit();
     fetchLocation();
+    fetchRewardConditions();
 
     // 텍스트 필드 리스너 추가
     nameController.addListener(_validateForm);
@@ -78,6 +81,7 @@ class OwnerNewWeaveController extends GetxController {
     closestAreaName.close();
     position.close();
     selectedLatLng.close();
+    rewardConditionList.close();
     super.onClose();
   }
 
@@ -116,6 +120,20 @@ class OwnerNewWeaveController extends GetxController {
       print('error: $e');
     } finally {
       isLoading.value = false;
+    }
+  }
+  Future<void> fetchRewardConditions() async {
+    try {
+      final userId = await tokenService.loadUserId();
+      final rewardConditions = await apiService.postRequest("reward/condition/get", {
+        "user_id": userId,
+      });
+      rewardConditionList.value = List<Map<String, dynamic>>.from(rewardConditions['conditions'])
+          .map((e) => RewardCondition.fromJson(e))
+          .toList();
+      rewardConditionId.value = rewardConditionList.first.id;
+    } catch (e) {
+      print('Error fetching reward conditions: $e');
     }
   }
 

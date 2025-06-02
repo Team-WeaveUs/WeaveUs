@@ -2,11 +2,13 @@ import 'package:get/get.dart';
 import 'package:weave_us/bindings/auth_binding.dart';
 import 'package:weave_us/bindings/post_detail_binding.dart';
 import 'package:weave_us/bindings/weave_binding.dart';
+import 'package:weave_us/views/new_reward_condition_view.dart';
 import 'package:weave_us/views/owner_login_view.dart';
 import 'package:weave_us/views/splash_view.dart';
 import 'package:weave_us/views/weave_profile_view.dart';
 import '../bindings/home_binding.dart';
 import '../bindings/new_post_binding.dart';
+import '../bindings/new_reward_condition_binding.dart';
 import '../bindings/new_weave_binding.dart';
 import '../bindings/owner_new_weave_binding.dart';
 import '../bindings/new_reward_binding.dart';
@@ -27,6 +29,7 @@ import '../views/new_weave_view.dart';
 import '../views/owner_nav/owner_new_weave_view.dart';
 import '../views/owner_registration_view.dart';
 import '../views/owner_nav/new_reward_view.dart';
+import '../views/owner_reward_view.dart';
 import '../views/post_detail_view.dart';
 import '../views/profile_view.dart';
 import '../views/reward_detail_view.dart';
@@ -52,6 +55,8 @@ class AppRoutes {
   static const NEW_REWARDS = '/new_rewards';
   static const WEAVE = '/weave/:weave_id';
   static const REWARD_DETAIL = '/reward/detail';
+  static const REWARD_CONDITION = '/reward/condition';
+  static const OWNER_REWARDS = '/owner/rewards';
 
   static final routes = [
     GetPage(name: SPLASH, page: () => SplashScreen(), binding: AuthBinding()),
@@ -111,7 +116,7 @@ class AppRoutes {
     ),
     GetPage(
       name: NEW_REWARDS,
-      page: () => OwnerRewardView(),
+      page: () => NewRewardView(),
       binding: OwnerRewardBinding(),
       middlewares: [AuthMiddleware(), OwnerMiddleware()],
       transition: Transition.noTransition,
@@ -157,6 +162,19 @@ class AppRoutes {
       page: () => RewardDetailView(),
       binding: RewardDetailBinding(),
       middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: REWARD_CONDITION,
+      page: () => NewRewardConditionView(),
+      binding: NewRewardConditionBinding(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: OWNER_REWARDS,
+      page: () => OwnerRewardView(),
+      binding: RewardBinding(),
+      transition: Transition.noTransition,
+      middlewares: [AuthMiddleware(), OwnerMiddleware()],
     ),
   ];
 }

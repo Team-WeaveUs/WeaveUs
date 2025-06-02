@@ -14,14 +14,6 @@ class RewardView extends GetView<RewardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: Obx(() => !controller.isOwner.value
-          ? const SizedBox.shrink()
-          : FloatingActionButton(
-              onPressed: () {
-                Get.toNamed(AppRoutes.NEW_REWARDS);
-              },
-              child: Icon(HugeIcons.strokeRoundedGift),
-            )),
       appBar: AppNavBar(title: '리워드'),
       body: Padding(
         padding: const EdgeInsets.all(16),
