@@ -16,48 +16,99 @@ class LoginView extends StatelessWidget {
       }
     });
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Login"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.published_with_changes),
-            onPressed: () {
-              Get.offAllNamed(AppRoutes.AUTH);
-            },
+      backgroundColor: Colors.white,
+
+      // appBar: AppBar(
+      //   title: Text("Login"),
+      //   actions: [
+      //     IconButton(
+      //       icon: Icon(Icons.published_with_changes),
+      //       onPressed: () {
+      //         Get.offAllNamed(AppRoutes.AUTH);
+      //       },
+      //     ),
+      //   ],
+      // ),
+
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Weave Us',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w900, // 폰트 Black
+                    color: Colors.orange,
+                    fontFamily: 'Pretendard',
+                  )),
+              SizedBox(height: 20),
+              TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(labelText: "이메일")),
+              TextField(
+                  controller: passwordController,
+                  decoration: const InputDecoration(labelText: "비밀번호"),
+                  obscureText: true),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  authController.login(
+                      emailController.text, passwordController.text);
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size.fromHeight(55), // 높이만 설정
+                  backgroundColor: Color(0xFFFF8000),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: Text(
+                  "로그인하기",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontFamily: 'Pretendard',
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+              // TextButton(
+              //       onPressed: () {
+              //         Get.offAllNamed(AppRoutes.NEW_USER);
+              //       },
+              //       child: Text("New User"),
+              //     ),
+              //   ],
+              // )
+              // 유저 회원가입 버튼
+              ElevatedButton(
+                onPressed: () {
+                  Get.offAllNamed(AppRoutes.NEW_USER);
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size.fromHeight(55), // 높이만 설정
+                  backgroundColor: Color(0xFF434343),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: Text(
+                  "유저 회원가입",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontFamily: 'Pretendard',
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: Container(
-        padding: EdgeInsets.all(16.0),
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            TextField(
-                controller: emailController,
-                decoration: const InputDecoration(labelText: "이메일")),
-            TextField(
-                controller: passwordController,
-                decoration: const InputDecoration(labelText: "비밀번호"),
-                obscureText: true),
-            SizedBox(height: 20),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    authController.login(
-                        emailController.text, passwordController.text);
-                  },
-                  child: Text("Login"),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Get.offAllNamed(AppRoutes.NEW_USER);
-                  },
-                  child: Text("New User"),
-                ),
-              ],
-            )
-          ],
         ),
       ),
     );

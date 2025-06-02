@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/reward_invite_dialog_controller.dart';
-import '../../models/reward_invite_model.dart';
+import '../../models/reward_model.dart';
 
 class RewardInviteDialog extends StatelessWidget {
-  final Function(RewardInviteModel friend) onRewardSelected;
+  final Function(Reward friend) onRewardSelected;
 
   const RewardInviteDialog({super.key, required this.onRewardSelected});
 
@@ -56,7 +56,7 @@ class RewardInviteDialog extends StatelessWidget {
                   itemBuilder: (_, index) {
                     final user = filteredList[index];
                     return ListTile(
-                      title: Text(user.reward),
+                      title: Text(user.title),
                       trailing: IconButton(
                         icon: const Icon(Icons.add_circle_outline),
                         onPressed: () {

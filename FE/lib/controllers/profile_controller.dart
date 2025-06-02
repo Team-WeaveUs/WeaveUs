@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:weave_us/routes/app_routes.dart';
 
+import '../models/profile_post_list_model.dart';
 import '../models/subscribe_data_model.dart';
 import '../models/weave_data_model.dart';
 import '../services/api_service.dart';

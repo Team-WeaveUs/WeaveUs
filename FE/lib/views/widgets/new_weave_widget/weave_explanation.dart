@@ -2,34 +2,30 @@ import 'package:flutter/material.dart';
 
 class WeaveExplanation extends StatelessWidget {
   final TextEditingController controller;
+  final FocusNode focusNode;
 
-  const WeaveExplanation({super.key, required this.controller});
+  const WeaveExplanation({
+    super.key,
+    required this.controller,
+    required this.focusNode,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 20, left: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
         controller: controller,
-        style: const TextStyle(
-          fontSize: 20,
-          fontFamily: 'Pretendard',
-          color: Colors.black,
-          letterSpacing: 1,
-        ),
+        focusNode: focusNode,
+        maxLines: 5,
         decoration: const InputDecoration(
-          hintText: '위브를 소개해주세요.',
-          hintStyle: TextStyle(
-            fontSize: 20,
-            fontFamily: 'Pretendard',
-            color: Colors.grey,
-          ),
           border: InputBorder.none,
-          isDense: true,
-          contentPadding: EdgeInsets.zero,
+          hintText: '위브 설명을 입력해주세요.',
+          hintStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: 20,
+          ),
         ),
-        maxLines: null,
-        keyboardType: TextInputType.multiline,
       ),
     );
   }

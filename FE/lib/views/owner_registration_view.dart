@@ -17,22 +17,32 @@ class OwnerRegistrationView extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("오너 회원가입"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.login),
-            onPressed: () {
-              Get.offAllNamed(AppRoutes.OWNERS);
-            },
-          )
-        ],
-      ),
-      body: Container(
-        padding: EdgeInsets.all(16.0),
-        alignment: Alignment.center,
+      backgroundColor: Colors.white,
+      // appBar: AppBar(
+      //   title: Text("오너 회원가입"),
+      //   actions: [
+      //     IconButton(
+      //       icon: Icon(Icons.login),
+      //       onPressed: () {
+      //         Get.offAllNamed(AppRoutes.OWNERS);
+      //       },
+      //     )
+      //   ],
+      // ),
+      body: Center(
+        child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 50),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Text('오너 회원가입',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900, // 폰트 Black
+                  color: Color(0xFF434343),
+                  fontFamily: 'Pretendard',
+                )),
+            SizedBox(height: 20),
             TextField(
               controller: emailController,
               decoration: const InputDecoration(labelText: "이메일"),
@@ -57,20 +67,50 @@ class OwnerRegistrationView extends GetView<AuthController> {
               controller: genderController,
               decoration: const InputDecoration(labelText: "성별"),
             ),
-            TextButton(
-                onPressed: () {
-                  controller.ownerRegistration(
-                      emailController.text,
-                      passwordController.text,
-                      nameController.text,
-                      nicknameController.text,
-                      numberController.text,
-                      genderController.text);
-                },
-                child: Text("회원가입"))
+            SizedBox(height: 20),
+          //   TextButton(
+          //       onPressed: () {
+          //         controller.ownerRegistration(
+          //             emailController.text,
+          //             passwordController.text,
+          //             nameController.text,
+          //             nicknameController.text,
+          //             numberController.text,
+          //             genderController.text);
+          //       },
+          //       child: Text("회원가입"))
+          // ],
+          ElevatedButton(
+            onPressed: () {
+              controller.ownerRegistration(
+                              emailController.text,
+                              passwordController.text,
+                              nameController.text,
+                              nicknameController.text,
+                              numberController.text,
+                              genderController.text);
+            },
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size.fromHeight(55), // 높이만 설정
+              backgroundColor: Color(0xFF434343),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+            child: Text(
+              "오너 회원가입 하기",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontFamily: 'Pretendard',
+              ),
+            ),
+          ),
           ],
-        ),
       ),
+      ),
+    ),
     );
   }
 }

@@ -2,67 +2,119 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:get/get.dart';
 import 'package:weave_us/controllers/owner_new_weave_controller.dart';
+import '../widgets/map_select_modal.dart';
 
 class MapSelectPin extends StatelessWidget {
   const MapSelectPin({super.key});
 
   @override
   Widget build(BuildContext context) {
-    NaverMapController? naverMapController;
     final controller = Get.find<OwnerNewWeaveController>();
 
     return Obx(() {
-      // position이 null인 경우 안전하게 처리
       final position = controller.position.value;
       final selectedLatLng = controller.selectedLatLng.value;
 
       if (position == null) {
-        // position이 null일 때는 로딩 인디케이터를 표시
         return const Center(child: CircularProgressIndicator());
       }
-      return Column(
-        children: [
-          SizedBox(
-            height: 200, // 레이아웃 문제 해결을 위해 고정 높이 지정
-            child: NaverMap(
-              onMapReady: (nController) {
-                naverMapController = nController;
-              },
-              options: NaverMapViewOptions(
-                initialCameraPosition: NCameraPosition(
-                  target: NLatLng(position.latitude, position.longitude),
-                  zoom: 11.5,
-                ),
-                indoorEnable: true,
-                locationButtonEnable: false,
-                consumeSymbolTapEvents: false,
-              ),
-              onMapTapped: (point, latLng) {
-                controller.onMapTap(point, latLng);
-                final marker = NMarker(id: 'marker', position: latLng);
-                naverMapController?.addOverlayAll({marker});
+
+      return GestureDetector(
+        onTap: () {
+          Get.dialog(
+            MapSelectModal(
+              initialPosition: selectedLatLng ??
+                  NLatLng(position.latitude, position.longitude),
+              onLocationSelected: (latLng) {
+                controller.onMapTap(
+                  NPoint(
+                      latLng.longitude.toDouble(), latLng.latitude.toDouble()),
+                  latLng,
+                );
               },
             ),
+            barrierDismissible: true,
+          );
+        },
+        child: Container(
+          height: 200,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey[300]!),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(controller.closestAreaName.value),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Stack(
+              children: [
+                NaverMap(
+                  options: NaverMapViewOptions(
+                    initialCameraPosition: NCameraPosition(
+                      target: selectedLatLng ??
+                          NLatLng(position.latitude, position.longitude),
+                      zoom: 15,
+                    ),
+                    scrollGesturesEnable: false,
+                    zoomGesturesEnable: false,
+                    rotationGesturesEnable: false,
+                    tiltGesturesEnable: false,
+                  ),
+                  onMapReady: (mapController) {
+                    if (selectedLatLng != null) {
+                      final marker = NMarker(
+                        id: 'marker',
+                        position: selectedLatLng,
+                      );
+                      mapController.addOverlay(marker);
+                    }
+                  },
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.1),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.location_on,
+                          size: 32,
+                          color: selectedLatLng == null
+                              ? Colors.grey[600]
+                              : Colors.white,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          selectedLatLng == null
+                              ? '위치를 선택하려면 탭하세요'
+                              : '탭하여 위치 변경',
+                          style: TextStyle(
+                            color: selectedLatLng == null
+                                ? Colors.grey[600]
+                                : Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            shadows: selectedLatLng == null
+                                ? null
+                                : const [
+                                    Shadow(
+                                      offset: Offset(0, 1),
+                                      blurRadius: 3.0,
+                                      color: Colors.black,
+                                    ),
+                                  ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          Row(
-            children: [
-              // selectedLatLng가 null이 아닌 경우에만 좌표 표시
-              Text(selectedLatLng != null
-                  ? selectedLatLng.longitude.toString()
-                  : "경도"),
-              const SizedBox(
-                width: 16,
-              ),
-              Text(selectedLatLng != null
-                  ? selectedLatLng.latitude.toString()
-                  : "위도"),
-            ],
-          ),
-        ],
+        ),
       );
     });
   }

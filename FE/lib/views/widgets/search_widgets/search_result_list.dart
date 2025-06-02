@@ -11,6 +11,7 @@ class SearchResultList extends StatelessWidget {
 
     return Obx(() {
       final results = controller.searchResults;
+      final recent = controller.joinWeaveData.value;
 
       if (controller.isNoResults.value) {
         return const Center(
@@ -46,24 +47,44 @@ class SearchResultList extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             ...results.map((result) {
-              final title = result['nickname'] ?? '제목 없음';
-              final isSubscribed = result['subscribe_status'] == 1 ? true : false;
+              final isSubscribed =
+                  result['subscribe_status'] == 1 ? true : false;
 
-              return ListTile(
+              return controller.isWeaveResult.value
+                  ? ListTile(
+                title: GestureDetector(
+                  onTap: () {
+                    Get.toNamed('/weave/${result['weave_id']}', arguments: {
+                      'weaveId': result['weave_id'],
+                      'weaveTitle': result['title'],
+                    });
+                  },
+                  child: Text(result['title'] ?? '제목 없음'),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.add_circle_outline),
+                  onPressed: () {
+                    Get.toNamed('/new_post', arguments: {
+                      'weaveId': result['weave_id'],
+                      'weaveTitle': result['title'],
+                    });
+                  },
+                )
+              )
+                : ListTile(
                 leading: result['media_url'] == null
                     ? const CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.grey,
-                    child: Icon(
-                      Icons.person,
-                      color: Colors.white,)
-                )
+                        radius: 20,
+                        backgroundColor: Colors.grey,
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.white,
+                        ))
                     : CircleAvatar(
-                    radius: 20,
-                    backgroundImage: NetworkImage(
-                      result['mediaUrl'],
-                    )
-                ),
+                        radius: 20,
+                        backgroundImage: NetworkImage(
+                          result['mediaUrl'],
+                        )),
                 title: GestureDetector(
                   onTap: () {
                     final isOwner = result['is_owner'] == 1;
@@ -72,7 +93,7 @@ class SearchResultList extends StatelessWidget {
                     final weaveTitle = result['title'] ?? '';
 
                     if (isOwner) {
-                      Get.toNamed('/owner/profile/$userId', arguments: {
+                      Get.toNamed('/profile/$userId', arguments: {
                         'userId': userId,
                         'nickname': nickname,
                         'title': weaveTitle,
@@ -92,9 +113,11 @@ class SearchResultList extends StatelessWidget {
                     controller.toggleSubscribe(result['user_id']);
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                     decoration: BoxDecoration(
-                      color: isSubscribed ? Colors.grey : const Color(0xFFFF8000),
+                      color:
+                          isSubscribed ? Colors.grey : const Color(0xFFFF8000),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -109,6 +132,35 @@ class SearchResultList extends StatelessWidget {
               );
             }).toList(),
             const SizedBox(height: 80),
+          ]
+          else ...[
+            const Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "근처 Weave",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF000000),
+                    fontFamily: 'Pretendard',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            ...recent.map((result) {
+              return controller.joinWeaveData.isEmpty ? Center(child: CircularProgressIndicator(),) : ListTile(
+                title: GestureDetector(
+                  onTap: (){
+                    Get.toNamed('/weave/${result.weaveId}', arguments: {
+                      'weaveId': result.weaveId,
+                      'weaveTitle': result.title,
+                    });
+
+                  },
+                ),
+              );
+            })
           ],
         ],
       );
