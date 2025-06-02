@@ -6,8 +6,8 @@ import '../components/app_nav_bar.dart';
 import '../widgets/new_post_widgets/post_content.input.dart';
 import '../widgets/new_reward_widgets/reward_content_input.dart';
 
-class OwnerRewardView extends GetView<NewRewardController> {
-  const OwnerRewardView({super.key});
+class NewRewardView extends GetView<NewRewardController> {
+  const NewRewardView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +55,11 @@ class OwnerRewardView extends GetView<NewRewardController> {
                     ),
                   ],
                 )),
+            TextField(
+              controller: controller.passwordController,
+              decoration: const InputDecoration(labelText: '비밀번호'),
+              obscureText: true,
+            ),
             const SizedBox(height: 32),
             Center(
               child: ElevatedButton(

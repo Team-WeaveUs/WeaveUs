@@ -15,6 +15,13 @@ class OwnerMiddleware extends GetMiddleware {
         return null;
       }
     }
+    if (route == AppRoutes.REWARDS) {
+      if (authController.isOwner.value) {
+        return const RouteSettings(name: AppRoutes.OWNER_REWARDS);
+      } else {
+        return null;
+      }
+    }
     return null; // 기본적으로 리다이렉트하지 않음
   }
 }

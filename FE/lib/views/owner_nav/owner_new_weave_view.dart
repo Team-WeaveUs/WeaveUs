@@ -85,19 +85,20 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                       },
                       child: Text("날짜 선택"),
                     ),
-                    Obx(() => DropdownButton<int>(
+                    Obx(() => controller.rewardConditionList.isEmpty ? const Center(child: CircularProgressIndicator()) : DropdownButton<int>(
                             value: controller.rewardConditionId.value,
                             onChanged: (int? newValue) {
                               if (newValue != null) {
                                 controller.rewardConditionId.value = newValue;
                               }
                             },
-                            items: [
-                              DropdownMenuItem(
-                                value: 2,
-                                child: Text('직접 지급'),
-                              ),
-                            ])),
+                            items: controller.rewardConditionList.map((item) {
+                              return DropdownMenuItem<int>(
+                                value: item.id,
+                                child: Text(item.name),
+                              );
+                            }).toList()
+                    )),
                     const SizedBox(height: 30),
                     // ✅ 생성 버튼
                     SizedBox(

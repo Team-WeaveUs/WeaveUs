@@ -28,7 +28,7 @@ class BottomNavigation extends StatelessWidget {
             Get.toNamed(AppRoutes.NEW_POST);
             break;
           case 3:
-            Get.offNamed(AppRoutes.WEAVE);
+            Get.offNamed(AppRoutes.REWARDS);
             break;
           case 4:
             Get.offNamed(AppRoutes.PROFILE);

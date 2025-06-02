@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:weave_us/models/reward_condition_model.dart';
 
 import '../models/owner_reward_model.dart';
 import '../services/api_service.dart';
@@ -17,13 +18,13 @@ class NewRewardController extends GetxController {
   final passwordController = TextEditingController();
   final ApiService apiService;
   final TokenService tokenService;
+  final RxList<RewardCondition> rewardConditionList = <RewardCondition>[].obs;
 
   NewRewardController({required this.apiService, required this.tokenService});
 
 
   final Rxn<DateTime> startDate = Rxn<DateTime>();
   final Rxn<DateTime> endDate = Rxn<DateTime>();
-
 
   void setTitle(String value) => title.value = value;
   void setDescriptionText(String value) => descriptionText.value = value;
@@ -66,7 +67,6 @@ class NewRewardController extends GetxController {
       Get.snackbar("에러", "모든 항목을 입력해주세요");
       return;
     }
-
     final rewardPayload = CreateRewardRequest(
       userId: userId,
       title: titleVal,
@@ -79,8 +79,6 @@ class NewRewardController extends GetxController {
 
     try {
       final res = await apiService.postRequest("reward/create", rewardPayload.toJson());
-      print("📥 [submitReward] 응답 데이터 → $res");
-
       if ((res['statusCode'] == 200 ||
               res['message']?.toString().contains("성공") == true)) {
         Get.back();
