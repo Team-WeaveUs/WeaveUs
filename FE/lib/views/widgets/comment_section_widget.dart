@@ -17,17 +17,33 @@ class CommentSectionWidget extends GetView<CommentInputController> {
         return const Center(child: CircularProgressIndicator());
       }
 
-      return ListView.builder(
+      return ListView.separated(
         shrinkWrap: true,
         physics: const ScrollPhysics(),
         itemCount: controller.comments.length,
         itemBuilder: (context, index) {
           final comment = controller.comments[index];
           return ListTile(
-            title: Text(comment.nickname),
-            subtitle: Text(comment.content),
+            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+            title: Text(comment.nickname,
+              style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+              color: Colors.black,
+            ),),
+            subtitle: Text(comment.content,
+              style: const TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 15,
+                color: Colors.black,
+              ),),
           );
         },
+        separatorBuilder: (context, index) => Divider(
+          color: Colors.grey[850],
+          height: 1,
+          thickness: 1,
+        ),
       );
     });
   }

@@ -49,8 +49,8 @@ class TabViewController extends GetxController with GetTickerProviderStateMixin{
     } else {
       tabs = [
         const Tab(text: '게시물'),
-        const Tab(text: '위브 리스트'),
-        const Tab(text: '내 위브 리스트'),
+        const Tab(text: '위브'),
+        const Tab(text: '개인 위브'),
       ];
       tabViews = [
         Center(child: MyPostWidget()),

@@ -114,6 +114,7 @@ class HomeController extends GetxController {
     });
   }
 
+  // 좋아요 토글 처리
   void toggleLike(Post post) async {
     try {
       final userId = await tokenService.loadUserId();
@@ -134,6 +135,18 @@ class HomeController extends GetxController {
       print('좋아요 반영 완료');
     } catch (e) {
       print('좋아요 처리 실패: $e');
+    }
+  }
+
+  // 구독 상태 업데이트
+  void updateSubscriptionInMap(Post updatedPost) {
+    for (final entry in postListMap.entries) {
+      final index = entry.value.indexWhere((p) => p.id == updatedPost.id);
+      if (index != -1) {
+        postListMap[entry.key]![index] = updatedPost;
+        postListMap.refresh();
+        break;
+      }
     }
   }
 
@@ -165,6 +178,18 @@ class HomeController extends GetxController {
       print('구독 상태 반영 완료');
     } catch (e) {
       print('구독 처리 실패: $e');
+    }
+  }
+
+  // 홈 화면에서 좋아요 상태 반영
+  void updatePostInMap(Post updatedPost) {
+    for (final entry in postListMap.entries) {
+      final index = entry.value.indexWhere((p) => p.id == updatedPost.id);
+      if (index != -1) {
+        postListMap[entry.key]![index] = updatedPost;
+        postListMap.refresh();
+        break;
+      }
     }
   }
 }

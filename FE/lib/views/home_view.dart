@@ -119,20 +119,28 @@ class HomeView extends GetView<HomeController> {
                                           Positioned(
                                             bottom: 10,
                                             right: 10,
-                                            child: Row(
+                                            child: Stack(
+                                              alignment: Alignment.center,
                                               children: [
-                                                Text('${verticalPost.likes}'),
                                                 IconButton(
                                                   icon: Icon(
                                                     size: 39,
                                                     verticalPost.isLiked
                                                         ? Icons.favorite
-                                                        : Icons.favorite_border,
+                                                        : Icons.favorite,
                                                     color: verticalPost.isLiked
                                                         ? const Color(0xFFFF8000)
                                                         : Colors.grey,
                                                   ),
                                                   onPressed: () => controller.toggleLike(verticalPost),
+                                                ),
+                                                Text(
+                                                  '${verticalPost.likes}',
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white, // 하트 위에서 잘 보이도록 흰색
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -216,7 +224,9 @@ class HomeView extends GetView<HomeController> {
                                             onTap: () {
                                               Get.toNamed('/post/${verticalPost.id}', arguments: {
                                                 'postUserId': verticalPost.userId,
-                                              });
+                                                'likes': verticalPost.likes,
+                                                'isLiked': verticalPost.isLiked,
+                                                });
                                             },
                                             child: Text(
                                               '${verticalPost.commentCount}개의 댓글',
