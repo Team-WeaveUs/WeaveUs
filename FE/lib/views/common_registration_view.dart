@@ -18,10 +18,12 @@ class RegistrationView extends GetView<AuthController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   title: Text("Registration"),
-      //   actions: [IconButton(onPressed: clickLogin, icon: Icon(Icons.login))],
-      // ),
+
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        title: Text(""),
+      ),
       body: Center(
         child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 50),

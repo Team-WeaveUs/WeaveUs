@@ -18,17 +18,12 @@ class LoginView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      // appBar: AppBar(
-      //   title: Text("Login"),
-      //   actions: [
-      //     IconButton(
-      //       icon: Icon(Icons.published_with_changes),
-      //       onPressed: () {
-      //         Get.offAllNamed(AppRoutes.AUTH);
-      //       },
-      //     ),
-      //   ],
-      // ),
+
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        title: Text(""),
+      ),
 
       body: Center(
         child: Padding(
@@ -88,7 +83,7 @@ class LoginView extends StatelessWidget {
               // 유저 회원가입 버튼
               ElevatedButton(
                 onPressed: () {
-                  Get.offAllNamed(AppRoutes.NEW_USER);
+                  Get.toNamed(AppRoutes.NEW_USER);
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size.fromHeight(55), // 높이만 설정

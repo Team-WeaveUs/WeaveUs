@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:weave_us/views/widgets/owner_login_dialog.dart';
 import '../controllers/auth_controller.dart';
-import '../routes/app_routes.dart';
 
 class OwnerLoginView extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -13,17 +12,12 @@ class OwnerLoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   title: Text("OwnerLogin"),
-      //   actions: [
-      //     IconButton(
-      //       icon: Icon(Icons.published_with_changes),
-      //       onPressed: () {
-      //         Get.offAllNamed(AppRoutes.AUTH);
-      //       },
-      //     ),
-      //   ],
-      // ),
+
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        title: Text(""),
+      ),
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),

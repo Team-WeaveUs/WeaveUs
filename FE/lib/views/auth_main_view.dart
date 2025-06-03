@@ -9,11 +9,10 @@ class AuthMainView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // 앱 바 삭제
       // appBar: AppBar(
       //   centerTitle: true,
       //   backgroundColor: Colors.white,
-      //   title: Text("Weave Us"),
+      //   title: Text(""),
       // ),
       body: Center(
         child: Padding(
@@ -82,10 +81,10 @@ class AuthMainView extends StatelessWidget {
   }
 
   onPressedWeave() {
-    Get.offAllNamed(AppRoutes.LOGIN);
+    Get.toNamed(AppRoutes.LOGIN);
   }
 
   onPressedOwner() {
-    Get.offAllNamed(AppRoutes.OWNERS);
+    Get.toNamed(AppRoutes.OWNERS);
   }
 }
