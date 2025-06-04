@@ -12,9 +12,20 @@ class NewRewardView extends GetView<NewRewardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppNavBar(title: '새 리워드', centerTitle: true),
+      appBar: AppBar(
+        centerTitle: true,
+          title: const Text(
+              '새 리워드',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 25,
+                letterSpacing: 1.0,
+              ),
+          ),
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+        padding: const EdgeInsets.only(top: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -25,9 +36,14 @@ class NewRewardView extends GetView<NewRewardController> {
               controller: controller.postContentController,
               onChanged: controller.setDescription,
             ),
-            const SizedBox(height: 16),
-            const Text('지급일로부터 만료일자'),
-            const SizedBox(height: 8),
+            Divider(color: Colors.grey[850], thickness: 1),
+            const Text('만료 기간',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Pretendard',
+                )),
+            Divider(color: Colors.grey[850], thickness: 1),
             Obx(() => DropdownButton<String>(
                   value: controller.validityString.value,
                   onChanged: (String? newValue) {
@@ -38,41 +54,118 @@ class NewRewardView extends GetView<NewRewardController> {
                   items: [
                     DropdownMenuItem(
                       value: '30d',
-                      child: Text('30일'),
+                      child: Text('지급일로부터 30일',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'Pretendard',
+                      )
+                    ),
                     ),
                     DropdownMenuItem(
                       value: '60d',
-                      child: Text('60일'),
+                        child: Text('지급일로부터 60일',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'Pretendard',
+                            )
+                        ),
                     ),
                     // 필요하면 더 추가 가능
                     DropdownMenuItem(
                       value: '90d',
-                      child: Text('90일'),
+                      child: Text('지급일로부터 90일',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Pretendard',
+                          )
+                      ),
                     ),
                     DropdownMenuItem(
                       value: '0d',
-                      child: Text('무제한'),
+                      child: Text('무제한',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Pretendard',
+                          )
+                      ),
                     ),
                   ],
                 )),
-            TextField(
-              controller: controller.passwordController,
-              decoration: const InputDecoration(labelText: '비밀번호'),
-              obscureText: true,
+            Divider(color: Colors.grey[850], thickness: 1),
+
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: const Text(
+                '리워드 비밀번호',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Pretendard',
+                ),
+              ),
             ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, right: 20),
+              child: TextField(
+                controller: controller.passwordController,
+                decoration: const InputDecoration(
+                hintText: '리워드 비밀번호를 입력해주세요.',
+                hintStyle: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Pretendard',
+                  color: Colors.grey,
+                  letterSpacing: 1
+                  ),
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                obscureText: true,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Pretendard',
+                  color: Colors.black,
+                  letterSpacing: 1
+                ),
+              ),
+            ),
+            Divider(color: Colors.grey[850], thickness: 1),
             const SizedBox(height: 32),
-            Center(
+        SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 20, left: 20),
               child: ElevatedButton(
                 onPressed: controller.submitReward,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 80),
+                  backgroundColor: const Color(0xFFFF8000),
+                  disabledBackgroundColor: Colors.grey.shade300,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 0,
                 ),
-                child: const Text('공유하기'),
+                child: const Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                  child: Text(
+                    "공유하기",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'Pretendard',
+                    ),
+                  ),
+                ),
               ),
             ),
+        ),
           ],
         ),
       ),
