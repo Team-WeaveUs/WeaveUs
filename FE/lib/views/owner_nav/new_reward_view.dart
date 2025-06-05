@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:weave_us/views/components/bottom_nav_bar.dart';
@@ -37,64 +38,106 @@ class NewRewardView extends GetView<NewRewardController> {
               onChanged: controller.setDescription,
             ),
             Divider(color: Colors.grey[850], thickness: 1),
-            const Text('만료 기간',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                  fontFamily: 'Pretendard',
-                )),
-            Divider(color: Colors.grey[850], thickness: 1),
-            Obx(() => DropdownButton<String>(
-                  value: controller.validityString.value,
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      controller.validityString.value = newValue;
-                    }
-                  },
-                  items: [
-                    DropdownMenuItem(
-                      value: '30d',
-                      child: Text('지급일로부터 30일',
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, right: 20),
+              child: const Text('유효 기간',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: 'Pretendard',
+                  )),
+            ),
+            Obx(() => Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: DropdownButtonFormField2<String>(
+                    value: controller.validityString.value.isEmpty
+                ? null
+                        : controller.validityString.value,
+                    hint: const Text(
+                      "유효 기간을 선택하세요",
                       style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
+                        fontSize: 20,
                         fontFamily: 'Pretendard',
-                      )
+                        color: Colors.grey,
+                        letterSpacing: 1,
+                      ),
                     ),
-                    ),
-                    DropdownMenuItem(
-                      value: '60d',
-                        child: Text('지급일로부터 60일',
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        controller.validityString.value = newValue;
+                      }
+                    },
+                decoration: const InputDecoration(
+                  isDense: true,
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.only(top:10, bottom: 10),
+                  hintStyle: TextStyle(color: Colors.grey),
+                  focusedBorder: InputBorder.none,
+                ),
+                buttonStyleData: const ButtonStyleData(
+                  padding: EdgeInsets.only(left: 0.0),
+                ),
+                // 펼쳐지는 메뉴 크기, 패딩 설정
+                dropdownStyleData: const DropdownStyleData(
+                  padding: EdgeInsets.all(0.0),
+                ),
+                // 드롭다운 메뉴 항목 높이와 내부 여백 설정
+                menuItemStyleData: const MenuItemStyleData
+                  (
+                  padding: EdgeInsets.symmetric(horizontal: 0.0),
+                  height: 40.0,
+                ),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'Pretendard',
+                  color: Colors.black,
+                  letterSpacing: 1,
+                ),
+                    items: [
+                      DropdownMenuItem(
+                        value: '30d',
+                        child: Text('지급일로부터 30일',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Pretendard',
+                        )
+                      ),
+                      ),
+                      DropdownMenuItem(
+                        value: '60d',
+                          child: Text('지급일로부터 60일',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Pretendard',
+                              )
+                          ),
+                      ),
+                      // 필요하면 더 추가 가능
+                      DropdownMenuItem(
+                        value: '90d',
+                        child: Text('지급일로부터 90일',
                             style: TextStyle(
-                              fontSize: 15,
+                              fontSize: 20,
                               fontWeight: FontWeight.w400,
                               fontFamily: 'Pretendard',
                             )
                         ),
-                    ),
-                    // 필요하면 더 추가 가능
-                    DropdownMenuItem(
-                      value: '90d',
-                      child: Text('지급일로부터 90일',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'Pretendard',
-                          )
                       ),
-                    ),
-                    DropdownMenuItem(
-                      value: '0d',
-                      child: Text('무제한',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'Pretendard',
-                          )
+                      DropdownMenuItem(
+                        value: '0d',
+                        child: Text('무제한',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'Pretendard',
+                            )
+                        ),
                       ),
-                    ),
-                  ],
-                )),
+                    ],
+                  ),
+            )),
             Divider(color: Colors.grey[850], thickness: 1),
 
             Padding(

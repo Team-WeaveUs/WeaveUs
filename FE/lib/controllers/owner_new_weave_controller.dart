@@ -19,6 +19,7 @@ class OwnerNewWeaveController extends GetxController {
   final selectedRewardId = 0.obs;
   final rewardGiveType = ''.obs;
   final rewardConditionList = <RewardCondition>[].obs;
+  final RxnString validityString = RxnString();
 
   final Rx<DateTime> selectedDate = DateTime.now().obs;
   // final selectedWeave = Rxn<String>();

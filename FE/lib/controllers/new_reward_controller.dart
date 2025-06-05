@@ -11,7 +11,7 @@ class NewRewardController extends GetxController {
   final title = ''.obs;
   final descriptionController = TextEditingController();
   final descriptionText = ''.obs;
-  final validityString = '0d'.obs;
+  final validityString = ''.obs;
 
   final rewardContentController = TextEditingController();
   final postContentController = TextEditingController();
