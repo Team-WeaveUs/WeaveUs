@@ -11,9 +11,9 @@ class RewardDetailView extends GetView<RewardDetailController> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('보유 쿠폰 상세'),
+          title: const Text('리워드 상세'),
         ),
-        body: Obx(() => controller.reward.value.weaveId == 0
+        body: Obx(() => controller.reward.value.rewardId == 0
             ? const Center(child: CircularProgressIndicator())
             : Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -39,40 +39,40 @@ class RewardDetailView extends GetView<RewardDetailController> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    if (controller.reward.value.weaveTitle != null) ...[
+                    if (controller.reward.value.weaveTitle != '') ...[
                       const SizedBox(height: 16),
                       Text(
                         '위브: ${controller.reward.value.weaveTitle}',
                         style: const TextStyle(fontSize: 16),
                         textAlign: TextAlign.center,
                       ),
-                    ],
-                    const SizedBox(height: 32),
-                    TextField(
-                      controller: controller.passwordController,
-                      decoration: const InputDecoration(
-                        labelText: '비밀번호',
-                        hintText: '쿠폰 사용을 위한 비밀번호를 입력하세요',
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 32),
+                      TextField(
+                        controller: controller.passwordController,
+                        decoration: const InputDecoration(
+                          labelText: '비밀번호',
+                          hintText: '쿠폰 사용을 위한 비밀번호를 입력하세요',
+                          border: OutlineInputBorder(),
+                        ),
+                        obscureText: true,
                       ),
-                      obscureText: true,
-                    ),
-                    const SizedBox(height: 16),
-                    Obx(() => ElevatedButton(
-                          onPressed: controller.isPasswordValid.value
-                              ? () => controller.useReward()
-                              : null,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: const BorderSide(color: Colors.orange),
+                      const SizedBox(height: 16),
+                      Obx(() => ElevatedButton(
+                            onPressed: controller.isPasswordValid.value
+                                ? () => controller.useReward()
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: const BorderSide(color: Colors.orange),
+                              ),
                             ),
-                          ),
-                          child: const Text('쿠폰 사용하기'),
-                        )),
+                            child: const Text('쿠폰 사용하기'),
+                          )),
+                    ],
                   ],
                 ),
               )));
