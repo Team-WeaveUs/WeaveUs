@@ -9,23 +9,23 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
   final AuthController authController = Get.find<AuthController>();
 
   AppNavBar({
-    Key? key, required this.title,
+    Key? key,
+    required this.title,
     this.centerTitle = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(
-          title,
+      title: Text(title,
           style: const TextStyle(
-              color: Colors.black,
-              fontFamily: 'Pretendard',
-              fontWeight: FontWeight.w900,
-          )
-      ),
+            color: Colors.black,
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w900,
+          )),
       centerTitle: centerTitle,
-      backgroundColor: Colors.white, // 원하는 색상 설정
+      backgroundColor: Colors.white,
+      // 원하는 색상 설정
       actions: [
         IconButton(
           icon: Icon(Icons.logout),

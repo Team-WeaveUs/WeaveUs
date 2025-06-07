@@ -15,6 +15,6 @@ class ProfileBinding extends Bindings {
     Get.lazyPut<ProfileController>(() => ProfileController(
       apiService: Get.find(),
       tokenService: Get.find(),
-    ));
+    ),  fenix: true);
   }
 }

@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bcrypt/bcrypt.dart';
+import 'package:http/http.dart' as http;
 import '../models/token_model.dart';
 import '../routes/app_routes.dart';
 import '../services/auth_service.dart';
@@ -13,7 +16,6 @@ class AuthController extends GetxController {
 
   var isAuthenticated = false.obs;
   var isOwner = false.obs;
-  var userId = ''.obs;
   var isLoading = false.obs;
   var isLoginSuccess = false.obs;
 
@@ -84,7 +86,6 @@ class AuthController extends GetxController {
       isAuthenticated.value = true;
       isLoading.value = false;
       isOwner.value = token!.isOwner == 1;
-      userId.value = token.userId;
       Get.offAllNamed(AppRoutes.HOME);
     } else {
       isLoading.value = false;
@@ -138,6 +139,39 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<bool> validateBusinessNumber(String bno) async {
+    const serviceKey = "RK1Tb5xIod4LWDuarSN6uUOZpHG%2BZgpTmbySBU8n2yiBcpZWwrYoUY6h80Chcv0EGXCRKTszOFCDpItZ4ZO%2FMA%3D%3D";
+    final url = Uri.parse("https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=$serviceKey");
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"b_no": [bno]}),
+      );
+
+      if (response.statusCode != 200) {
+        return false;
+      }
+
+      final data = jsonDecode(response.body);
+      final statusList = data['data'] as List<dynamic>?;
+
+      if (statusList == null || statusList.isEmpty) {
+        return false;
+      }
+
+      // 사업자 상태 코드 확인
+      final status = statusList[0]['b_stt_cd'];
+      return status != null && status.toString().isNotEmpty;
+    }
+    // 예외 처리 추가
+    catch (e) {
+      print("사업자 유효성 검사 중 오류 발생: $e");
+      return false;
+    }
+  }
+
   Future<void> ownerRegistration(String id, String pw, String name,
       String nickname, String number, String gender) async {
     isLoading.value = true;
@@ -169,7 +203,7 @@ class AuthController extends GetxController {
     if (success) {
       isLoading.value = false;
       Get.snackbar("회원가입 성공", "로그인 해주세요");
-      Get.offAllNamed(AppRoutes.LOGIN);
+      Get.toNamed(AppRoutes.LOGIN);
     } else {
       isLoading.value = false;
       Get.snackbar("회원가입 실패", "회원가입에 실패했습니다");

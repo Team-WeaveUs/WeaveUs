@@ -9,11 +9,10 @@ class AuthMainView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // 앱 바 삭제
       // appBar: AppBar(
       //   centerTitle: true,
       //   backgroundColor: Colors.white,
-      //   title: Text("Weave Us"),
+      //   title: Text(""),
       // ),
       body: Center(
         child: Padding(
@@ -41,8 +40,8 @@ class AuthMainView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                child: Text(
-                  "위브로 계속하기",
+                child: const Text(
+                  "시작하기",
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
@@ -54,26 +53,25 @@ class AuthMainView extends StatelessWidget {
 
               SizedBox(height: 20),
 
-              // 오너 버튼
-              ElevatedButton(
-                onPressed: onPressedOwner,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size.fromHeight(55), // 높이만 설정
-                  backgroundColor: Color(0xFF434343),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-                child: Text(
-                  "오너로 계속하기",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    fontFamily: 'Pretendard',
-                  ),
-                ),
-              ),
+              // ElevatedButton(
+              //   onPressed: onPressedOwner,
+              //   style: ElevatedButton.styleFrom(
+              //     minimumSize: Size.fromHeight(55), // 높이만 설정
+              //     backgroundColor: Color(0xFF434343),
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(15),
+              //     ),
+              //   ),
+              //   child: Text(
+              //     "오너로 계속하기",
+              //     style: TextStyle(
+              //       fontSize: 24,
+              //       fontWeight: FontWeight.w700,
+              //       color: Colors.white,
+              //       fontFamily: 'Pretendard',
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -82,10 +80,10 @@ class AuthMainView extends StatelessWidget {
   }
 
   onPressedWeave() {
-    Get.offAllNamed(AppRoutes.LOGIN);
+    Get.toNamed(AppRoutes.LOGIN);
   }
 
   onPressedOwner() {
-    Get.offAllNamed(AppRoutes.OWNERS);
+    Get.toNamed(AppRoutes.OWNERS);
   }
 }

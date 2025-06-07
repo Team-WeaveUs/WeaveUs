@@ -46,6 +46,19 @@ class Profile {
       'post_list': postList.map((x) => x.toJson()).toList(),
     };
   }
+
+  static Profile empty() {
+    return Profile(
+      message: '',
+      userId: 0,
+      nickname: '',
+      img: '',
+      likes: 0,
+      subscribes: 0,
+      postList: [],
+      isOwner: 0,
+    );
+  }
 }
 
 

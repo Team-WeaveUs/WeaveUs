@@ -42,7 +42,6 @@ class Reward {
       description: json['description']?.toString() ?? '',
       rewardId: json['reward_id'] ?? 0,
       validity: json['validity']?.toString() ?? '',
-      // 선택적 필드들에 대한 기본값 처리
       id: json['id'] ?? 0,
       userId: json['user_id'] ?? 0,
       grantedBy: json['granted_by'] ?? 0,

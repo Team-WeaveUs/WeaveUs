@@ -10,7 +10,15 @@ class BottomNavigation extends StatelessWidget {
   var tokenService = TokenService();
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+    Divider(
+    color: Colors.black,
+      height: 0,
+      thickness: 1,
+    ),
+    BottomNavigationBar(
       backgroundColor: Colors.white,
       type: BottomNavigationBarType.fixed,
       showSelectedLabels: false,
@@ -31,7 +39,7 @@ class BottomNavigation extends StatelessWidget {
             Get.offNamed(AppRoutes.REWARDS);
             break;
           case 4:
-            Get.offNamed(AppRoutes.PROFILE);
+            Get.offNamed(AppRoutes.MY_PROFILE);
             break;
         }
       },
@@ -56,6 +64,9 @@ class BottomNavigation extends StatelessWidget {
         const BottomNavigationBarItem(
           icon: Icon(HugeIcons.strokeRoundedUser, color: Colors.black), label: "",
         ),
+      ],
+    ),
+
       ],
     );
   }

@@ -12,7 +12,7 @@ class MyWeaveWidget extends GetView<ProfileController> {
         if (controller.profile.value.nickname == '') {
           return const Center(child: CircularProgressIndicator());
         }
-        return ListView.builder(
+        return ListView.separated(
             itemCount: controller.myWeaveList.length,
             itemBuilder: (context, index) {
               final weave = controller.myWeaveList[index];
@@ -28,7 +28,12 @@ class MyWeaveWidget extends GetView<ProfileController> {
                       onPressed: () =>
                           controller.goToNewWeave(weave.weaveId, weave.title),
                       icon: Icon(Icons.add_circle_outline)));
-            });
+            },
+            separatorBuilder: (context, index) => Divider(
+            color: Colors.grey[850],
+            height: 1,
+            thickness: 1
+        ),);
       },
     );
   }
