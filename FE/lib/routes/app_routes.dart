@@ -3,9 +3,11 @@ import 'package:weave_us/bindings/auth_binding.dart';
 import 'package:weave_us/bindings/post_detail_binding.dart';
 import 'package:weave_us/bindings/weave_binding.dart';
 import 'package:weave_us/views/new_reward_condition_view.dart';
+import 'package:weave_us/views/other_profile_view.dart';
 import 'package:weave_us/views/owner_login_view.dart';
 import 'package:weave_us/views/splash_view.dart';
 import 'package:weave_us/views/weave_profile_view.dart';
+
 import '../bindings/home_binding.dart';
 import '../bindings/new_post_binding.dart';
 import '../bindings/new_reward_condition_binding.dart';
@@ -45,6 +47,7 @@ class AppRoutes {
   static const NEW_JOIN_WEAVE = '/new_join_weave';
   static const NEW_POST = '/new_post';
   static const REWARDS = '/rewards';
+  static const MY_PROFILE = '/my_profile';
   static const PROFILE = '/profile/:user_id';
   static const POST_DETAIL = '/post/:post_id';
   static const AUTH = '/auth';
@@ -122,8 +125,15 @@ class AppRoutes {
       transition: Transition.noTransition,
     ),
     GetPage(
-      name: PROFILE,
+      name: MY_PROFILE,
       page: () => ProfileView(),
+      binding: ProfileBinding(),
+      middlewares: [AuthMiddleware ()],
+      transition: Transition.noTransition,
+    ),
+    GetPage(
+      name: PROFILE,
+      page: () => OtherProfileView(),
       binding: ProfileBinding(),
       middlewares: [AuthMiddleware(), OwnerMiddleware()],
       transition: Transition.noTransition,

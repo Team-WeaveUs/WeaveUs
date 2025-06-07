@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
@@ -28,6 +29,7 @@ class WeaveSearchController extends GetxController {
   final RxList<JoinWeave> joinWeaveData = <JoinWeave>[].obs;
   final mapMarkers = <NMarker>{}.obs;
   final RxBool isWeaveResult = true.obs;
+  final RxBool isWeb = false.obs;
 
   WeaveSearchController({required this.locationService});
 
@@ -35,11 +37,13 @@ class WeaveSearchController extends GetxController {
   void onInit() {
     super.onInit();
     getRecentLocation();
+    checkWeb();
     debounce(
       RxString(''),
       (_) => search(textController.text),
       time: const Duration(milliseconds: 500),
     );
+
   }
 
   // 📌 검색 실행
@@ -48,7 +52,6 @@ class WeaveSearchController extends GetxController {
       print("검색어를 입력하세요!");
       return;
     }
-
     isLoading.value = true;
 
     try {
@@ -190,4 +193,12 @@ class WeaveSearchController extends GetxController {
   void foldMap() => isMapFolded.value = true;
 
   void unfoldMap() => isMapFolded.value = false;
+
+  void checkWeb() {
+    if (kIsWeb) {
+      isWeb.value = true;
+    } else {
+      isWeb.value = false;
+    }
+  }
 }
