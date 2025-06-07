@@ -23,9 +23,7 @@ class RewardController extends GetxController {
   void initRewards() async {
     try {
       final isOwner = await tokenService.loadIsOwner();
-      print("isOwner: $isOwner");
       this.isOwner.value = isOwner;
-      print("isOwner: $isOwner");
       if (isOwner) {
         await fetchMyRewards();
         await fetchRewardConditions();

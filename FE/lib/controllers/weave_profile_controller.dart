@@ -26,6 +26,7 @@ class WeaveProfileController extends GetxController{
     posts: [],
     createUserNickname: '',
     weaveUserId: 0,
+    rewardConditionType: '',
   ).obs;
   final postList = <ProfilePostList>[].obs;
   final userId = ''.obs;

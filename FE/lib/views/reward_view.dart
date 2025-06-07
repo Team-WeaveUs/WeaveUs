@@ -14,9 +14,10 @@ class RewardView extends GetView<RewardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppNavBar(title: '리워드'),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
             // 검색창
@@ -49,10 +50,22 @@ class RewardView extends GetView<RewardController> {
                     : ListView(
                         shrinkWrap: true,
                         children: controller.rewardList.map((reward) {
-                          return _buildRewardItem(
-                            title: reward.title,
-                            subtitle: reward.description,
-                            reward: reward,
+                          return GestureDetector(
+                            onTap: reward.isUsed == 1
+                                ? () {
+                              Get.snackbar("오류", "이미 사용된 리워드입니다.");
+                            }
+                                : () {
+                              Get.toNamed(
+                                AppRoutes.REWARD_DETAIL,
+                                arguments: {'reward': reward},
+                              );
+                            },
+                              child: _buildRewardItem(
+                                title: reward.title,
+                                subtitle: reward.grantedByNickname,
+                                reward: reward,
+                              )
                           );
                         }).toList())))
           ],
@@ -72,42 +85,21 @@ class RewardView extends GetView<RewardController> {
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black26),
         borderRadius: BorderRadius.circular(12),
+        color: reward.isUsed == 1 ? Colors.grey[200] : Colors.white,
       ),
       child: Row(
         children: [
-          const Icon(HugeIcons.strokeRoundedTicketStar, color: Colors.black54),
+          Icon(HugeIcons.strokeRoundedTicketStar, color: reward.isUsed == 1 ? Colors.grey : Colors.black),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                    style: reward.isUsed == 1 ? const TextStyle(color: Colors.grey) : TextStyle(fontWeight: FontWeight.bold)),
                 Text(subtitle, style: const TextStyle(color: Colors.grey)),
               ],
             ),
-          ),
-          ElevatedButton(
-            onPressed: reward.isUsed == 1
-                ? null
-                : () {
-                    Get.toNamed(
-                      AppRoutes.REWARD_DETAIL,
-                      arguments: {'reward': reward},
-                    );
-                  },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: reward.isUsed == 1 ? Colors.grey : Colors.black,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-                side: BorderSide(
-                  color: reward.isUsed == 1 ? Colors.grey : Colors.orange,
-                ),
-              ),
-            ),
-            child: Text(reward.isUsed == 1 ? "사용됨" : "사용"),
           ),
         ],
       ),
