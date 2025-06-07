@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -53,7 +54,7 @@ class BottomNavigation extends StatelessWidget {
         BottomNavigationBarItem(
           icon: GestureDetector(
             onTap: () => Get.toNamed(AppRoutes.NEW_POST),
-            onLongPress: () => Get.toNamed(AppRoutes.NEW_WEAVE),
+            onLongPress: () => kIsWeb ? Get.snackbar("오류", "브라우저에서 지원되지 않는 기능입니다.") : Get.toNamed(AppRoutes.NEW_WEAVE),
             child: const Icon(Icons.add_circle_outline_sharp, size:40 ,color: Colors.black),
           ),
           label: "",
