@@ -17,6 +17,12 @@ class MySubscribeWidget extends GetView<ProfileController> {
             itemBuilder: (context, index) {
               final subscribe = controller.mySubscribeList[index];
               return ListTile(
+                onTap: () {
+                  if (Get.isRegistered<ProfileController>()) {
+                    Get.delete<ProfileController>();
+                  }
+                  Get.toNamed('/profile/${subscribe.id}');
+                },
                 leading: subscribe.mediaUrl == ""
                     ? const CircleAvatar(
                   backgroundColor: Colors.grey,

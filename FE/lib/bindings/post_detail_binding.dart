@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import '../controllers/comment_input_controller.dart';
+import '../controllers/home_controller.dart';
 import '../controllers/post_detail_contoller.dart';
 import '../services/api_service.dart';
 import '../services/token_service.dart';

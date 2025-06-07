@@ -19,7 +19,6 @@ class SearchView extends StatefulWidget {
   State<SearchView> createState() => _SearchViewState();
 }
 
-
 class _SearchViewState extends State<SearchView> {
   final TextEditingController _textSearchController = TextEditingController();
   late final WeaveSearchController _viewModel;
@@ -58,37 +57,37 @@ class _SearchViewState extends State<SearchView> {
                   onSearch: _performSearch,
                   searchController: _viewModel,
                 ),
-                Obx(() =>
-                !_viewModel.isShowMap.value
+                Obx(() => !_viewModel.isShowMap.value
                     ? const RecentSearch()
                     : const SizedBox.shrink()),
                 const SizedBox(height: 16),
                 Expanded(
-                  child: Obx(() =>
-                  _viewModel.isShowMap.value
+                  child: Obx(() => _viewModel.isShowMap.value
                       ? const MapSection()
                       : const SearchResultList()),
                 ),
-
               ],
             ),
           ),
-
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 36, right: 36),
-              child: Obx(() => _viewModel.mapLoading.value ? const CircularProgressIndicator() : FloatingActionButton(
-                onPressed: () {
-                  _viewModel.toggleMapView();
-                  _viewModel.unfoldMap();
-                },
-                child: Icon(
-                      _viewModel.isShowMap.value
-                          ? HugeIcons.strokeRoundedListView
-                          : HugeIcons.strokeRoundedMapsCircle01,
-                    ),
-              )),
+              child: Obx(() => _viewModel.isWeb.value
+                  ? const SizedBox.shrink()
+                  : _viewModel.mapLoading.value
+                      ? const CircularProgressIndicator()
+                      : FloatingActionButton(
+                          onPressed: () {
+                            _viewModel.toggleMapView();
+                            _viewModel.unfoldMap();
+                          },
+                          child: Icon(
+                            _viewModel.isShowMap.value
+                                ? HugeIcons.strokeRoundedListView
+                                : HugeIcons.strokeRoundedMapsCircle01,
+                          ),
+                        )),
             ),
           ),
         ],

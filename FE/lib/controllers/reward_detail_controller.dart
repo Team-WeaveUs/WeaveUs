@@ -59,7 +59,12 @@ class RewardDetailController extends GetxController {
         "reward_id": rewardId,
         "password": password
       });
-      Get.offNamed(AppRoutes.REWARDS);
+      if (response['message'] == "리워드 사용 완료되었습니다.") {
+        Get.snackbar("성공", response['message']);
+        Get.offAllNamed(AppRoutes.REWARDS);
+      } else {
+        Get.snackbar("실패", response['message']);
+      }
     } catch (e) {
       print("use reward error : $e");
     }

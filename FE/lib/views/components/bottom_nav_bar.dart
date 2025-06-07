@@ -39,7 +39,7 @@ class BottomNavigation extends StatelessWidget {
             Get.offNamed(AppRoutes.REWARDS);
             break;
           case 4:
-            Get.offNamed(AppRoutes.PROFILE);
+            Get.offNamed(AppRoutes.MY_PROFILE);
             break;
         }
       },

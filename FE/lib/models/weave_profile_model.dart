@@ -14,6 +14,7 @@ class WeaveProfile {
   final List<ProfilePostList> posts;
   final String createUserNickname;
   final int weaveUserId;
+  final String rewardConditionType;
 
   WeaveProfile({
     required this.message,
@@ -29,6 +30,7 @@ class WeaveProfile {
     required this.posts,
     required this.createUserNickname,
     required this.weaveUserId,
+    required this.rewardConditionType,
   });
   factory WeaveProfile.fromJson(Map<String, dynamic> json) {
     return WeaveProfile(
@@ -47,6 +49,7 @@ class WeaveProfile {
       ),
       createUserNickname: json['create_user_nickname'] ?? "",
       weaveUserId: json['weave_user_id'],
+      rewardConditionType: json['reward_condition_type'] ?? "",
     );
   }
 }

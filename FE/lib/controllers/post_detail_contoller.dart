@@ -4,7 +4,6 @@ import '../models/post_model.dart';
 import '../models/comment_model.dart';
 import '../services/api_service.dart';
 import '../services/token_service.dart';
-import 'home_controller.dart';
 
 class PostDetailController extends GetxController {
   final ApiService apiService;
@@ -19,33 +18,24 @@ class PostDetailController extends GetxController {
   final commentController = TextEditingController();
   final isLoading = true.obs;
   final postId = ''.obs;
+  final rewardConditionType = ''.obs;
   final rewardConditionId = 0.obs;
   final rewardId = 0.obs;
   final grantUser = ''.obs;
   final canReward = false.obs;
   final currentIndex = 0.obs;
-  final postListMap = <int, RxList<Post>>{}.obs;
-  final homeController = Get.find<HomeController>();
   final myUId = ''.obs;
 
   @override
   onInit() {
-    final args = Get.arguments as Map<String, dynamic>?;
     super.onInit();
     postId.value = Get.parameters['post_id'] ?? '';
-    final postUserId = Get.arguments['postUserId'];
-    final likes = Get.arguments['likes'];
-    final isLiked = Get.arguments['isLiked'];
-    rewardConditionId.value = Get.arguments['rewardConditionId'] ?? 0;
+    rewardConditionId.value = Get.arguments['reward_condition_id'] ?? 0;
+    rewardConditionType.value = Get.arguments['reward_condition_type'] ?? '';
     rewardId.value = Get.arguments['rewardId'] ?? 0;
     grantUser.value = Get.arguments['grantUser'] ?? '';
 
-    post.value = post.value.copyWith(
-      isLiked: isLiked,
-      likes: likes,
-      userId: postUserId
-    );
-    if (postId.value != "" && postUserId != null) {
+    if (postId.value != "") {
       _fetchPost(postId.value);
     } else {
       print('❌ postId 또는 postUserId 누락');
@@ -57,7 +47,7 @@ class PostDetailController extends GetxController {
       isLoading.value = true;
       final userId = await tokenService.loadUserId();
       final List<String>list = [postId];
-      if (grantUser.value == userId) {
+      if (grantUser.value == userId && rewardConditionType.value == 'INSERT') {
         canReward.value = true;
       }
       final postResponse = await apiService.postRequest('Post/Simple', {
@@ -65,13 +55,8 @@ class PostDetailController extends GetxController {
         'post_id': list,
       });
 
-      post.value =
-      (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList()[0]
-      .copyWith(
-        isLiked: post.value.isLiked,
-        likes: post.value.likes,
-        userId: post.value.userId,
-      );
+      post.value = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList()[0];
+
     } catch (e) {
       print('❌ 예외 발생: $e');
     } finally {
@@ -100,7 +85,12 @@ class PostDetailController extends GetxController {
       };
       final rewards = {"rewards": [bodies]};
       final response = await apiService.postRequest("reward/give", rewards);
-      print(response);
+
+      if (response['message'] == '리워드가 성공적으로 지급되었습니다.') {
+        Get.snackbar("성공", response['message']);
+      } else {
+        Get.snackbar("실패", response['message']);
+      }
     } catch (e) {
       print('$e');
     }
@@ -120,9 +110,6 @@ class PostDetailController extends GetxController {
       final updatedPost = post.copyWith(isSubscribed: isNowSubscribed);
       this.post.value = updatedPost;
 
-      // 홈화면에도 반영
-      final homeController = Get.find<HomeController>();
-      homeController.updateSubscriptionInMap(updatedPost);
     } catch (e) {
       print('❌ 상세 구독 실패: $e');
     }
@@ -146,22 +133,9 @@ class PostDetailController extends GetxController {
       );
       this.post.value = updatedPost;
 
-      final homeController = Get.find<HomeController>();
-      homeController.updatePostInMap(updatedPost);
-
       // 상세 페이지용 post 업데이트
       this.post.value = updatedPost;
 
-      // 홈 리스트 업데이트
-      int updatedCount = 0;
-      for (final entry in postListMap.entries) {
-        final index = entry.value.indexWhere((p) => p.id == post.id);
-        if (index != -1) {
-          postListMap[entry.key]![index] = updatedPost;
-          updatedCount++;
-        }
-      }
-      postListMap.refresh();
     } catch (e) {
       print('❌ [에러] 좋아요 처리 실패: $e');
     }

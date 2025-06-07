@@ -95,7 +95,8 @@ class WeaveProfileView extends GetView<WeaveProfileController> {
                     onTap: () {
                       Get.toNamed("/post/${controller.postList[index].postId}", arguments: {
                         'postUserId': controller.userId.value
-                        ,'rewardConditionId': controller.weaveProfile.value.rewardConditionId
+                        ,'reward_condition_id': controller.weaveProfile.value.rewardConditionId
+                        ,'reward_condition_type': controller.weaveProfile.value.rewardConditionType
                         ,'rewardId': controller.weaveProfile.value.rewardId
                         ,'grantUser': controller.weaveProfile.value.weaveUserId.toString(),
                       });

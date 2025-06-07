@@ -16,45 +16,16 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   final tabController = Get.find<TabViewController>();
   final controller = Get.find<ProfileController>();
-  final RxInt myUserId = 0.obs;
-
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserId();
-    _checkRedirectToOwnerProfile();
-  }
-
-  Future<void> _loadUserId() async {
-    final userIdStr = await controller.tokenService.loadUserId();
-    myUserId.value = int.tryParse(userIdStr) ?? 0;
-  }
-
-  Future<void> _checkRedirectToOwnerProfile() async {
-    await Future.delayed(Duration(milliseconds: 300)); // 데이터 로딩 기다리기
-    final isMine = myUserId.value == controller.profile.value.userId;
-    final isOwner = controller.profile.value.isOwner == 1;
-
-    if (!isMine && isOwner == 1) {
-      Get.offNamed('/owner/profile/${controller.profile.value.userId}',
-          arguments: {
-            'userId': controller.profile.value.userId,
-            'nickname': controller.profile.value.nickname,
-          });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       final profile = controller.profile.value;
-      final isMine = myUserId.value == profile.userId;
       final nickname = profile.nickname;
 
       return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppNavBar(title: isMine ? '내 프로필' : '$nickname 님의 프로필'),
+        appBar: AppNavBar(title:'내 프로필'),
         body: Column(children: [
           if (profile.nickname == '')
             const Center(child: CircularProgressIndicator())

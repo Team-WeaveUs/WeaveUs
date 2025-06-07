@@ -16,8 +16,8 @@ class TabViewController extends GetxController with GetTickerProviderStateMixin{
   final profileController = Get.find<ProfileController>();
 
   @override
-  void onReady() {
-    super.onReady();
+  void onInit() {
+    super.onInit();
 
     _setupTabs(profileController.isToggled.value);
     tabController = TabController(length: tabs.length, vsync: this);
@@ -53,7 +53,7 @@ class TabViewController extends GetxController with GetTickerProviderStateMixin{
         const Tab(text: '개인 위브'),
       ];
       tabViews = [
-        Center(child: MyPostWidget()),
+        const Center(child: MyPostWidget()),
         Center(child: MyWeaveWidget()),
         Center(child: PostedWeaveWidget()),
       ];
