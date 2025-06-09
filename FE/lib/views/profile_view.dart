@@ -61,6 +61,17 @@ class _ProfileViewState extends State<ProfileView> {
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black,
                                       fontFamily: 'Pretendard')),
+                              Row(children: [
+                                const Icon(Icons.favorite,
+                                    color: Colors.orange, size: 20),
+                                const SizedBox(width: 5),
+                                Text(profile.likes.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black,
+                                    )),
+                              ]),
                               Row(
                                 children: [
                                   const Icon(HugeIcons.strokeRoundedUser,
@@ -74,36 +85,24 @@ class _ProfileViewState extends State<ProfileView> {
                                       color: Colors.black,
                                     ),
                                   ),
-
+                                  const Spacer(),
+                                  TextButton(
+                                    onPressed: controller.toggleTabs,
+                                    style: TextButton.styleFrom(
+                                        backgroundColor: Color(0xFF868583),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        )
+                                    ),
+                                    child: Text(controller.toggleLabel,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        )),
+                                  )
                                 ],
                               ),
-                              Row(children: [
-                                const Icon(Icons.favorite,
-                                    color: Colors.orange, size: 20),
-                                const SizedBox(width: 5),
-                                Text(profile.likes.toString(),
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black,
-                                    )),
-                                const Spacer(),
-                                TextButton(
-                                  onPressed: controller.toggleTabs,
-                                  style: TextButton.styleFrom(
-                                      backgroundColor: const Color(0xFF868583),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      )
-                                  ),
-                                  child: Text(controller.toggleLabel,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white,
-                                      )),
-                                )
-                              ]),
                             ]),
                       )
                     ]),

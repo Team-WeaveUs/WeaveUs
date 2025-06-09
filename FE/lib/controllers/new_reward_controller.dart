@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:weave_us/models/reward_condition_model.dart';
-import 'package:weave_us/routes/app_routes.dart';
 
 import '../models/owner_reward_model.dart';
 import '../services/api_service.dart';
@@ -80,12 +79,14 @@ class NewRewardController extends GetxController {
 
     try {
       final res = await apiService.postRequest("reward/create", rewardPayload.toJson());
-      if (res['message']?.toString().contains("성공") == true) {
+      if ((res['statusCode'] == 200 ||
+              res['message']?.toString().contains("성공") == true)) {
         Get.back();
         Get.snackbar("성공", "리워드가 등록되었습니다.");
-        Get.offAllNamed(AppRoutes.REWARDS);
+        Get.offAllNamed('/owner/home');
       } else {
-        Get.snackbar("실패",  "${res['message']}");
+        print("❌ [submitReward] 실패 응답: $res");
+        throw Exception("리워드 생성 실패: $res");
       }
     } catch (e) {
       print("❌ [submitReward] 예외 발생: $e");

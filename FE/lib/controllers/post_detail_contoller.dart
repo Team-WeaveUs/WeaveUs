@@ -46,7 +46,6 @@ class PostDetailController extends GetxController {
     try {
       isLoading.value = true;
       final userId = await tokenService.loadUserId();
-      myUId.value = userId;
       final List<String>list = [postId];
       if (grantUser.value == userId && rewardConditionType.value == 'INSERT') {
         canReward.value = true;
@@ -55,6 +54,7 @@ class PostDetailController extends GetxController {
         'user_id': userId,
         'post_id': list,
       });
+
       post.value = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList()[0];
 
     } catch (e) {
@@ -125,7 +125,8 @@ class PostDetailController extends GetxController {
         'post_id': post.id,
       };
 
-      await apiService.postRequest('Post/like', payload);
+      final response = await apiService.postRequest('Post/like', payload);
+
       final updatedPost = post.copyWith(
         isLiked: !post.isLiked,
         likes: post.isLiked ? post.likes - 1 : post.likes + 1,

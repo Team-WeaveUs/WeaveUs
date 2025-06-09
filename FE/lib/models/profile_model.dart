@@ -9,7 +9,6 @@ class Profile {
   final int subscribes;
   final List<ProfilePostList> postList;
   final int isOwner;
-  final String sValid;
 
   Profile({
     required this.message,
@@ -20,7 +19,6 @@ class Profile {
     required this.subscribes,
     required this.postList,
     required this.isOwner,
-    required this.sValid
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
@@ -32,7 +30,6 @@ class Profile {
       likes: json['likes'],
       subscribes: json['subscribes'],
       isOwner: json['is_owner'] ?? 0,
-      sValid: json['s_valid'] ?? "",
       postList: List<ProfilePostList>.from(
         json['post_list'].map((x) => ProfilePostList.fromJson(x)),
       ),
@@ -60,7 +57,6 @@ class Profile {
       subscribes: 0,
       postList: [],
       isOwner: 0,
-      sValid: '',
     );
   }
 }
