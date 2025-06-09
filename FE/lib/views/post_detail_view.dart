@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/views/widgets/comment_input_widget.dart';
 import 'package:weave_us/views/widgets/comment_section_widget.dart';
 import '../controllers/post_detail_contoller.dart';
-import '../views/post_detail_view.dart';
-import '../controllers/home_controller.dart';
-import '../models/post_model.dart';
 
 class PostDetailView extends GetView<PostDetailController> {
   const PostDetailView({super.key});
@@ -152,7 +148,9 @@ class PostDetailView extends GetView<PostDetailController> {
                         if (controller.canReward.value)
                           GestureDetector(
                             onTap: () => controller.giveReward(),
-                            child: Container(
+                            child: controller.myUId.value == post.userId.toString()
+                                ? const SizedBox.shrink()
+                            : Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 6),
                               decoration: BoxDecoration(
@@ -174,7 +172,7 @@ class PostDetailView extends GetView<PostDetailController> {
                           GestureDetector(
                             onTap: () =>
                                 controller.toggleSubscribeInDetail(post),
-                            child: Container(
+                            child:  Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 6),
                               decoration: BoxDecoration(

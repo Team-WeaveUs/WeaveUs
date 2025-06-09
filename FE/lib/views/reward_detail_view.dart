@@ -41,11 +41,18 @@ class RewardDetailView extends GetView<RewardDetailController> {
                     ),
                     if (controller.reward.value.weaveTitle != '') ...[
                       const SizedBox(height: 16),
-                      Text(
-                        '위브: ${controller.reward.value.weaveTitle}',
-                        style: const TextStyle(fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
+                      GestureDetector(
+                        onTap: () => Get.toNamed('/weave/${controller.reward.value.weaveId}', arguments: {
+                          'weaveId': controller.reward.value.weaveId,
+                          'weaveTitle': controller.reward.value.weaveTitle
+                        }),
+                        child: Text(
+                          '위브: ${controller.reward.value.weaveTitle}',
+                          style: const TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                      ,
                       const SizedBox(height: 32),
                       TextField(
                         controller: controller.passwordController,

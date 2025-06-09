@@ -57,7 +57,7 @@ class NewRewardConditionView extends GetView<RewardConditionController> {
                   ],
                 ),
               ),
-            TextButton(onPressed: controller.createRewardCondition, child: Text("제출"))
+            TextButton(onPressed: controller.createRewardCondition, child: const Text("리워드 조건 생성하기"))
           ],
         ),
       ))
