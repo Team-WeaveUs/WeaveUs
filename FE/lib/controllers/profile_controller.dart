@@ -19,6 +19,8 @@ class ProfileController extends GetxController {
 
   String get toggleLabel => isToggled.value ? "프로필" : "구독";
 
+  final subscribeToggle = false.obs;
+
   final profile = Profile(
     message: '',
     userId: 0,
@@ -28,6 +30,7 @@ class ProfileController extends GetxController {
     subscribes: 0,
     postList: [],
     isOwner: 0,
+    sValid: '',
   ).obs;
 
   final subscribeData = SubscribeData(
@@ -87,6 +90,7 @@ class ProfileController extends GetxController {
         'post_count': 20
       });
       final Profile fetchedProfile = Profile.fromJson(response);
+      subscribeToggle.value = fetchedProfile.sValid == '1' ? true : false;
       profile.value = fetchedProfile;
       if (targetId.value == userId) {
         postList.value = fetchedProfile.postList;
@@ -146,8 +150,8 @@ class ProfileController extends GetxController {
   Future<void> fetchMyWeaveList() async {
     try {
       String userId = await tokenService.loadUserId();
-      var response = await apiService
-          .postRequest('weave/get/user-post', {'user_id': userId});
+      var response = await apiService.postRequest(
+          'weave/get/user-post', {'user_id': userId, 'target_user_id': userId});
       final MyWeaveData fetchedWeave = MyWeaveData.fromJson(response);
       myWeaveData.value = fetchedWeave;
       myWeaveList.value = fetchedWeave.data;
@@ -158,7 +162,9 @@ class ProfileController extends GetxController {
 
   Future<void> fetchOtherContributedWeaveList() async {
     try {
-      var response = await apiService.postRequest('weave/get/user-post', {'user_id': targetId.value});
+      String userId = await tokenService.loadUserId();
+      var response = await apiService
+          .postRequest('weave/get/user-post', {'user_id': userId, 'target_user_id': targetId.value});
       final MyWeaveData fetchedWeave = MyWeaveData.fromJson(response);
       otherContributedWeaveData.value = fetchedWeave;
       otherContributedWeaveList.value = fetchedWeave.data;
@@ -170,7 +176,8 @@ class ProfileController extends GetxController {
   Future<void> fetchOtherWeaveList() async {
     try {
       String userId = await tokenService.loadUserId();
-      var response = await apiService.postRequest('weave/get/user', {'target_user_id': targetId.value, 'user_id': userId});
+      var response = await apiService.postRequest('weave/get/user',
+          {'target_user_id': targetId.value, 'user_id': userId});
       final WeaveData fetchedWeave = WeaveData.fromJson(response);
       otherWeaveData.value = fetchedWeave;
       otherWeaveList.value = fetchedWeave.data;
@@ -179,7 +186,21 @@ class ProfileController extends GetxController {
     }
   }
 
-
+  Future<void> toggleSubscribe() async {
+    try {
+      String userId = await tokenService.loadUserId();
+      var response = await apiService.postRequest('user/subscribe/update', {
+        'target_user_id': targetId.value,
+        'user_id': userId,
+      });
+      if (response['message'].contains('변경되었습니다.')) {
+        Get.snackbar('구독', '구독 상태가 변경되었습니다.');
+        subscribeToggle.value = !subscribeToggle.value;
+      }
+    } catch (e) {
+      print('Error fetching profile: $e');
+    }
+  }
 
   void toggleTabs() {
     isToggled.value = !isToggled.value;

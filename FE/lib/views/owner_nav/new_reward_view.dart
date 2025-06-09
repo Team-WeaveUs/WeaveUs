@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:weave_us/views/components/bottom_nav_bar.dart';
 import '../../controllers/new_reward_controller.dart';
 import '../components/app_nav_bar.dart';
 import '../widgets/new_post_widgets/post_content.input.dart';
@@ -70,13 +69,12 @@ class NewRewardView extends GetView<NewRewardController> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 16, horizontal: 80),
                 ),
-                child: const Text('공유하기'),
+                child: const Text('리워드 생성하기'),
               ),
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigation(),
+      )
     );
   }
 }
