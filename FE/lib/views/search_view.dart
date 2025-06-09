@@ -44,6 +44,7 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppNavBar(title: '검색'),
       body: Stack(
         children: [

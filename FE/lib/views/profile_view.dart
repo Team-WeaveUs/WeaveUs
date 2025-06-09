@@ -116,6 +116,7 @@ class _ProfileViewState extends State<ProfileView> {
             return Expanded(
               child: GetBuilder<TabViewController>(
                 builder: (_) => Scaffold(
+                  backgroundColor: Colors.white,
                   appBar: PreferredSize( // ← TabBar PreferredSize
                     preferredSize: const Size.fromHeight(50),
                     child: TabBar(
