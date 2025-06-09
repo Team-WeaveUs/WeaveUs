@@ -19,6 +19,7 @@ class OwnerRewardView extends GetView<RewardController> {
         builder: (context) {
           final tabController = DefaultTabController.of(context);
           return Scaffold(
+            backgroundColor: Colors.white,
             appBar: AppNavBar(title: "내 리워드"),
             body: Column(
               children: [
