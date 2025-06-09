@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../controllers/profile_controller.dart';
+import '../routes/app_routes.dart';
 
 class OtherProfileView extends GetView<ProfileController> {
   const OtherProfileView({super.key});
@@ -21,14 +22,8 @@ class OtherProfileView extends GetView<ProfileController> {
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                : Text("${controller.profile.value.nickname} 님의 프로필",
-              style: TextStyle(
-                color: Colors.black,
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w900,
-              )
-              ),
-            )),
+                : Text("${controller.profile.value.nickname} 님의 프로필")),
+          ),
           body: Column(
             children: [
               Obx(() => controller.profile.value.nickname == ''
@@ -37,7 +32,7 @@ class OtherProfileView extends GetView<ProfileController> {
                     )
                   : Padding(
                       padding:
-                          const EdgeInsets.only(top: 20, left: 20, right: 20),
+                          const EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -62,54 +57,39 @@ class OtherProfileView extends GetView<ProfileController> {
                             children: [
                               Text(controller.profile.value.nickname,
                                   style: const TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                      fontFamily: 'Pretendard')),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
                               Row(
                                 children: [
                                   const Icon(HugeIcons.strokeRoundedUser),
-                                  Text(
-                                      controller.profile.value.subscribes
-                                          .toString(),
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black,
-                                      )),
+                                  Text(controller.profile.value.subscribes
+                                      .toString()),
                                 ],
                               ),
                               Row(
                                 children: [
                                   const Icon(Icons.favorite,
                                       color: Colors.orange),
-                                  Text(
-                                      controller.profile.value.likes.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black,
-                                      )),
-                                  const Spacer(),
-                                  TextButton(
-                                    onPressed: () => controller.toggleSubscribe(),
-                                    style: TextButton.styleFrom(
-                                        backgroundColor: !controller.subscribeToggle.value ? Colors.orange : Color(0xFF868583),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
-                                        )
-                                    ),
-                                    child: Text(!controller.subscribeToggle.value ? "구독" : "구독중",
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        )),
-                                  )
+                                  Text(controller.profile.value.likes
+                                      .toString()),
                                 ],
                               ),
                             ],
                           )),
+                          const SizedBox(width: 10),
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF868583),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                )),
+                            child: Text("구독",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold)),
+                          )
                         ],
                       ))),
               const TabBar(
@@ -149,58 +129,53 @@ class OtherProfileView extends GetView<ProfileController> {
                   () => controller.otherWeaveData.value.message != "성공"
                       ? const Center(child: CircularProgressIndicator())
                       : ListView.separated(
-                          itemCount: controller.otherWeaveList.length,
+                          itemCount:
+                              controller.otherWeaveList.length,
                           itemBuilder: (context, index) {
-                            final weave = controller.otherWeaveList[index];
+                            final weave =
+                                controller.otherWeaveList[index];
                             return ListTile(
-                                onTap: () =>
-                                    Get.toNamed('/weave/${weave.weaveId}'),
-                                title: Text(weave.title),
-                                subtitle: Text(weave.typeId == 1
-                                    ? 'Global'
-                                    : weave.typeId == 2
-                                        ? 'Join'
-                                        : 'Local'),
-                                trailing: IconButton(
-                                    onPressed: () => controller.goToNewWeave(
-                                        weave.weaveId, weave.title),
-                                    icon: Icon(Icons.add_circle_outline)));
+                              onTap: () =>
+                                  Get.toNamed('/weave/${weave.weaveId}'),
+                              title: Text(weave.title),
+                              subtitle: Text(weave.typeId == 1
+                                  ? 'Global'
+                                  : weave.typeId == 2
+                                  ? 'Join'
+                                  : 'Local'),
+                              trailing: IconButton(
+                                  onPressed: () =>
+                                      controller.goToNewWeave(weave.weaveId, weave.title),
+                                  icon: Icon(Icons.add_circle_outline))
+                            );
                           },
                           separatorBuilder: (context, index) => Divider(
                               color: Colors.grey[850], height: 1, thickness: 1),
                         ),
                 ),
-                Obx(
-                  () =>
-                      controller.otherContributedWeaveData.value.message != "성공"
-                          ? const Center(child: CircularProgressIndicator())
-                          : ListView.separated(
-                              itemCount:
-                                  controller.otherContributedWeaveList.length,
-                              itemBuilder: (context, index) {
-                                final weave =
-                                    controller.otherContributedWeaveList[index];
-                                return ListTile(
-                                    onTap: () =>
-                                        Get.toNamed('/weave/${weave.weaveId}'),
-                                    title: Text(weave.title),
-                                    subtitle: Text(weave.typeId == 1
-                                        ? 'Global'
-                                        : weave.typeId == 2
-                                            ? 'Join'
-                                            : 'Local'),
-                                    trailing: IconButton(
-                                        onPressed: () =>
-                                            controller.goToNewWeave(
-                                                weave.weaveId, weave.title),
-                                        icon: Icon(Icons.add_circle_outline)));
-                              },
-                              separatorBuilder: (context, index) => Divider(
-                                  color: Colors.grey[850],
-                                  height: 1,
-                                  thickness: 1),
-                            ),
-                )
+                    Obx(() => controller.otherContributedWeaveData.value.message != "성공"
+                        ? const Center(child: CircularProgressIndicator())
+                        : ListView.separated(
+                      itemCount: controller.otherContributedWeaveList.length,
+                      itemBuilder: (context, index) {
+                        final weave = controller.otherContributedWeaveList[index];
+                        return ListTile(
+                          onTap: () => Get.toNamed('/weave/${weave.weaveId}'),
+                          title: Text(weave.title),
+                          subtitle: Text(weave.typeId == 1
+                              ? 'Global'
+                              : weave.typeId == 2
+                              ? 'Join'
+                              : 'Local'),
+                          trailing: IconButton(
+                              onPressed: () => controller.goToNewWeave(weave.weaveId, weave.title),
+                              icon: Icon(Icons.add_circle_outline)
+                          )
+                        );},
+                      separatorBuilder: (context, index) => Divider(
+    color: Colors.grey[850], height: 1, thickness: 1),
+                      ),
+                    )
               ])),
             ],
           ),

@@ -94,21 +94,12 @@ class OwnerRewardView extends GetView<RewardController> {
                                       return Icon(HugeIcons.strokeRoundedRanking, color: Colors.black54);
                                     } else if (reward.type == 'INSERT') {
                                       return Icon(HugeIcons.strokeRoundedGiveBlood, color: Colors.black54);
-                                    } else if (reward.type == 'RANDOM_THRESHOLD') {
-                                      return Icon(HugeIcons.strokeRoundedFilterReset, color: Colors.black54);
-                                    } else if (reward.type == 'FIRST_N') {
-                                      return Icon(HugeIcons.strokeRoundedMedalFirstPlace, color: Colors.black54);
-                                    }else {
+                                    } else {
                                       return Icon(HugeIcons.strokeRoundedTicketStar, color: Colors.black54);
                                     }
                                   }(),
                               title: Text(reward.name),
                               subtitle: Text(reward.description),
-                                onTap: () {
-                                  Get.toNamed(
-                                    AppRoutes.OWNER_REWARD_DETAIL,
-                                    arguments: {'reward_condition': reward},
-                                  );}
                               );
                             }).toList()
                         ),

@@ -18,7 +18,6 @@ import '../bindings/profile_binding.dart';
 import '../bindings/reward_binding.dart';
 import '../bindings/reward_detail_binding.dart';
 import '../bindings/search_binding.dart';
-import '../bindings/reward_condition_detail_binding.dart';
 
 import '../middlewares/auth_middleware.dart';
 import '../middlewares/owner_middleware.dart';
@@ -35,7 +34,6 @@ import '../views/owner_nav/new_reward_view.dart';
 import '../views/owner_reward_view.dart';
 import '../views/post_detail_view.dart';
 import '../views/profile_view.dart';
-import '../views/reward_condition_detail_view.dart';
 import '../views/reward_detail_view.dart';
 import '../views/reward_view.dart';
 import '../views/search_view.dart';
@@ -62,7 +60,6 @@ class AppRoutes {
   static const REWARD_DETAIL = '/reward/detail';
   static const REWARD_CONDITION = '/reward/condition';
   static const OWNER_REWARDS = '/owner/rewards';
-  static const OWNER_REWARD_DETAIL = '/reward/condition/detail';
 
   static final routes = [
     GetPage(name: SPLASH, page: () => SplashScreen(), binding: AuthBinding()),
@@ -174,14 +171,12 @@ class AppRoutes {
       name: REWARD_DETAIL,
       page: () => RewardDetailView(),
       binding: RewardDetailBinding(),
-      transition: Transition.noTransition,
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: REWARD_CONDITION,
       page: () => NewRewardConditionView(),
       binding: NewRewardConditionBinding(),
-      transition: Transition.noTransition,
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
@@ -190,14 +185,6 @@ class AppRoutes {
       binding: RewardBinding(),
       transition: Transition.noTransition,
       middlewares: [AuthMiddleware(), OwnerMiddleware()],
-    ),
-    GetPage(
-      name: OWNER_REWARD_DETAIL,
-      page: () => RewardConditionDetailView(),
-      binding: RewardConditionDetailBinding(),
-
-      transition: Transition.noTransition,
-      middlewares: [AuthMiddleware()],
     ),
   ];
 }
