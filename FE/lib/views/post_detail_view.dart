@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/views/widgets/comment_input_widget.dart';
 import 'package:weave_us/views/widgets/comment_section_widget.dart';
 import '../controllers/post_detail_contoller.dart';
-import '../views/post_detail_view.dart';
-import '../controllers/home_controller.dart';
-import '../models/post_model.dart';
 
 class PostDetailView extends GetView<PostDetailController> {
   const PostDetailView({super.key});
@@ -15,6 +11,7 @@ class PostDetailView extends GetView<PostDetailController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: const Text(
           '게시물 상세',
           style: TextStyle(
@@ -31,14 +28,18 @@ class PostDetailView extends GetView<PostDetailController> {
           return const Center(child: CircularProgressIndicator());
         }
         final post = controller.post.value;
-        return Stack(children: [
+        return Container(
+            color: Colors.white,
+            child: Stack(
+            children: [
           ListView(
             padding: EdgeInsets.zero,
             children: [
+              SizedBox(height: 10,),
               Divider(color: Colors.grey[850], height: 1, thickness: 1),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -152,7 +153,9 @@ class PostDetailView extends GetView<PostDetailController> {
                         if (controller.canReward.value)
                           GestureDetector(
                             onTap: () => controller.giveReward(),
-                            child: Container(
+                            child: controller.myUId.value == post.userId.toString()
+                                ? const SizedBox.shrink()
+                            : Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 6),
                               decoration: BoxDecoration(
@@ -174,7 +177,7 @@ class PostDetailView extends GetView<PostDetailController> {
                           GestureDetector(
                             onTap: () =>
                                 controller.toggleSubscribeInDetail(post),
-                            child: Container(
+                            child:  Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 6),
                               decoration: BoxDecoration(
@@ -230,7 +233,7 @@ class PostDetailView extends GetView<PostDetailController> {
               child: CommentInputWidget(
                 postId: post.id,
               )),
-        ]);
+        ]));
       }),
     );
   }
