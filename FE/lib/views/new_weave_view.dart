@@ -11,7 +11,9 @@ class NewWeaveView extends GetView<NewWeaveController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         centerTitle: true,
         title: const Text(
           '새 위브',
@@ -63,7 +65,7 @@ class NewWeaveView extends GetView<NewWeaveController> {
             Obx(() {
               return Column(
                 children: [
-                  if (controller.isFormValid.value)
+                  if (controller.isFormValid.value && controller.typeId == 1)
                     Center(
                       child: RichText(
                         textAlign: TextAlign.center,

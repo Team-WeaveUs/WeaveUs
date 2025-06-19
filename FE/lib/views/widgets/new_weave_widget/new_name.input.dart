@@ -18,7 +18,7 @@ class NewNameInput extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            '위브 종류',
+            '위브 이름',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w400,

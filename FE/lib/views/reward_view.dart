@@ -29,17 +29,17 @@ class RewardView extends GetView<RewardController> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.search, color: Colors.grey),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
+                      controller: controller.searchController,
                       decoration: const InputDecoration(
                         hintText: '',
                         border: InputBorder.none,
                       ),
                     ),
                   ),
-                  const Icon(Icons.cancel, color: Colors.grey),
+                  IconButton(onPressed: () => controller.filterRewards(controller.searchController.text), icon: Icon(Icons.search)),
                 ],
               ),
             ),
@@ -49,7 +49,7 @@ class RewardView extends GetView<RewardController> {
                     ? const Center(child: CircularProgressIndicator())
                     : ListView(
                         shrinkWrap: true,
-                        children: controller.rewardList.map((reward) {
+                        children: controller.filteredList.map((reward) {
                           return GestureDetector(
                             onTap: reward.isUsed == 1
                                 ? () {

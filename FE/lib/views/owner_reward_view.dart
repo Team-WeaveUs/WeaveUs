@@ -24,26 +24,33 @@ class OwnerRewardView extends GetView<RewardController> {
             body: Column(
               children: [
                 Container(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 10),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(Icons.search, color: Colors.grey),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
-                          decoration: InputDecoration(
+                          controller: controller.searchController,
+                          decoration: const InputDecoration(
                             hintText: '',
                             border: InputBorder.none,
                           ),
                         ),
                       ),
-                      Icon(Icons.cancel, color: Colors.grey),
+                      IconButton(
+                          onPressed: () =>
+                              controller.tabIndex.value == 0
+                                  ? controller.filterRewards(
+                                      controller.searchController.text)
+                                  : controller.filterRewardConditions(
+                                      controller.searchController.text),
+                          icon: Icon(Icons.search)),
                     ],
                   ),
                 ),
@@ -59,13 +66,14 @@ class OwnerRewardView extends GetView<RewardController> {
                 Expanded(
                   child: TabBarView(
                     children: [
-                      Obx(() =>
-                      controller.rewardList.isEmpty
+                      Obx(() => controller.rewardList.isEmpty
                           ? const Center(child: CircularProgressIndicator())
-                          : Padding(padding: const EdgeInsets.symmetric(
-                          horizontal: 10),
-                          child: ListView(
-                              children: controller.rewardList.map((reward) {
+                          : Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: ListView(
+                                  children:
+                                      controller.filteredList.map((reward) {
                                 return GestureDetector(
                                     onTap: () {
                                       Get.toNamed(
@@ -79,49 +87,59 @@ class OwnerRewardView extends GetView<RewardController> {
                                       reward: reward,
                                     ));
                               }).toList()))),
-                      Obx(() =>
-                      controller.rewardConditionList.isEmpty
+                      Obx(() => controller.rewardConditionList.isEmpty
                           ? const Center(child: CircularProgressIndicator())
-                          : Padding(padding: const EdgeInsets.symmetric(
-                          horizontal: 10),
-                        child: ListView(
-                            children: controller.rewardConditionList.map((
-                                reward) {
-                              return ListTile(
-                                  leading: () {
-                                    if (reward.type == 'RANDOM_AUTHOR') {
-                                      return Icon(HugeIcons.strokeRoundedDice, color: Colors.black54);
-                                    } else if (reward.type == 'TOP_LIKED') {
-                                      return Icon(HugeIcons.strokeRoundedRanking, color: Colors.black54);
-                                    } else if (reward.type == 'INSERT') {
-                                      return Icon(HugeIcons.strokeRoundedGiveBlood, color: Colors.black54);
-                                    } else if (reward.type == 'RANDOM_THRESHOLD') {
-                                      return Icon(HugeIcons.strokeRoundedFilterReset, color: Colors.black54);
-                                    } else if (reward.type == 'FIRST_N') {
-                                      return Icon(HugeIcons.strokeRoundedMedalFirstPlace, color: Colors.black54);
-                                    }else {
-                                      return Icon(HugeIcons.strokeRoundedTicketStar, color: Colors.black54);
-                                    }
-                                  }(),
-                              title: Text(reward.name),
-                              subtitle: Text(reward.description),
-                                onTap: () {
-                                  Get.toNamed(
-                                    AppRoutes.OWNER_REWARD_DETAIL,
-                                    arguments: {'reward_condition': reward},
-                                  );}
-                              );
-                            }).toList()
-                        ),
-                      )
-                      ),
+                          : Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: ListView(
+                                  children: controller.filteredRewardConditionList
+                                      .map((reward) {
+                                return ListTile(
+                                    leading: () {
+                                      if (reward.type == 'RANDOM_AUTHOR') {
+                                        return Icon(HugeIcons.strokeRoundedDice,
+                                            color: Colors.black54);
+                                      } else if (reward.type == 'TOP_LIKED') {
+                                        return Icon(
+                                            HugeIcons.strokeRoundedRanking,
+                                            color: Colors.black54);
+                                      } else if (reward.type == 'INSERT') {
+                                        return Icon(
+                                            HugeIcons.strokeRoundedGiveBlood,
+                                            color: Colors.black54);
+                                      } else if (reward.type ==
+                                          'RANDOM_THRESHOLD') {
+                                        return Icon(
+                                            HugeIcons.strokeRoundedFilterReset,
+                                            color: Colors.black54);
+                                      } else if (reward.type == 'FIRST_N') {
+                                        return Icon(
+                                            HugeIcons
+                                                .strokeRoundedMedalFirstPlace,
+                                            color: Colors.black54);
+                                      } else {
+                                        return Icon(
+                                            HugeIcons.strokeRoundedTicketStar,
+                                            color: Colors.black54);
+                                      }
+                                    }(),
+                                    title: Text(reward.name),
+                                    subtitle: Text(reward.description),
+                                    onTap: () {
+                                      Get.toNamed(
+                                        AppRoutes.OWNER_REWARD_DETAIL,
+                                        arguments: {'reward_condition': reward},
+                                      );
+                                    });
+                              }).toList()),
+                            )),
                     ],
                   ),
                 ),
               ],
             ),
-            floatingActionButton: Obx(() =>
-                FloatingActionButton(
+            floatingActionButton: Obx(() => FloatingActionButton(
                   onPressed: () {
                     final currentIndex = tabController.index;
                     if (currentIndex == 0) {
@@ -141,9 +159,10 @@ class OwnerRewardView extends GetView<RewardController> {
     );
   }
 
-  Widget _buildRewardItem({required String title,
-    required String subtitle,
-    required Reward reward}) {
+  Widget _buildRewardItem(
+      {required String title,
+      required String subtitle,
+      required Reward reward}) {
     return Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         margin: const EdgeInsets.only(bottom: 12),

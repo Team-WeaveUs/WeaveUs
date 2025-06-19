@@ -8,7 +8,9 @@ class NewRewardConditionView extends GetView<RewardConditionController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('새 리워드 조건'),
       ),
       body: Container(

@@ -17,6 +17,7 @@ class ISubscribeWidget extends GetView<ProfileController> {
             itemBuilder: (context, index) {
               final subscribe = controller.iSubscribeList[index];
               return ListTile(
+                contentPadding: EdgeInsets.symmetric(vertical: 10),
                 onTap: () {
                   if (Get.isRegistered<ProfileController>()) {
                     Get.delete<ProfileController>();
