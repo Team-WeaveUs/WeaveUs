@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../controllers/auth_controller.dart';
+import '../../routes/app_routes.dart';
 
 class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -28,9 +30,9 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
       // 원하는 색상 설정
       actions: [
         IconButton(
-          icon: Icon(Icons.logout),
+          icon: Icon(HugeIcons.strokeRoundedMoreVertical),
           onPressed: () {
-            authController.logout();
+            Get.toNamed(AppRoutes.USER_INFO);
           },
         )
       ],

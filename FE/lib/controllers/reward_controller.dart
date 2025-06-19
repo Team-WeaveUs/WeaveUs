@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../models/reward_condition_model.dart';
 import '../services/api_service.dart';
@@ -11,9 +12,12 @@ class RewardController extends GetxController {
   RewardController({required this.apiService, required this.tokenService});
   
   final RxList<Reward> rewardList = <Reward>[].obs;
+  final RxList<Reward> filteredList = <Reward>[].obs;
   final RxList<RewardCondition> rewardConditionList = <RewardCondition>[].obs;
+  final RxList<RewardCondition> filteredRewardConditionList = <RewardCondition>[].obs;
   final RxBool isOwner = false.obs;
   final RxInt tabIndex = 0.obs;
+  final TextEditingController searchController = TextEditingController();
 
   @override
   void onInit() {
@@ -43,6 +47,7 @@ class RewardController extends GetxController {
       rewardList.value = List<Map<String, dynamic>>.from(rewards['rewards'])
           .map((e) => Reward.fromJson(e))
           .toList();
+      filteredList.assignAll(rewardList);
     } catch (e) {
       print('Error fetching rewards: $e');
     }
@@ -57,6 +62,7 @@ class RewardController extends GetxController {
       rewardList.value = List<Map<String, dynamic>>.from(rewards['rewards'])
           .map((e) => Reward.fromJson(e))
           .toList();
+      filteredList.assignAll(rewardList);
     } catch (e) {
       print('Error fetching My rewards: $e');
     }
@@ -70,8 +76,26 @@ class RewardController extends GetxController {
       rewardConditionList.value = List<Map<String, dynamic>>.from(rewardConditions['conditions'])
           .map((e) => RewardCondition.fromJson(e))
           .toList();
+      filteredRewardConditionList.assignAll(rewardConditionList);
     } catch (e) {
       print('Error fetching reward conditions: $e');
     }
+  }
+  void filterRewards(String query) async{
+    print("start search");
+    if (query.isEmpty) {
+      filteredList.assignAll(rewardList);
+    }
+    filteredList.value = rewardList.where((reward) {
+      return reward.title.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+  }
+  void filterRewardConditions(String query) {
+    if (query.isEmpty) {
+      filteredRewardConditionList.assignAll(rewardConditionList);
+    }
+    filteredRewardConditionList.value = rewardConditionList.where((reward) {
+      return reward.name.toLowerCase().contains(query.toLowerCase());
+    }).toList();
   }
 }

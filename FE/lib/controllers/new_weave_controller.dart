@@ -88,8 +88,6 @@ class NewWeaveController extends GetxController {
     }
 
     try {
-      print(privacyId);
-      print(typeId);
       final res = await apiService.postRequest("WeaveUpload", {
         "title": nameController.text.trim(),
         "description": descriptionController.text.trim(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/views/components/app_nav_bar.dart';
 import '../controllers/home_controller.dart';
 import '../models/post_model.dart';
@@ -91,7 +92,13 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 IconButton(
                                   onPressed: controller.goToNewWeave,
-                                  icon: const Icon(Icons.add_circle_outline),
+                                  icon: Icon(controller.postList1[index].weaveType == 1
+                                      ? Icons.add_circle_outline
+                                      : controller.postList1[index]
+                                      .weaveType ==
+                                      2
+                                      ? HugeIcons.strokeRoundedGift
+                                      : Icons.add_circle_outline),
                                 )
                               ],
                             ),
