@@ -83,7 +83,7 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                           print(controller.selectedDate.value);
                         }
                       },
-                      child: Text("날짜 선택"),
+                      child: Text("종료 날짜 선택"),
                     ),
                     Obx(() => controller.rewardConditionList.isEmpty ? const Center(child: CircularProgressIndicator()) : DropdownButton<int>(
                             value: controller.rewardConditionId.value,

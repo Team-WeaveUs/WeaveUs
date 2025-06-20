@@ -61,7 +61,7 @@ class HomeView extends GetView<HomeController> {
                                       onTap: () {
                                         final weaveId =
                                             controller.postList1[index].weaveId;
-                                        Get.toNamed("/weave/$weaveId");
+                                        Get.toNamed("/weave/$weaveId?from=${Get.currentRoute}");
                                       },
                                       child: Text(
                                         controller.postList1[index].weaveTitle,
@@ -283,14 +283,7 @@ class HomeView extends GetView<HomeController> {
                                           GestureDetector(
                                             onTap: () {
                                               Get.toNamed(
-                                                  '/post/${verticalPost.id}',
-                                                  arguments: {
-                                                    'postUserId':
-                                                        verticalPost.userId,
-                                                    'likes': verticalPost.likes,
-                                                    'isLiked':
-                                                        verticalPost.isLiked,
-                                                  });
+                                                  '/post/${verticalPost.id}?from=${Get.currentRoute}');
                                             },
                                             child: Text(
                                               '${verticalPost.commentCount}개의 댓글',

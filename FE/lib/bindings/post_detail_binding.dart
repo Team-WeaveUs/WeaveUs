@@ -14,6 +14,10 @@ class PostDetailBinding extends Bindings {
       apiService: Get.find(),
       tokenService: Get.find(),
     ));
+    Get.lazyPut<HomeController>(() => HomeController(
+      apiService: Get.find(),
+      tokenService: Get.find(),
+    ));
     Get.lazyPut<CommentInputController>(() => CommentInputController(
       apiService: Get.find(),
       tokenService: Get.find(),

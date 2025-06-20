@@ -26,31 +26,29 @@ class OwnerRewardView extends GetView<RewardController> {
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(20),
-                  ),
                   child: Row(
                     children: [
-                      const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
                           controller: controller.searchController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             hintText: '',
-                            border: InputBorder.none,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            contentPadding:
+                                const EdgeInsets.symmetric(horizontal: 16),
                           ),
                         ),
                       ),
+                      const SizedBox(width: 8),
                       IconButton(
-                          onPressed: () =>
-                              controller.tabIndex.value == 0
-                                  ? controller.filterRewards(
-                                      controller.searchController.text)
-                                  : controller.filterRewardConditions(
-                                      controller.searchController.text),
-                          icon: Icon(Icons.search)),
+                          onPressed: () => controller.tabIndex.value == 0
+                              ? controller.filterRewards(
+                                  controller.searchController.text)
+                              : controller.filterRewardConditions(
+                                  controller.searchController.text),
+                          icon: Icon(HugeIcons.strokeRoundedSearch02)),
                     ],
                   ),
                 ),
@@ -93,7 +91,8 @@ class OwnerRewardView extends GetView<RewardController> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
                               child: ListView(
-                                  children: controller.filteredRewardConditionList
+                                  children: controller
+                                      .filteredRewardConditionList
                                       .map((reward) {
                                 return ListTile(
                                     leading: () {

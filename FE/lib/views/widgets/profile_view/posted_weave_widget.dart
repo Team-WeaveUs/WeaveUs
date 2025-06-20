@@ -18,7 +18,7 @@ class PostedWeaveWidget extends GetView<ProfileController> {
             itemBuilder: (context, index) {
               final weave = controller.weaveList[index];
               return ListTile(
-                onTap: () => Get.toNamed('/weave/${weave.weaveId}'),
+                onTap: () => Get.toNamed('/weave/${weave.weaveId}?from=${Get.currentRoute}'),
                   title: Text(weave.title),
                   subtitle: Text(weave.typeId == 1
                       ? 'Global'

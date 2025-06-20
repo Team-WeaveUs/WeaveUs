@@ -42,10 +42,7 @@ class RewardDetailView extends GetView<RewardDetailController> {
                     if (controller.reward.value.weaveTitle != '') ...[
                       const SizedBox(height: 16),
                       GestureDetector(
-                        onTap: () => Get.toNamed('/weave/${controller.reward.value.weaveId}', arguments: {
-                          'weaveId': controller.reward.value.weaveId,
-                          'weaveTitle': controller.reward.value.weaveTitle
-                        }),
+                        onTap: () => Get.toNamed('/weave/${controller.reward.value.weaveId}?from=${Get.currentRoute}'),
                         child: Text(
                           '위브: ${controller.reward.value.weaveTitle}',
                           style: const TextStyle(fontSize: 16),

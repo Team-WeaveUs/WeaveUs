@@ -8,10 +8,10 @@ class HomeBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<ApiService>(() => ApiService());
     Get.lazyPut<TokenService>(() => TokenService());
-    Get.lazyPut(() => HomeController(
+    Get.put(HomeController(
       apiService: Get.find(),
       tokenService: Get.find(),
-    ));
+    ), permanent: true);
   }
 }
 

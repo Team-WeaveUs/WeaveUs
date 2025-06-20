@@ -32,10 +32,9 @@ class NewPostController extends GetxController {
   void onInit() {
     super.onInit();
 
-    // ✅ NewPostView 진입 시 arguments 받기
-    if (Get.arguments != null) {
-      selectedWeaveId.value = Get.arguments['weaveId']?.toString();
-      selectedWeaveText.value = Get.arguments['weaveTitle'] ?? '';
+    if (Get.parameters.isNotEmpty) {
+      selectedWeaveId.value = Get.parameters['weaveId']?.toString();
+      selectedWeaveText.value = Get.parameters['weaveTitle'] ?? '';
     }
 
     descriptionController.addListener(() {
@@ -155,8 +154,14 @@ class NewPostController extends GetxController {
               response['message']?.toString().contains("성공") == true)) {
         Get.back();
         Get.snackbar("성공", "게시물이 등록되었습니다.");
-        Get.offAllNamed('/home');
+        final from = Get.parameters['from'] ?? '/home'; // 기본값: home
+        if (from.isNotEmpty) {
+          Get.offAllNamed(from.trim()); // 경로형 from → 예: weave/45
+        } else {
+          Get.offAllNamed('/home'); // fallback
+        }
       } else {
+        Get.back();
         throw Exception("게시물 생성 실패: $response");
       }
     } catch (e) {

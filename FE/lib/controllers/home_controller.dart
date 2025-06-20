@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:weave_us/services/api_service.dart';
 import 'package:weave_us/services/token_service.dart';
 import '../models/post_model.dart';
-import '../routes/app_routes.dart';
 
 class HomeController extends GetxController {
   final ApiService apiService;
@@ -86,10 +85,6 @@ class HomeController extends GetxController {
     if (postListMap[index]!.length < 2) fetchPostList2();
   }
 
-  Future<void> clickpostList() async {
-    Get.toNamed(AppRoutes.NEW_POST);
-  }
-
   Future<void> onVerticalScroll(int index) async {
     if (index == nextStartAt[currentIndex.value]) fetchPostList2();
   }
@@ -108,17 +103,14 @@ class HomeController extends GetxController {
 
   void goToNewWeave() {
     final currentPost = postList1[currentIndex.value];
-    Get.toNamed('/new_post', arguments: {
-      'weaveId': currentPost.weaveId,
-      'weaveTitle': currentPost.weaveTitle,
-    });
+    Get.toNamed('/new_post?from=${Get.currentRoute}&weaveId=${currentPost.weaveId}&weaveTitle=${currentPost.weaveTitle}');
   }
 
   // 좋아요 토글 처리
   void toggleLike(Post post) async {
     try {
       final userId = await tokenService.loadUserId();
-      await apiService.postRequest('Post/like', {
+      final response = await apiService.postRequest('Post/like', {
         'user_id': userId,
         'post_id': post.id,
       });
@@ -126,27 +118,15 @@ class HomeController extends GetxController {
       final index = postListMap[currentIndex.value]!
           .indexWhere((p) => p.id == post.id);
 
+      final thisLikeCount = response['like_count'];
+      final thisIsLiked = response['like_status'] == 1;
       if (index != -1) {
-        final updatedPost = post.copyWith(isLiked: !post.isLiked, likes: post.isLiked ? post.likes - 1 : post.likes + 1);
+        final updatedPost = post.copyWith(isLiked: thisIsLiked, likes: thisLikeCount);
         postListMap[currentIndex.value]![index] = updatedPost;
         postListMap.refresh();
       }
-
-      print('좋아요 반영 완료');
     } catch (e) {
       print('좋아요 처리 실패: $e');
-    }
-  }
-
-  // 구독 상태 업데이트
-  void updateSubscriptionInMap(Post updatedPost) {
-    for (final entry in postListMap.entries) {
-      final index = entry.value.indexWhere((p) => p.id == updatedPost.id);
-      if (index != -1) {
-        postListMap[entry.key]![index] = updatedPost;
-        postListMap.refresh();
-        break;
-      }
     }
   }
 
@@ -155,27 +135,34 @@ class HomeController extends GetxController {
       final myId = await tokenService.loadUserId();
       final isNowSubscribed = !subscribedUserIds.contains(post.userId);
 
-      await apiService.postRequest('user/subscribe/update', {
+      final response = await apiService.postRequest('user/subscribe/update', {
         'user_id': myId,
         'target_user_id': post.userId,
       });
-
-      final index = postListMap[currentIndex.value]!
-          .indexWhere((p) => p.id == post.id);
+      final isSubscribed = response['subscribe_status'] == 1;
 
       if (isNowSubscribed) {
         subscribedUserIds.add(post.userId);
-        final updatedPost = post.copyWith(isSubscribed: true);
-        postListMap[currentIndex.value]![index] = updatedPost;
+        postListMap.forEach((tab, postList) {
+          for (int i = 0; i < postList.length; i++) {
+            if (postList[i].userId == post.userId) {
+              postList[i] = postList[i].copyWith(isSubscribed: isSubscribed);
+            }
+          }
+        });
         postListMap.refresh();
 
       } else {
         subscribedUserIds.remove(post.userId);
-        final updatedPost = post.copyWith(isSubscribed: false);
-        postListMap[currentIndex.value]![index] = updatedPost;
+        postListMap.forEach((tab, postList) {
+          for (int i = 0; i < postList.length; i++) {
+            if (postList[i].userId == post.userId) {
+              postList[i] = postList[i].copyWith(isSubscribed: isSubscribed);
+            }
+          }
+        });
         postListMap.refresh();
       }
-      print('구독 상태 반영 완료');
     } catch (e) {
       print('구독 처리 실패: $e');
     }

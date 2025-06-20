@@ -21,8 +21,7 @@ class MyPostWidget extends GetView<ProfileController> {
             return GestureDetector(
                 onTap: () {
                   Get.toNamed(
-                    '/post/${post.postId}',
-                    arguments: {'postUserId': controller.profile.value.userId},
+                    '/post/${post.postId}?from=${Get.currentRoute}'
                   );
                 },
                 child: Image.network(post.img));

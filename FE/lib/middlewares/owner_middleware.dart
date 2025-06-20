@@ -14,7 +14,8 @@ class OwnerMiddleware extends GetMiddleware {
       if (authController.isOwner.value) {
         if (kIsWeb) {
           Get.snackbar("오류", "웹브라우저에서 지원하지 않는 기능입니다.");
-          return const RouteSettings(name: AppRoutes.NEW_POST);
+          return const RouteSettings(name: AppRoutes.OWNER_NEW_WEAVE);
+          // return const RouteSettings(name: AppRoutes.NEW_POST);
         } else {
           return const RouteSettings(name: AppRoutes.OWNER_NEW_WEAVE);
         }

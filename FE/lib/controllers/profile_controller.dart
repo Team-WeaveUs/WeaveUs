@@ -84,6 +84,9 @@ class ProfileController extends GetxController {
       if (Get.currentRoute == AppRoutes.MY_PROFILE) {
         targetId.value = userId;
       }
+      if (targetId.value == userId && Get.currentRoute != AppRoutes.USER_INFO) {
+        Get.offNamed(AppRoutes.MY_PROFILE);
+      }
       var response = await apiService.postRequest('ProfileInfo', {
         'target_user_id': targetId.value,
         'user_id': userId,
@@ -207,7 +210,6 @@ class ProfileController extends GetxController {
   }
 
   void goToNewWeave(int weaveId, String weaveTitle) {
-    Get.toNamed(AppRoutes.NEW_POST,
-        arguments: {'weaveId': weaveId, 'weaveTitle': weaveTitle});
+    Get.toNamed('${AppRoutes.NEW_POST}?from=${Get.currentRoute}&weaveId=$weaveId&weaveTitle=$weaveTitle');
   }
 }

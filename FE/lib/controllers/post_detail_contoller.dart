@@ -4,12 +4,17 @@ import '../models/post_model.dart';
 import '../models/comment_model.dart';
 import '../services/api_service.dart';
 import '../services/token_service.dart';
+import 'package:bcrypt/bcrypt.dart';
+
+import 'home_controller.dart';
 
 class PostDetailController extends GetxController {
   final ApiService apiService;
   final TokenService tokenService;
 
   PostDetailController({required this.apiService, required this.tokenService});
+
+  HomeController get homeController => Get.find<HomeController>();
 
   final post = Post
       .empty()
@@ -25,15 +30,17 @@ class PostDetailController extends GetxController {
   final canReward = false.obs;
   final currentIndex = 0.obs;
   final myUId = ''.obs;
+  final from = ''.obs;
 
   @override
   onInit() {
     super.onInit();
     postId.value = Get.parameters['post_id'] ?? '';
-    rewardConditionId.value = Get.arguments['reward_condition_id'] ?? 0;
-    rewardConditionType.value = Get.arguments['reward_condition_type'] ?? '';
-    rewardId.value = Get.arguments['rewardId'] ?? 0;
-    grantUser.value = Get.arguments['grantUser'] ?? '';
+    rewardConditionId.value = int.tryParse(Get.parameters['reward_condition_id'].toString())??0;
+    rewardConditionType.value = Get.parameters['reward_condition_type'] ?? '';
+    rewardId.value = int.tryParse(Get.parameters['rewardId'].toString()) ?? 0;
+    grantUser.value = Get.parameters['grantUser'] ?? '';
+    from.value = Get.parameters['from'] ?? '';
 
     if (postId.value != "") {
       _fetchPost(postId.value);
@@ -46,9 +53,10 @@ class PostDetailController extends GetxController {
     try {
       isLoading.value = true;
       final userId = await tokenService.loadUserId();
-      myUId.value = userId;
+      try{} catch(e){print(e);}
+      myUId.value = userId.toString();
       final List<String>list = [postId];
-      if (grantUser.value == userId && rewardConditionType.value == 'INSERT') {
+      if (safeCheckPw(userId, grantUser.value) && rewardConditionType.value == 'INSERT') {
         canReward.value = true;
       }
       final postResponse = await apiService.postRequest('Post/Simple', {
@@ -66,10 +74,7 @@ class PostDetailController extends GetxController {
 
   void goToNewWeave() {
     final currentPost = post.value;
-    Get.toNamed('/new_post', arguments: {
-      'weaveId': currentPost.weaveId,
-      'weaveTitle': currentPost.weaveTitle,
-    });
+    Get.toNamed('/new_post?from=${Get.currentRoute}&weaveId=${currentPost.weaveId}&weaveTitle=${currentPost.weaveTitle}');
   }
 
   Future<void> giveReward() async {
@@ -118,14 +123,7 @@ class PostDetailController extends GetxController {
   // 좋아요 토글 처리
   void toggleLikeInDetail(Post post) async {
     try {
-      final userId = await tokenService.loadUserId();
-
-      final payload = {
-        'user_id': userId,
-        'post_id': post.id,
-      };
-
-      await apiService.postRequest('Post/like', payload);
+      homeController.toggleLike(post);
       final updatedPost = post.copyWith(
         isLiked: !post.isLiked,
         likes: post.isLiked ? post.likes - 1 : post.likes + 1,
@@ -137,6 +135,14 @@ class PostDetailController extends GetxController {
 
     } catch (e) {
       print('❌ [에러] 좋아요 처리 실패: $e');
+    }
+  }
+  bool safeCheckPw(String plain, String? hashed) {
+    if (hashed == null || hashed.trim().length < 28) return false;
+    try {
+      return BCrypt.checkpw(plain, hashed);
+    } catch (_) {
+      return false;
     }
   }
 }

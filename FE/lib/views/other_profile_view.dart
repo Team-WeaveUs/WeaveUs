@@ -11,6 +11,7 @@ class OtherProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
+    final from = Get.parameters['from'] ?? 'home'; // 기본값: home
     return DefaultTabController(
         length: 3,
         child: Scaffold(
@@ -22,13 +23,28 @@ class OtherProfileView extends GetView<ProfileController> {
                     child: CircularProgressIndicator(),
                   )
                 : Text("${controller.profile.value.nickname} 님의 프로필",
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black,
                 fontFamily: 'Pretendard',
                 fontWeight: FontWeight.w900,
               )
               ),
-            )),
+            ),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                } else {
+                  if (from.isNotEmpty) {
+                    Get.offAllNamed(from.trim());
+                  } else {
+                    Get.offAllNamed('/home');
+                  }
+                }
+              },
+            ),
+          ),
           body: Column(
             children: [
               Obx(() => controller.profile.value.nickname == ''
@@ -134,11 +150,7 @@ class OtherProfileView extends GetView<ProfileController> {
                             return GestureDetector(
                                 onTap: () {
                                   Get.toNamed(
-                                    '/post/${post.postId}',
-                                    arguments: {
-                                      'postUserId':
-                                          controller.profile.value.userId
-                                    },
+                                    '/post/${post.postId}?from=${Get.currentRoute}',
                                   );
                                 },
                                 child: Image.network(post.img));
@@ -154,7 +166,7 @@ class OtherProfileView extends GetView<ProfileController> {
                             final weave = controller.otherWeaveList[index];
                             return ListTile(
                                 onTap: () =>
-                                    Get.toNamed('/weave/${weave.weaveId}'),
+                                    Get.toNamed('/weave/${weave.weaveId}?from=${Get.currentRoute}'),
                                 title: Text(weave.title),
                                 subtitle: Text(weave.typeId == 1
                                     ? 'Global'
@@ -182,7 +194,7 @@ class OtherProfileView extends GetView<ProfileController> {
                                     controller.otherContributedWeaveList[index];
                                 return ListTile(
                                     onTap: () =>
-                                        Get.toNamed('/weave/${weave.weaveId}'),
+                                        Get.toNamed('/weave/${weave.weaveId}?from=${Get.currentRoute}'),
                                     title: Text(weave.title),
                                     subtitle: Text(weave.typeId == 1
                                         ? 'Global'

@@ -30,6 +30,7 @@ class WeaveSearchController extends GetxController {
   final mapMarkers = <NMarker>{}.obs;
   final RxBool isWeaveResult = true.obs;
   final RxBool isWeb = false.obs;
+  final RxString myUId = ''.obs;
 
   WeaveSearchController({required this.locationService});
 
@@ -134,6 +135,7 @@ class WeaveSearchController extends GetxController {
   Future<void> getRecentLocation() async {
     isLoading.value = true;
     mapLoading.value = true;
+    myUId.value = await _tokenService.loadUserId();
     try {
       position.value = await locationService.getCurrentLocation();
     } catch (e) {
@@ -150,7 +152,6 @@ class WeaveSearchController extends GetxController {
         position.value!.latitude, position.value!.longitude);
     areaId.forEach((a) => print(a));
     print('areaid: $areaId');
-
     final response = await _apiService.postRequest(
         'weave/join/get/area', {'user_id': userId, 'area_ids': areaId});
     joinWeaveData.value =
@@ -177,10 +178,7 @@ class WeaveSearchController extends GetxController {
         position: NLatLng(group.lat, group.lng),
       );
       marker.setOnTapListener((NMarker marker) {
-        Get.toNamed('/weave/${group.weaveId}', arguments: {
-          'weaveId': group.weaveId,
-          'weaveTitle': group.title,
-        });
+        Get.toNamed('/weave/${group.weaveId}?from=${Get.currentRoute}');
       });
       return marker;
     }));
