@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/views/widgets/comment_input_widget.dart';
 import 'package:weave_us/views/widgets/comment_section_widget.dart';
 import '../controllers/post_detail_contoller.dart';
@@ -13,6 +14,14 @@ class PostDetailView extends GetView<PostDetailController> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: Icon(HugeIcons.strokeRoundedComplaint),
+            onPressed: () {
+              Get.snackbar("미구현", "신고 페이지로 대체될 예정");
+            },
+          )
+        ],
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -59,7 +68,11 @@ class PostDetailView extends GetView<PostDetailController> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
+                        GestureDetector(
+                          onTap: () {
+                            Get.toNamed("/weave/${post.weaveId}?from=${Get.currentRoute}");
+                          },
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
@@ -85,30 +98,43 @@ class PostDetailView extends GetView<PostDetailController> {
                               ),
                             ),
                           ],
-                        ),
+                        )),
                         IconButton(
                           onPressed: controller.goToNewWeave,
-                          icon: const Icon(Icons.add_circle_outline),
+                          icon: Icon(post.weaveType == 1
+                              ? Icons.add_circle_outline
+                              : post.weaveType == 2
+                                  ? HugeIcons.strokeRoundedGift
+                                  : Icons.add_circle_outline),
                         ),
                       ],
                     ),
                   ),
                   Divider(color: Colors.grey[850], height: 1, thickness: 1),
-                  AspectRatio(
-                    aspectRatio: 1,
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          child: Image.network(
-                            post.mediaUrl,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
+                  Obx(() {
+                    final ratio = controller.imageAspectRatio.value;
+                    final screenWidth = MediaQuery.of(context).size.width;
+                    final calculatedHeight = screenWidth / ratio;
+
+                    return SizedBox(
+                      width: screenWidth,
+                      height: calculatedHeight,
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            child: Image.network(
+                              post.mediaUrl,
+                              fit: BoxFit.fitWidth, // ✅ 비율 유지 + 안 짤림 + 가로 맞춤
+                              width: screenWidth,
+                              height: calculatedHeight,
+                              alignment: Alignment.topCenter,
+                            ),
                           ),
-                        ),
-                        Obx(() => Positioned(
-                              bottom: 10,
-                              right: 10,
-                              child: GestureDetector(
+                          // 좋아요 버튼 그대로 유지
+                          Obx(() => Positioned(
+                                bottom: 10,
+                                right: 10,
+                                child: GestureDetector(
                                   onTap: () => controller.toggleLikeInDetail(
                                       controller.post.value),
                                   child: Stack(
@@ -132,11 +158,13 @@ class PostDetailView extends GetView<PostDetailController> {
                                         ),
                                       ),
                                     ],
-                                  )),
-                            )),
-                      ],
-                    ),
-                  ),
+                                  ),
+                                ),
+                              )),
+                        ],
+                      ),
+                    );
+                  }),
                   Divider(color: Colors.grey[850], height: 1, thickness: 1),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -157,7 +185,8 @@ class PostDetailView extends GetView<PostDetailController> {
                                     radius: 15,
                                     backgroundColor: Colors.grey,
                                     child:
-                                        Icon(Icons.person, color: Colors.white),
+                                        Icon(HugeIcons.strokeRoundedUser, color: Colors.white,
+                                          size: 15),
                                   ),
                             const SizedBox(width: 6),
                             GestureDetector(
@@ -229,7 +258,7 @@ class PostDetailView extends GetView<PostDetailController> {
                         GestureDetector(
                           onTap: () {},
                           child: Text(
-                            '${post.commentCount}개의 댓글',
+                            '${controller.comments.length}개의 댓글',
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,

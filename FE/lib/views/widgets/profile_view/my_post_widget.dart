@@ -14,17 +14,29 @@ class MyPostWidget extends GetView<ProfileController> {
       } else {
         return GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3, childAspectRatio: 1),
+            crossAxisCount: 3,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+            childAspectRatio: 1,
+          ),
           itemCount: controller.postList.length,
           itemBuilder: (context, index) {
             final post = controller.postList[index];
             return GestureDetector(
-                onTap: () {
-                  Get.toNamed(
-                    '/post/${post.postId}?from=${Get.currentRoute}'
-                  );
-                },
-                child: Image.network(post.img));
+              onTap: () {
+                Get.toNamed('/post/${post.postId}?from=${Get.currentRoute}');
+              },
+              child: AspectRatio(
+                aspectRatio: 1, // ⬅️ 정사각형 유지
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    post.img,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            );
           },
         );
       }

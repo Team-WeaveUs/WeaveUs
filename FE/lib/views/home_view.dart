@@ -203,10 +203,8 @@ class HomeView extends GetView<HomeController> {
                                                             radius: 15,
                                                             backgroundColor:
                                                                 Colors.grey,
-                                                            child: Icon(
-                                                                Icons.person,
-                                                                color: Colors
-                                                                    .white),
+                                                            child: Icon(HugeIcons.strokeRoundedUser, color: Colors.white,
+                                                                size: 15),
                                                           ),
                                                     const SizedBox(width: 6),
                                                     Text(verticalPost.nickname),

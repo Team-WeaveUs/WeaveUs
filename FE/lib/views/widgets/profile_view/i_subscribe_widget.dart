@@ -27,10 +27,10 @@ class ISubscribeWidget extends GetView<ProfileController> {
                 leading: subscribe.mediaUrl == ""
                     ? const CircleAvatar(
                         backgroundColor: Colors.grey,
-                        radius: 50,
+                        radius: 30,
                         child: Icon(
                           HugeIcons.strokeRoundedUser,
-                          size: 50,
+                          size: 30,
                           color: Colors.white,
                         ),
                       )

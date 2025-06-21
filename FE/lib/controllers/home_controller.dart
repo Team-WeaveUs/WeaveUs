@@ -179,4 +179,15 @@ class HomeController extends GetxController {
       }
     }
   }
+
+  void addComment(int postId) {
+    final index = postListMap[currentIndex.value]!
+        .indexWhere((p) => p.id == postId);
+    final post = postListMap[currentIndex.value]![index];
+    if (index != -1) {
+      final updatedPost = post.copyWith(commentCount: post.commentCount + 1);
+      postListMap[currentIndex.value]![index] = updatedPost;
+      postListMap.refresh();
+    }
+  }
 }

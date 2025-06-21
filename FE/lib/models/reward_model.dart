@@ -12,7 +12,7 @@ class Reward {
   final String title;
   final String grantedByNickname;
   final String description;
-  final String validity;
+  late final String validity;
   final String weaveTitle;
 
   Reward({

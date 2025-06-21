@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bcrypt/bcrypt.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../controllers/weave_profile_controller.dart';
 import '../routes/app_routes.dart';
@@ -15,6 +16,14 @@ class WeaveProfileView extends GetView<WeaveProfileController> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
+          actions: [
+            IconButton(
+              icon: const Icon(HugeIcons.strokeRoundedComplaint),
+              onPressed: () {
+                Get.snackbar("미구현","신고페이지로 넘어갈 예정.");
+              },
+            )
+          ],
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
@@ -76,7 +85,7 @@ class WeaveProfileView extends GetView<WeaveProfileController> {
                               children: [
                                 Row(
                                   children: [
-                                    const Icon(Icons.favorite_border,
+                                    const Icon(Icons.favorite,
                                         color: Colors.orange),
                                     const SizedBox(width: 4),
                                     Text(
@@ -114,7 +123,7 @@ class WeaveProfileView extends GetView<WeaveProfileController> {
                                   Get.toNamed(
                                       "${AppRoutes.NEW_POST}?from=${Get.currentRoute}&weaveId=${controller.weaveProfile.value.weaveId}&weaveTitle=${controller.weaveProfile.value.weaveTitle}");
                                 },
-                                icon: const Icon(Icons.add_circle_outline),
+                                icon: Icon(controller.weaveProfile.value.isJoinWeave == 1 ? HugeIcons.strokeRoundedGift : Icons.add_circle_outline),
                               ),
                             ),
                           ],

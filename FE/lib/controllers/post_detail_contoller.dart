@@ -31,6 +31,7 @@ class PostDetailController extends GetxController {
   final currentIndex = 0.obs;
   final myUId = ''.obs;
   final from = ''.obs;
+  final RxDouble imageAspectRatio = 1.0.obs;
 
   @override
   onInit() {
@@ -64,7 +65,7 @@ class PostDetailController extends GetxController {
         'post_id': list,
       });
       post.value = (postResponse['post'] as List).map((e) => Post.fromJson(e)).toList()[0];
-
+      loadImageAspectRatio(post.value.mediaUrl);
     } catch (e) {
       print('❌ 예외 발생: $e');
     } finally {
@@ -75,6 +76,17 @@ class PostDetailController extends GetxController {
   void goToNewWeave() {
     final currentPost = post.value;
     Get.toNamed('/new_post?from=${Get.currentRoute}&weaveId=${currentPost.weaveId}&weaveTitle=${currentPost.weaveTitle}');
+  }
+
+  void loadImageAspectRatio(String url) {
+    final image = Image.network(url);
+    image.image.resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener((info, _) {
+        final width = info.image.width;
+        final height = info.image.height;
+        imageAspectRatio.value = width / height;
+      }),
+    );
   }
 
   Future<void> giveReward() async {
@@ -129,8 +141,6 @@ class PostDetailController extends GetxController {
         likes: post.isLiked ? post.likes - 1 : post.likes + 1,
       );
       this.post.value = updatedPost;
-
-      // 상세 페이지용 post 업데이트
       this.post.value = updatedPost;
 
     } catch (e) {
@@ -144,6 +154,9 @@ class PostDetailController extends GetxController {
     } catch (_) {
       return false;
     }
+  }
+  void addComment() {
+
   }
 }
 

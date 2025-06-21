@@ -7,8 +7,8 @@ import 'package:get/get.dart';
 
 class UserInfoView extends GetView<ProfileController> {
   UserInfoView({super.key});
-  final AuthController authController = Get.find<AuthController>();
 
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,32 +27,35 @@ class UserInfoView extends GetView<ProfileController> {
             child: Column(children: [
           Container(
             padding: const EdgeInsets.all(20),
-            child: Row(
-              children: [Obx(
-            () => controller.profile.value.img == ""
-                ? const CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    radius: 50,
-                    child: Icon(
-                      HugeIcons.strokeRoundedUser,
-                      size: 50,
-                      color: Colors.white,
+            child: Row(children: [
+              Obx(
+                () => controller.profile.value.img == ""
+                    ? const CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        radius: 50,
+                        child: Icon(
+                          HugeIcons.strokeRoundedUser,
+                          size: 50,
+                          color: Colors.white,
+                        ),
+                      )
+                    : CircleAvatar(
+                        radius: 50,
+                        backgroundImage:
+                            NetworkImage(controller.profile.value.img),
+                      ),
+              ),
+              const SizedBox(width: 20),
+              Obx(() => Text(
+                    controller.profile.value.nickname,
+                    style: const TextStyle(
+                      fontSize: 25,
+                      color: Colors.black,
+                      fontFamily: 'Pretendard',
                     ),
-                  )
-                : CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(controller.profile.value.img),
-                  ),
+                  )),
+            ]),
           ),
-          const SizedBox(width: 20),
-          Obx(() => Text(
-                controller.profile.value.nickname,
-                style: const TextStyle(
-                  fontSize: 25,
-                  color: Colors.black,
-                  fontFamily: 'Pretendard',
-                ),
-              )),]),),
           ListView(shrinkWrap: true, children: [
             const Divider(
               height: 1,
@@ -61,10 +64,28 @@ class UserInfoView extends GetView<ProfileController> {
             ),
             ListTile(
               onTap: () {
+                Get.snackbar("미구현", "사용자 정보 편집 페이지로 넘어갈 예정.");
+              },
+              title: Text("사용자 정보 편집"),
+              trailing: const Icon(
+                Icons.arrow_forward_ios_sharp,
+                color: Colors.orange,
+              ),
+            ),
+            const Divider(
+              height: 0,
+              indent: 0,
+              endIndent: 0,
+            ),
+            ListTile(
+              onTap: () {
                 authController.logout();
               },
               title: Text("로그아웃"),
-              trailing: Icon(Icons.arrow_forward_ios_sharp,color: Colors.orange,),
+              trailing: const Icon(
+                Icons.arrow_forward_ios_sharp,
+                color: Colors.orange,
+              ),
             ),
             const Divider(
               height: 0,

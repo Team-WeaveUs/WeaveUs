@@ -143,17 +143,28 @@ class OtherProfileView extends GetView<ProfileController> {
                       : GridView.builder(
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3, childAspectRatio: 1),
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                                childAspectRatio: 1,),
                           itemCount: controller.otherPostList.length,
                           itemBuilder: (context, index) {
                             final post = controller.otherPostList[index];
                             return GestureDetector(
-                                onTap: () {
-                                  Get.toNamed(
-                                    '/post/${post.postId}?from=${Get.currentRoute}',
-                                  );
-                                },
-                                child: Image.network(post.img));
+                              onTap: () {
+                                Get.toNamed('/post/${post.postId}?from=${Get.currentRoute}');
+                              },
+                              child: AspectRatio(
+                                aspectRatio: 1, // ⬅️ 정사각형 유지
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    post.img,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            );
                           },
                         ),
                 ),
@@ -176,10 +187,14 @@ class OtherProfileView extends GetView<ProfileController> {
                                 trailing: IconButton(
                                     onPressed: () => controller.goToNewWeave(
                                         weave.weaveId, weave.title),
-                                    icon: Icon(Icons.add_circle_outline)));
+                                    icon: Icon(weave.typeId == 1
+                                        ? Icons.add_circle_outline
+                                        : weave.typeId == 2
+                                        ? HugeIcons.strokeRoundedGift
+                                        : Icons.add_circle_outline)));
                           },
                           separatorBuilder: (context, index) => Divider(
-                              color: Colors.grey[850], height: 1, thickness: 1),
+                              color: Colors.grey[350], height: 1, thickness: 1),
                         ),
                 ),
                 Obx(
@@ -205,10 +220,14 @@ class OtherProfileView extends GetView<ProfileController> {
                                         onPressed: () =>
                                             controller.goToNewWeave(
                                                 weave.weaveId, weave.title),
-                                        icon: Icon(Icons.add_circle_outline)));
+                                        icon: Icon(weave.typeId == 1
+                                            ? Icons.add_circle_outline
+                                            : weave.typeId == 2
+                                            ? HugeIcons.strokeRoundedGift
+                                            : Icons.add_circle_outline)));
                               },
                               separatorBuilder: (context, index) => Divider(
-                                  color: Colors.grey[850],
+                                  color: Colors.grey[350],
                                   height: 1,
                                   thickness: 1),
                             ),

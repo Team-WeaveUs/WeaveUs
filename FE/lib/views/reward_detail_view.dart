@@ -48,8 +48,19 @@ class RewardDetailView extends GetView<RewardDetailController> {
                           style: const TextStyle(fontSize: 16),
                           textAlign: TextAlign.center,
                         ),
-                      )
-                      ,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '유효기간: ${controller.reward.value.validity}',
+                        style: const TextStyle(fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        '제공자: ${controller.reward.value.grantedByNickname}',
+                        style: const TextStyle(fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
                       const SizedBox(height: 32),
                       TextField(
                         controller: controller.passwordController,

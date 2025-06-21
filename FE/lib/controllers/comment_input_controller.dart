@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../controllers/home_controller.dart';
+import '../controllers/post_detail_contoller.dart';
 import '../models/comment_model.dart';
 import '../services/api_service.dart';
 import '../services/token_service.dart';
@@ -7,6 +9,8 @@ import '../services/token_service.dart';
 class CommentInputController extends GetxController {
   final ApiService apiService;
   final TokenService tokenService;
+  HomeController homeController = Get.find();
+  PostDetailController postDetailController = Get.find();
 
   CommentInputController({required this.apiService, required this.tokenService});
 
@@ -39,9 +43,13 @@ class CommentInputController extends GetxController {
         commentId: commentJson['comment_id'],
         nickname: commentJson['nickname'],
         content: commentJson['content'],
+        createdAt: DateTime.now().toString(),
+        mediaUrl: "",
+        userId: userId,
       );
 
       comments.add(newComment);
+      homeController.addComment(postId);
 
       commentController.clear();
       Get.snackbar('성공', '댓글이 작성되었습니다');

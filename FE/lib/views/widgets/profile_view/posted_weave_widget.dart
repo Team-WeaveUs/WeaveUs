@@ -31,7 +31,7 @@ class PostedWeaveWidget extends GetView<ProfileController> {
                       icon: Icon(Icons.add_circle_outline)));
             },
             separatorBuilder: (context, index) => Divider(
-          color: Colors.grey[850],
+          color: Colors.grey[350],
           height: 1,
           thickness: 1
         ),
