@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:weave_us/routes/app_routes.dart';
 import '../../controllers/owner_new_weave_controller.dart';
 
 import '../widgets/new_weave_widget/new_name.input.dart';
@@ -17,6 +18,9 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () => Get.offAllNamed(AppRoutes.HOME),
+            icon: Icon(Icons.arrow_back_outlined)),
         centerTitle: true,
         title: const Text(
           '새 Join 위브',
@@ -71,18 +75,21 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                       )
                     : SizedBox(
                         width: MediaQuery.of(context).size.width,
-                        height: 1000,
+                        height: 300,
                         child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: FlutterMap(
                                 options: MapOptions(
+                                  interactionOptions: const InteractionOptions(
+                                    flags: InteractiveFlag.drag
+                                  ),
                                   onTap: (tapPosition, latLng) {
                                     controller.selectedLocation.value = latLng;
                                   },
                                   initialCenter: LatLng(
                                       controller.position.value!.latitude,
                                       controller.position.value!.longitude),
-                                  initialZoom: 13,
+                                  initialZoom: 16,
                                 ),
                                 children: [
                                   TileLayer(
