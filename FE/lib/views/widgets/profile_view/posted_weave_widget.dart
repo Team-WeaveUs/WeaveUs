@@ -18,7 +18,7 @@ class PostedWeaveWidget extends GetView<ProfileController> {
             itemBuilder: (context, index) {
               final weave = controller.weaveList[index];
               return ListTile(
-                onTap: () => Get.toNamed('/weave/${weave.weaveId}'),
+                onTap: () => Get.toNamed('/weave/${weave.weaveId}?from=${Get.currentRoute}'),
                   title: Text(weave.title),
                   subtitle: Text(weave.typeId == 1
                       ? 'Global'
@@ -31,7 +31,7 @@ class PostedWeaveWidget extends GetView<ProfileController> {
                       icon: Icon(Icons.add_circle_outline)));
             },
             separatorBuilder: (context, index) => Divider(
-          color: Colors.grey[850],
+          color: Colors.grey[350],
           height: 1,
           thickness: 1
         ),

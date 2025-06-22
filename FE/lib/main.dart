@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:get/get.dart';
 import 'package:weave_us/services/api_service.dart';
 import 'package:weave_us/services/token_service.dart';
@@ -9,8 +8,6 @@ import 'routes/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await _initializeNaverMap();
 
   Get.put(AuthController(), permanent: true);
   Get.put(TokenService(), permanent: true);
@@ -31,22 +28,5 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Pretendard',
       ),
     );
-  }
-}
-
-Future<void> _initializeNaverMap() async {
-  try {
-    await FlutterNaverMap().init(
-      clientId: '8h5ay3tumv',
-      onAuthFailed: (ex) {
-        print("네이버 지도 인증 실패: $ex");
-        if (ex is NQuotaExceededException) {
-          print("사용량 초과 (message: ${ex.message})");
-        }
-      },
-    );
-    print("네이버 지도 초기화 성공");
-  } catch (e) {
-    print("네이버 지도 초기화 실패: $e");
   }
 }

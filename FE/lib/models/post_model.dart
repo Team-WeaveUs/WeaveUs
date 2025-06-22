@@ -13,7 +13,7 @@ class Post {
   final String weaveTitle;
   final String nickname;
   final String? userMediaUrl;
-  final int commentCount;
+  late final int commentCount;
   final String mediaUrl;
   final int weaveType;
   final bool isLiked; // 좋아요 상태값

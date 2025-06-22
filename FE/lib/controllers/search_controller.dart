@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
 
 import '../models/weave_data_model.dart';
 
@@ -27,9 +25,8 @@ class WeaveSearchController extends GetxController {
   final RxBool mapLoading = false.obs;
   final Rxn<Position> position = Rxn<Position>();
   final RxList<JoinWeave> joinWeaveData = <JoinWeave>[].obs;
-  final mapMarkers = <NMarker>{}.obs;
   final RxBool isWeaveResult = true.obs;
-  final RxBool isWeb = false.obs;
+  final RxString myUId = ''.obs;
 
   WeaveSearchController({required this.locationService});
 
@@ -37,7 +34,6 @@ class WeaveSearchController extends GetxController {
   void onInit() {
     super.onInit();
     getRecentLocation();
-    checkWeb();
     debounce(
       RxString(''),
       (_) => search(textController.text),
@@ -134,6 +130,7 @@ class WeaveSearchController extends GetxController {
   Future<void> getRecentLocation() async {
     isLoading.value = true;
     mapLoading.value = true;
+    myUId.value = await _tokenService.loadUserId();
     try {
       position.value = await locationService.getCurrentLocation();
     } catch (e) {
@@ -150,7 +147,6 @@ class WeaveSearchController extends GetxController {
         position.value!.latitude, position.value!.longitude);
     areaId.forEach((a) => print(a));
     print('areaid: $areaId');
-
     final response = await _apiService.postRequest(
         'weave/join/get/area', {'user_id': userId, 'area_ids': areaId});
     joinWeaveData.value =
@@ -167,23 +163,9 @@ class WeaveSearchController extends GetxController {
         );
         weave.distance = distanceInMeters / 1000; // 미터를 킬로미터로 변환
       }
-      // 거리순으로 정렬
       joinWeaveData.sort((a, b) => a.distance.compareTo(b.distance));
     }
 
-    mapMarkers.assignAll(joinWeaveData.map((group) {
-      final marker = NMarker(
-        id: group.weaveId.toString(),
-        position: NLatLng(group.lat, group.lng),
-      );
-      marker.setOnTapListener((NMarker marker) {
-        Get.toNamed('/weave/${group.weaveId}', arguments: {
-          'weaveId': group.weaveId,
-          'weaveTitle': group.title,
-        });
-      });
-      return marker;
-    }));
     mapLoading.value = false;
   }
 
@@ -194,11 +176,4 @@ class WeaveSearchController extends GetxController {
 
   void unfoldMap() => isMapFolded.value = false;
 
-  void checkWeb() {
-    if (kIsWeb) {
-      isWeb.value = true;
-    } else {
-      isWeb.value = false;
-    }
-  }
 }

@@ -26,6 +26,7 @@ class RewardDetailController extends GetxController {
       passwordController.addListener(() {
         isPasswordValid.value = passwordController.text.isNotEmpty;
       });
+      validityParser();
     } else {
       // 마이크로태스크 큐를 사용하여 네비게이션 지연
       Future.microtask(() {
@@ -36,6 +37,15 @@ class RewardDetailController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
         );
       });
+    }
+  }
+
+  Future<void> validityParser() async {
+    if (reward.value.validity == '0d'){
+      reward.value.validity = '만료됨';
+    }
+    else if (reward.value.validity.contains('d')){
+      reward.value.validity = reward.value.validity.replaceAll('d', '일');
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class MyWeaveWidget extends GetView<ProfileController> {
             itemBuilder: (context, index) {
               final weave = controller.myWeaveList[index];
               return ListTile(
-                  onTap: () => Get.toNamed('/weave/${weave.weaveId}'),
+                  onTap: () => Get.toNamed('/weave/${weave.weaveId}?from=${Get.currentRoute}'),
                   title: Text(weave.title),
                   subtitle: Text(weave.typeId == 1
                       ? 'Global'
@@ -27,10 +28,14 @@ class MyWeaveWidget extends GetView<ProfileController> {
                   trailing: IconButton(
                       onPressed: () =>
                           controller.goToNewWeave(weave.weaveId, weave.title),
-                      icon: Icon(Icons.add_circle_outline)));
+                      icon: Icon(weave.typeId == 1
+                          ? Icons.add_circle_outline
+                          : weave.typeId == 2
+                          ? HugeIcons.strokeRoundedGift
+                          : Icons.add_circle_outline)));
             },
             separatorBuilder: (context, index) => Divider(
-            color: Colors.grey[850],
+            color: Colors.grey[350],
             height: 1,
             thickness: 1
         ),);

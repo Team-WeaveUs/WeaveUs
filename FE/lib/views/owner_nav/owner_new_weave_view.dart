@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:get/get.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:weave_us/routes/app_routes.dart';
 import '../../controllers/owner_new_weave_controller.dart';
 
 import '../widgets/new_weave_widget/new_name.input.dart';
 import '../widgets/new_weave_widget/weave_explanation.dart';
 import '../widgets/reward_invite_dialog.dart';
 import '../widgets/new_reward_widgets/reward_selector_widget.dart';
-import 'set_latlng_on_map.dart';
 
 class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
   const OwnerNewWeaveView({super.key});
@@ -15,6 +18,9 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () => Get.offAllNamed(AppRoutes.HOME),
+            icon: Icon(Icons.arrow_back_outlined)),
         centerTitle: true,
         title: const Text(
           '새 Join 위브',
@@ -42,10 +48,10 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
               focusNode: controller.descriptionFocusNode,
             ),
             Divider(color: Colors.grey[850], thickness: 1),
-            Obx(() => Column(
-                  children: [
-                    // ✅ 리워드 선택 위젯
-                    RewardSelector(
+            Column(
+              children: [
+                // ✅ 리워드 선택 위젯
+                Obx(() => RewardSelector(
                       selectedReward: controller.selectedRewardText.value,
                       onRewardSelected: () {
                         Get.dialog(
@@ -60,48 +66,83 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                           ),
                         );
                       },
-                    ),
-                    const SizedBox(height: 30),
-                    // ✅ 지도 위젯
-                    SizedBox(
+                    )),
+                const SizedBox(height: 30),
+                // ✅ 지도 위젯
+                Obx(() => controller.position.value == null
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : SizedBox(
                         width: MediaQuery.of(context).size.width,
                         height: 300,
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: MapSelectPin(),
-                        )),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final DateTime? picked = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(2099),
-                        );
-                        if (picked != null) {
-                          controller.selectedDate.value = picked;
-                          print(controller.selectedDate.value);
-                        }
-                      },
-                      child: Text("날짜 선택"),
-                    ),
-                    Obx(() => controller.rewardConditionList.isEmpty ? const Center(child: CircularProgressIndicator()) : DropdownButton<int>(
-                            value: controller.rewardConditionId.value,
-                            onChanged: (int? newValue) {
-                              if (newValue != null) {
-                                controller.rewardConditionId.value = newValue;
-                              }
-                            },
-                            items: controller.rewardConditionList.map((item) {
-                              return DropdownMenuItem<int>(
-                                value: item.id,
-                                child: Text(item.name),
-                              );
-                            }).toList()
-                    )),
-                    const SizedBox(height: 30),
-                    // ✅ 생성 버튼
-                    SizedBox(
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: FlutterMap(
+                                options: MapOptions(
+                                  interactionOptions: const InteractionOptions(
+                                    flags: InteractiveFlag.drag
+                                  ),
+                                  onTap: (tapPosition, latLng) {
+                                    controller.selectedLocation.value = latLng;
+                                  },
+                                  initialCenter: LatLng(
+                                      controller.position.value!.latitude,
+                                      controller.position.value!.longitude),
+                                  initialZoom: 16,
+                                ),
+                                children: [
+                                  TileLayer(
+                                    urlTemplate:
+                                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                    tileProvider:
+                                        CancellableNetworkTileProvider(),
+                                  ),
+                                  MarkerLayer(markers: [
+                                    Marker(
+                                      point: controller.selectedLocation.value!,
+                                      child: Icon(
+                                        Icons.location_on_rounded,
+                                        color: Colors.orange,
+                                        size: 40,
+                                      ),
+                                    )
+                                  ])
+                                ])))),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () async {
+                    final DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(2099),
+                    );
+                    if (picked != null) {
+                      controller.selectedDate.value = picked;
+                      print(controller.selectedDate.value);
+                    }
+                  },
+                  child: Text("종료 날짜 선택"),
+                ),
+                Obx(() => controller.rewardConditionList.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
+                    : DropdownButton<int>(
+                        value: controller.rewardConditionId.value,
+                        onChanged: (int? newValue) {
+                          if (newValue != null) {
+                            controller.rewardConditionId.value = newValue;
+                          }
+                        },
+                        items: controller.rewardConditionList.map((item) {
+                          return DropdownMenuItem<int>(
+                            value: item.id,
+                            child: Text(item.name),
+                          );
+                        }).toList())),
+                const SizedBox(height: 30),
+                // ✅ 생성 버튼
+                Obx(() => SizedBox(
                       width: double.infinity,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -131,9 +172,9 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                )),
+                    )),
+              ],
+            ),
           ],
         ),
       ),

@@ -22,15 +22,15 @@ class MySubscribeWidget extends GetView<ProfileController> {
                   if (Get.isRegistered<ProfileController>()) {
                     Get.delete<ProfileController>();
                   }
-                  Get.toNamed('/profile/${subscribe.id}');
+                  Get.toNamed('/profile/${subscribe.id}?from=${Get.currentRoute}');
                 },
                 leading: subscribe.mediaUrl == ""
                     ? const CircleAvatar(
                   backgroundColor: Colors.grey,
-                  radius: 50,
+                  radius: 30,
                   child: Icon(
                     HugeIcons.strokeRoundedUser,
-                    size: 50,
+                    size: 30,
                     color: Colors.white,
                   ),
                 )

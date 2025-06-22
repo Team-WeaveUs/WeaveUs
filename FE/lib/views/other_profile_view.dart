@@ -11,6 +11,7 @@ class OtherProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
+    final from = Get.parameters['from'] ?? 'home'; // 기본값: home
     return DefaultTabController(
         length: 3,
         child: Scaffold(
@@ -22,13 +23,28 @@ class OtherProfileView extends GetView<ProfileController> {
                     child: CircularProgressIndicator(),
                   )
                 : Text("${controller.profile.value.nickname} 님의 프로필",
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black,
                 fontFamily: 'Pretendard',
                 fontWeight: FontWeight.w900,
               )
               ),
-            )),
+            ),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                } else {
+                  if (from.isNotEmpty) {
+                    Get.offAllNamed(from.trim());
+                  } else {
+                    Get.offAllNamed('/home');
+                  }
+                }
+              },
+            ),
+          ),
           body: Column(
             children: [
               Obx(() => controller.profile.value.nickname == ''
@@ -127,21 +143,28 @@ class OtherProfileView extends GetView<ProfileController> {
                       : GridView.builder(
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3, childAspectRatio: 1),
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                                childAspectRatio: 1,),
                           itemCount: controller.otherPostList.length,
                           itemBuilder: (context, index) {
                             final post = controller.otherPostList[index];
                             return GestureDetector(
-                                onTap: () {
-                                  Get.toNamed(
-                                    '/post/${post.postId}',
-                                    arguments: {
-                                      'postUserId':
-                                          controller.profile.value.userId
-                                    },
-                                  );
-                                },
-                                child: Image.network(post.img));
+                              onTap: () {
+                                Get.toNamed('/post/${post.postId}?from=${Get.currentRoute}');
+                              },
+                              child: AspectRatio(
+                                aspectRatio: 1, // ⬅️ 정사각형 유지
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    post.img,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            );
                           },
                         ),
                 ),
@@ -154,7 +177,7 @@ class OtherProfileView extends GetView<ProfileController> {
                             final weave = controller.otherWeaveList[index];
                             return ListTile(
                                 onTap: () =>
-                                    Get.toNamed('/weave/${weave.weaveId}'),
+                                    Get.toNamed('/weave/${weave.weaveId}?from=${Get.currentRoute}'),
                                 title: Text(weave.title),
                                 subtitle: Text(weave.typeId == 1
                                     ? 'Global'
@@ -164,10 +187,14 @@ class OtherProfileView extends GetView<ProfileController> {
                                 trailing: IconButton(
                                     onPressed: () => controller.goToNewWeave(
                                         weave.weaveId, weave.title),
-                                    icon: Icon(Icons.add_circle_outline)));
+                                    icon: Icon(weave.typeId == 1
+                                        ? Icons.add_circle_outline
+                                        : weave.typeId == 2
+                                        ? HugeIcons.strokeRoundedGift
+                                        : Icons.add_circle_outline)));
                           },
                           separatorBuilder: (context, index) => Divider(
-                              color: Colors.grey[850], height: 1, thickness: 1),
+                              color: Colors.grey[350], height: 1, thickness: 1),
                         ),
                 ),
                 Obx(
@@ -182,7 +209,7 @@ class OtherProfileView extends GetView<ProfileController> {
                                     controller.otherContributedWeaveList[index];
                                 return ListTile(
                                     onTap: () =>
-                                        Get.toNamed('/weave/${weave.weaveId}'),
+                                        Get.toNamed('/weave/${weave.weaveId}?from=${Get.currentRoute}'),
                                     title: Text(weave.title),
                                     subtitle: Text(weave.typeId == 1
                                         ? 'Global'
@@ -193,10 +220,14 @@ class OtherProfileView extends GetView<ProfileController> {
                                         onPressed: () =>
                                             controller.goToNewWeave(
                                                 weave.weaveId, weave.title),
-                                        icon: Icon(Icons.add_circle_outline)));
+                                        icon: Icon(weave.typeId == 1
+                                            ? Icons.add_circle_outline
+                                            : weave.typeId == 2
+                                            ? HugeIcons.strokeRoundedGift
+                                            : Icons.add_circle_outline)));
                               },
                               separatorBuilder: (context, index) => Divider(
-                                  color: Colors.grey[850],
+                                  color: Colors.grey[350],
                                   height: 1,
                                   thickness: 1),
                             ),

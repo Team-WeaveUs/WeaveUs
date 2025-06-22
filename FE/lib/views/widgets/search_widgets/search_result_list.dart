@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 import '../../../controllers/search_controller.dart';
 
 class SearchResultList extends StatelessWidget {
@@ -54,24 +55,28 @@ class SearchResultList extends StatelessWidget {
                   ? ListTile(
                 title: GestureDetector(
                   onTap: () {
-                    Get.toNamed('/weave/${result['weave_id']}', arguments: {
-                      'weaveId': result['weave_id'],
-                      'weaveTitle': result['title'],
-                    });
+                    Get.toNamed('/weave/${result['weave_id']}?from=${Get.currentRoute}');
                   },
                   child: Text(result['title'] ?? '제목 없음'),
                 ),
                 trailing: IconButton(
                   icon: const Icon(Icons.add_circle_outline),
                   onPressed: () {
-                    Get.toNamed('/new_post', arguments: {
-                      'weaveId': result['weave_id'],
-                      'weaveTitle': result['title'],
-                    });
+                    Get.toNamed('/new_post?from=${Get.currentRoute}&weaveId=${result['weave_id']}&weaveTitle=${result['title']}');
                   },
                 )
               )
                 : ListTile(
+                onTap: () {
+                  final isOwner = result['is_owner'] == 1;
+                  final userId = result['user_id'];
+                  if (isOwner) {
+                    Get.toNamed('/profile/$userId?from=${Get.currentRoute}');
+                  } else {
+                    Get.toNamed('/profile/$userId?from=${Get.currentRoute}');
+                  }
+                },
+                contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                 leading: result['media_url'] == null
                     ? const CircleAvatar(
                         radius: 20,
@@ -85,30 +90,8 @@ class SearchResultList extends StatelessWidget {
                         backgroundImage: NetworkImage(
                           result['mediaUrl'],
                         )),
-                title: GestureDetector(
-                  onTap: () {
-                    final isOwner = result['is_owner'] == 1;
-                    final userId = result['user_id'];
-                    final nickname = result['nickname'] ?? '닉네임';
-                    final weaveTitle = result['title'] ?? '';
-
-                    if (isOwner) {
-                      Get.toNamed('/profile/$userId', arguments: {
-                        'userId': userId,
-                        'nickname': nickname,
-                        'title': weaveTitle,
-                      });
-                    } else {
-                      Get.toNamed('/profile/$userId', arguments: {
-                        'userId': userId,
-                        'nickname': nickname,
-                        'title': weaveTitle,
-                      });
-                    }
-                  },
-                  child: Text(result['title'] ?? result['nickname'] ?? '제목 없음'),
-                ),
-                trailing: GestureDetector(
+                title:Text(result['title'] ?? result['nickname'] ?? '제목 없음'),
+                trailing: controller.myUId.value == result['user_id'] ? GestureDetector(
                   onTap: () {
                     controller.toggleSubscribe(result['user_id']);
                   },
@@ -128,7 +111,7 @@ class SearchResultList extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
+                ) : SizedBox.shrink(),
               );
             }).toList(),
             const SizedBox(height: 80),
@@ -149,17 +132,18 @@ class SearchResultList extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             ...recent.map((result) {
-              return controller.joinWeaveData.isEmpty ? Center(child: CircularProgressIndicator(),) : ListTile(
-                title: GestureDetector(
-                  onTap: (){
-                    Get.toNamed('/weave/${result.weaveId}', arguments: {
-                      'weaveId': result.weaveId,
-                      'weaveTitle': result.title,
-                    });
-
-                  },
-                ),
-              );
+              return controller.joinWeaveData.isEmpty ? Center(child: CircularProgressIndicator(),) : GestureDetector(
+                onTap: (){
+                  Get.toNamed('/weave/${result.weaveId}?from=/search');
+                }, child: ListTile(
+                title:  Text(result.title),
+                subtitle: Text(result.description),
+                trailing: IconButton(
+                  icon: const Icon(HugeIcons.strokeRoundedGift),
+                  onPressed: () {
+                    Get.toNamed('/new_post?from=/search&weaveId=${result.weaveId}&weaveTitle=${result.title}');
+                  },)
+              ));
             })
           ],
         ],

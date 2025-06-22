@@ -14,10 +14,21 @@ class AuthController extends GetxController {
   final TokenService _tokenService = TokenService();
   final AuthService _authService = AuthService();
 
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController nicknameController = TextEditingController();
+  final TextEditingController numberController = TextEditingController();
+  final TextEditingController genderController = TextEditingController();
+
   var isAuthenticated = false.obs;
   var isOwner = false.obs;
   var isLoading = false.obs;
   var isLoginSuccess = false.obs;
+  final isFormValid = false.obs;
+
+  final emailError = RxnString();
+  final _emailRegex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w{2,4}$');
 
   @override
   onInit() {
@@ -49,6 +60,26 @@ class AuthController extends GetxController {
     if (isValid) {
       Get.offAllNamed(AppRoutes.HOME);
     }
+  }
+
+  void validateEmail() {
+    final value = emailController.text.trim();
+    if (_emailRegex.hasMatch(value)) {
+      emailError.value = null;
+    } else {
+      emailError.value = '이메일 형식이 올바르지 않습니다.';
+    }
+    updateFormValidity();
+  }
+
+  void updateFormValidity() {
+    isFormValid.value = emailError.value == null &&
+        emailController.text.trim().isNotEmpty &&
+        passwordController.text.trim().isNotEmpty &&
+        nameController.text.trim().isNotEmpty &&
+        nicknameController.text.trim().isNotEmpty &&
+        numberController.text.trim().isNotEmpty &&
+        genderController.text.trim().isNotEmpty;
   }
 
   Future<void> login(String email, String password) async {
@@ -88,6 +119,7 @@ class AuthController extends GetxController {
       isOwner.value = token!.isOwner == 1;
       Get.offAllNamed(AppRoutes.HOME);
     } else {
+      Get.back();
       isLoading.value = false;
       Get.snackbar("로그인 실패", "아이디나 비밀번호를 확인하세요");
     }
@@ -140,14 +172,18 @@ class AuthController extends GetxController {
   }
 
   Future<bool> validateBusinessNumber(String bno) async {
-    const serviceKey = "RK1Tb5xIod4LWDuarSN6uUOZpHG%2BZgpTmbySBU8n2yiBcpZWwrYoUY6h80Chcv0EGXCRKTszOFCDpItZ4ZO%2FMA%3D%3D";
-    final url = Uri.parse("https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=$serviceKey");
+    const serviceKey =
+        "RK1Tb5xIod4LWDuarSN6uUOZpHG%2BZgpTmbySBU8n2yiBcpZWwrYoUY6h80Chcv0EGXCRKTszOFCDpItZ4ZO%2FMA%3D%3D";
+    final url = Uri.parse(
+        "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=$serviceKey");
 
     try {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"b_no": [bno]}),
+        body: jsonEncode({
+          "b_no": [bno]
+        }),
       );
 
       if (response.statusCode != 200) {

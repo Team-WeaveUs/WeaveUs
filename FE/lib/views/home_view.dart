@@ -61,7 +61,7 @@ class HomeView extends GetView<HomeController> {
                                       onTap: () {
                                         final weaveId =
                                             controller.postList1[index].weaveId;
-                                        Get.toNamed("/weave/$weaveId");
+                                        Get.toNamed("/weave/$weaveId?from=${Get.currentRoute}");
                                       },
                                       child: Text(
                                         controller.postList1[index].weaveTitle,
@@ -203,10 +203,8 @@ class HomeView extends GetView<HomeController> {
                                                             radius: 15,
                                                             backgroundColor:
                                                                 Colors.grey,
-                                                            child: Icon(
-                                                                Icons.person,
-                                                                color: Colors
-                                                                    .white),
+                                                            child: Icon(HugeIcons.strokeRoundedUser, color: Colors.white,
+                                                                size: 15),
                                                           ),
                                                     const SizedBox(width: 6),
                                                     Text(verticalPost.nickname),
@@ -283,14 +281,7 @@ class HomeView extends GetView<HomeController> {
                                           GestureDetector(
                                             onTap: () {
                                               Get.toNamed(
-                                                  '/post/${verticalPost.id}',
-                                                  arguments: {
-                                                    'postUserId':
-                                                        verticalPost.userId,
-                                                    'likes': verticalPost.likes,
-                                                    'isLiked':
-                                                        verticalPost.isLiked,
-                                                  });
+                                                  '/post/${verticalPost.id}?from=${Get.currentRoute}');
                                             },
                                             child: Text(
                                               '${verticalPost.commentCount}개의 댓글',

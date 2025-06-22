@@ -5,25 +5,41 @@ import 'package:geolocator/geolocator.dart';
 
 class LocationService {
   //현재 위치 반환
-  Future<Position> getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw Exception('위치 서비스가 비활성화되어 있습니다.');
-    }
+  Future<Position> getCurrentLocation({
+    double fallbackLat = 37.339962, // 한국공학대학교
+    double fallbackLng = 126.734236,
+  }) async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) throw Exception('위치 서비스 꺼짐');
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
+      LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
-        throw Exception('위치 권한이 거부되었습니다.');
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          throw Exception('위치 권한 거부됨');
+        }
       }
-    }
 
-    if (permission == LocationPermission.deniedForever) {
-      throw Exception('위치 권한이 영구적으로 거부되었습니다.');
-    }
+      if (permission == LocationPermission.deniedForever) {
+        throw Exception('위치 권한 영구 거부됨');
+      }
 
-    return await Geolocator.getCurrentPosition();
+      return await Geolocator.getCurrentPosition();
+    } catch (e) {
+      print("⚠️ 위치 요청 실패: $e");
+      // 기본 좌표 반환
+      return Position(
+        latitude: fallbackLat,
+        longitude: fallbackLng,
+        timestamp: DateTime.now(),
+        accuracy: 0,
+        altitude: 0,
+        heading: 0,
+        speed: 0,
+        speedAccuracy: 0, altitudeAccuracy: 0, headingAccuracy: 0,
+      );
+    }
   }
 
   //읍면동 데이터 불러오기.

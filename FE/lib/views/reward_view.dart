@@ -29,24 +29,25 @@ class RewardView extends GetView<RewardController> {
               ),
               child: Row(
                 children: [
+                  Icon(HugeIcons.strokeRoundedSearch02),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
                       controller: controller.searchController,
+                      onChanged:controller.filterRewards,
                       decoration: const InputDecoration(
                         hintText: '',
                         border: InputBorder.none,
                       ),
                     ),
                   ),
-                  IconButton(onPressed: () => controller.filterRewards(controller.searchController.text), icon: Icon(Icons.search)),
                 ],
               ),
             ),
             const SizedBox(height: 20),
             Expanded(
-                child: Obx(() => controller.rewardList.isEmpty
-                    ? const Center(child: CircularProgressIndicator())
+                child: Obx(() => controller.filteredList.isEmpty
+                    ? const Text("받은 리워드가 없습니다.")
                     : ListView(
                         shrinkWrap: true,
                         children: controller.filteredList.map((reward) {
