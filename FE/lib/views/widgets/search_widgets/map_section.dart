@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
+import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../../controllers/search_controller.dart';
 
@@ -20,27 +22,48 @@ class MapSection extends StatelessWidget {
       return Column(
         children: [
           AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            height: isFolded
-                ? MediaQuery.of(context).size.height * 0.35
-                : MediaQuery.of(context).size.height * 0.65,
-            child: NaverMap(
-                options: NaverMapViewOptions(
-                  initialCameraPosition: NCameraPosition(
-                    target: NLatLng(controller.position.value!.latitude, controller.position.value!.longitude),
-                    zoom: 11.5,
+              duration: const Duration(milliseconds: 300),
+              height: isFolded
+                  ? MediaQuery.of(context).size.height * 0.35
+                  : MediaQuery.of(context).size.height * 0.65,
+              child: FlutterMap(
+                  options: MapOptions(
+                    initialCenter: LatLng(controller.position.value!.latitude,
+                        controller.position.value!.longitude),
+                    initialZoom: 13.0,
+                    maxZoom: 18.0,
+                    minZoom: 3.0,
                   ),
-                  indoorEnable: true,
-                  locationButtonEnable: false, // 위치 버튼 표시 여부 설정
-                  consumeSymbolTapEvents: false,
-                ),
-                onMapReady: (r) {
-                  // final marker = NMarker(id: "test", position: NLatLng(controller.position.value!.latitude, controller.position.value!.longitude));
-                  r.addOverlayAll(controller.mapMarkers);
-                }
-
-            ),
-          ),
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                      tileProvider: CancellableNetworkTileProvider(),
+                    ),
+                    MarkerLayer(
+                        markers: controller.joinWeaveData.map((weave) {
+                      return Marker(
+                        point: LatLng(weave.lat, weave.lng),
+                        child: GestureDetector(
+                          child: const Icon(
+                            Icons.location_on_rounded,
+                            color: Colors.orange,
+                            size: 40,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black,
+                                offset: Offset(1, 1),
+                                blurRadius: 1,
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            Get.toNamed('/weave/${weave.weaveId}');
+                          },
+                        ),
+                      );
+                    }).toList())
+                  ])),
           if (hasResults) ...[
             const SizedBox(height: 16),
             const Expanded(child: SearchResultList()),

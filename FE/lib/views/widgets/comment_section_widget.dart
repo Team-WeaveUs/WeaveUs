@@ -4,14 +4,10 @@ import 'package:hugeicons/hugeicons.dart';
 import '../../controllers/comment_input_controller.dart';
 
 class CommentSectionWidget extends GetView<CommentInputController> {
-  final int postId;
-
-  const CommentSectionWidget({super.key, required this.postId});
+  const CommentSectionWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-
-    controller.fetchComments(postId);
 
     return Obx(() {
       if (controller.isLoading.value) {

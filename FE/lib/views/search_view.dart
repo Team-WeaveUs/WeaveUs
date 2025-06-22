@@ -74,9 +74,7 @@ class _SearchViewState extends State<SearchView> {
             alignment: Alignment.bottomRight,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 36, right: 36),
-              child: Obx(() => _viewModel.isWeb.value
-                  ? const SizedBox.shrink()
-                  : _viewModel.mapLoading.value
+              child: Obx(() => _viewModel.mapLoading.value
                       ? const CircularProgressIndicator()
                       : FloatingActionButton(
                           onPressed: () {

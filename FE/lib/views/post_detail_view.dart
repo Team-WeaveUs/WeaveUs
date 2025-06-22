@@ -3,14 +3,15 @@ import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/views/widgets/comment_input_widget.dart';
 import 'package:weave_us/views/widgets/comment_section_widget.dart';
+import '../controllers/comment_input_controller.dart';
 import '../controllers/post_detail_contoller.dart';
 
 class PostDetailView extends GetView<PostDetailController> {
   const PostDetailView({super.key});
-
   @override
   Widget build(BuildContext context) {
     final from = Get.parameters['from'] ?? 'home'; // 기본값: home
+    CommentInputController commentInputController = Get.find();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -258,7 +259,7 @@ class PostDetailView extends GetView<PostDetailController> {
                         GestureDetector(
                           onTap: () {},
                           child: Text(
-                            '${controller.comments.length}개의 댓글',
+                            '${commentInputController.comments.length}개의 댓글',
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
@@ -271,7 +272,7 @@ class PostDetailView extends GetView<PostDetailController> {
                     ),
                   ),
                   Divider(color: Colors.grey[850], height: 1, thickness: 1),
-                  CommentSectionWidget(postId: post.id),
+                  CommentSectionWidget(),
                   const SizedBox(height: 100),
                 ],
               ),

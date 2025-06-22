@@ -21,6 +21,12 @@ class CommentInputController extends GetxController {
 
   get res => null;
 
+  @override
+  onInit() {
+    super.onInit();
+    fetchComments();
+  }
+
   Future<void> submitComment(int postId) async {
     final rawPostId = Get.parameters['post_id'];
     final postId = int.tryParse(rawPostId ?? '');
@@ -59,7 +65,7 @@ class CommentInputController extends GetxController {
       isSubmitting.value = false;
     }
   }
-  Future<void> fetchComments(int postId) async {
+  Future<void> fetchComments() async {
     try {
       final rawPostId = Get.parameters['post_id'];
       final postId = int.tryParse(rawPostId ?? '');

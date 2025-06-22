@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:weave_us/controllers/comment_input_controller.dart';
 import '../models/post_model.dart';
 import '../models/comment_model.dart';
 import '../services/api_service.dart';
@@ -15,6 +16,7 @@ class PostDetailController extends GetxController {
   PostDetailController({required this.apiService, required this.tokenService});
 
   HomeController get homeController => Get.find<HomeController>();
+  CommentInputController get commentInputController => Get.find<CommentInputController>();
 
   final post = Post
       .empty()
