@@ -60,7 +60,7 @@ class FriendInviteDialog extends StatelessWidget {
               ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 300), // ✅ 핵심
                 child: ListView.builder(
-                  shrinkWrap: true, // ✅ 핵심
+                  shrinkWrap: true,
                   itemCount: filteredList.length,
                   itemBuilder: (_, index) {
                     final user = filteredList[index];

@@ -23,10 +23,16 @@ class NewWeaveController extends GetxController {
   final RxString selectedOpenRange = ''.obs;
   final RxString selectedInviteOption = ''.obs;
 
+  final RxInt selectedWeaveType = 1.obs;
+  final RxInt selectedOpenRangeType = 1.obs;
+
+  final RxBool weaveTypeExpanded = false.obs;
+  final RxBool openRangeExpanded = false.obs;
+
   final RxList<FriendInviteModel> selectedFriends = <FriendInviteModel>[].obs;
   final RxBool isFormValid = false.obs;
 
-  int get typeId => switch (selectedWeave.value) {
+/*  int get typeId => switch (selectedWeave.value) {
         'Global' => 1,
         'Join' => 2,
         'Local' => 3,
@@ -38,7 +44,7 @@ class NewWeaveController extends GetxController {
         '초대한 사용자' => 2,
         '모두 보기' => 3,
         _ => 3,
-      };
+      };*/
 
   void updateSelections({String? weave, String? range, String? invite}) {
     selectedWeave.value = weave ?? '';
@@ -88,16 +94,24 @@ class NewWeaveController extends GetxController {
     }
 
     try {
+      final userId = await tokenService.loadUserId();
       final res = await apiService.postRequest("WeaveUpload", {
         "title": nameController.text.trim(),
         "description": descriptionController.text.trim(),
-        "privacy_id": privacyId,
-        "type_id": typeId,
+        "privacy_id": selectedOpenRangeType.value,
+        "type_id": selectedWeaveType.value,
       });
 
       if (res['message'] == '위브 생성 성공') {
         Get.back();
         Get.snackbar("성공", "위브가 생성되었습니다");
+        if (selectedOpenRangeType.value != 1 && selectedWeaveType.value == 3) {
+          await apiService.postRequest("user/invite", {
+            "user_id": userId,
+            "weave_id": res['weave_id'],
+            "target_user_ids": selectedFriends.map((friend) => friend.id).toList(),
+          });
+        }
         Get.offAllNamed('/home');
       } else {
         Get.back();

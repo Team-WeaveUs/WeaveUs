@@ -71,47 +71,49 @@ class LoginView extends StatelessWidget {
                 Expanded(
                   child: SizedBox(
                     height: 55,
-                    child: ElevatedButton(
-                      onPressed: () => Get.toNamed(AppRoutes.NEW_USER),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF434343),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      child: const Text(
-                        "유저 회원가입",
+                    child: GestureDetector(
+                      onTap: () => Get.toNamed(AppRoutes.NEW_USER),
+                      // style: ElevatedButton.styleFrom(
+                      //   backgroundColor: const Color(0xFF434343),
+                      //   shape: RoundedRectangleBorder(
+                      //     borderRadius: BorderRadius.circular(15),
+                      //   ),
+                      // ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: const Text(
+                        "회원가입",
                         style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          fontSize: 20,
+                          // fontWeight: FontWeight.bold,
+                          color: Colors.black,
                           fontFamily: 'Pretendard',
                         ),
-                      ),
+                      ),)
                     ),
                   ),
                 ),
-                const SizedBox(width: 20),
+                Container(
+                  width: 1,
+                  height: 30,
+                  color: Colors.grey,
+                ),
                 Expanded(
                   child: SizedBox(
                     height: 55,
-                    child: ElevatedButton(
-                      onPressed: () => Get.toNamed(AppRoutes.NEW_OWNER),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF434343),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      child: const Text(
+                    child: GestureDetector(
+                      onTap: () => Get.toNamed(AppRoutes.NEW_OWNER),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: const Text(
                         "오너 회원가입",
                         style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          fontSize: 20,
+                          // fontWeight: FontWeight.bold,
+                          color: Colors.black,
                           fontFamily: 'Pretendard',
                         ),
-                      ),
+                      ),)
                     ),
                   ),
                 ),

@@ -82,8 +82,4 @@ class AuthMainView extends StatelessWidget {
   onPressedWeave() {
     Get.toNamed(AppRoutes.LOGIN);
   }
-
-  onPressedOwner() {
-    Get.toNamed(AppRoutes.OWNERS);
-  }
 }
