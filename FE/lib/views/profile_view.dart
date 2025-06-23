@@ -25,7 +25,7 @@ class _ProfileViewState extends State<ProfileView> {
 
       return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppNavBar(title:'내 프로필'),
+        appBar: AppNavBar(title: '내 프로필'),
         body: Column(children: [
           if (profile.nickname == '')
             const Center(child: CircularProgressIndicator())
@@ -38,29 +38,35 @@ class _ProfileViewState extends State<ProfileView> {
                     children: [
                       profile.img == ""
                           ? const CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        radius: 50,
-                        child: Icon(
-                          HugeIcons.strokeRoundedUser,
-                          size: 50,
-                          color: Colors.white,
-                        ),
-                      )
+                              backgroundColor: Colors.grey,
+                              radius: 50,
+                              child: Icon(
+                                HugeIcons.strokeRoundedUser,
+                                size: 50,
+                                color: Colors.white,
+                              ),
+                            )
                           : CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(profile.img),
-                      ),
+                              radius: 50,
+                              backgroundImage: NetworkImage(profile.img),
+                            ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(nickname,
-                                  style: const TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                      fontFamily: 'Pretendard')),
+                              Row(children: [
+                                profile.isOwner == 1
+                                    ? Icon(HugeIcons.strokeRoundedGift)
+                                    : SizedBox.shrink(),
+                                const SizedBox(width: 5),
+                                Text(nickname,
+                                    style: const TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                        fontFamily: 'Pretendard')),
+                              ]),
                               Row(
                                 children: [
                                   const Icon(HugeIcons.strokeRoundedUser,
@@ -74,7 +80,6 @@ class _ProfileViewState extends State<ProfileView> {
                                       color: Colors.black,
                                     ),
                                   ),
-
                                 ],
                               ),
                               Row(children: [
@@ -94,8 +99,7 @@ class _ProfileViewState extends State<ProfileView> {
                                       backgroundColor: const Color(0xFF868583),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                      )
-                                  ),
+                                      )),
                                   child: Text(controller.toggleLabel,
                                       style: const TextStyle(
                                         fontSize: 15,
@@ -117,7 +121,8 @@ class _ProfileViewState extends State<ProfileView> {
               child: GetBuilder<TabViewController>(
                 builder: (_) => Scaffold(
                   backgroundColor: Colors.white,
-                  appBar: PreferredSize( // ← TabBar PreferredSize
+                  appBar: PreferredSize(
+                    // ← TabBar PreferredSize
                     preferredSize: const Size.fromHeight(50),
                     child: TabBar(
                       controller: tabController.tabController,

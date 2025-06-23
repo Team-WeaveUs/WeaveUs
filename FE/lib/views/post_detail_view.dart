@@ -71,7 +71,7 @@ class PostDetailView extends GetView<PostDetailController> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            Get.toNamed("/weave/${post.weaveId}?from=${Get.currentRoute}");
+                            Get.offAllNamed("/weave/${post.weaveId}?from=/post/${post.id}");
                           },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

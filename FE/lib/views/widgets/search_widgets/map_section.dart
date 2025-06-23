@@ -30,7 +30,7 @@ class MapSection extends StatelessWidget {
                   options: MapOptions(
                     initialCenter: LatLng(controller.position.value!.latitude,
                         controller.position.value!.longitude),
-                    initialZoom: 13.0,
+                    initialZoom: 15.5,
                     maxZoom: 18.0,
                     minZoom: 3.0,
                   ),

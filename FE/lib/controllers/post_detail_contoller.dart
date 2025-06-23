@@ -77,7 +77,7 @@ class PostDetailController extends GetxController {
 
   void goToNewWeave() {
     final currentPost = post.value;
-    Get.toNamed('/new_post?from=${Get.currentRoute}&weaveId=${currentPost.weaveId}&weaveTitle=${currentPost.weaveTitle}');
+    Get.offAllNamed('/new_post?from=${Get.currentRoute}&weaveId=${currentPost.weaveId}&weaveTitle=${currentPost.weaveTitle}');
   }
 
   void loadImageAspectRatio(String url) {

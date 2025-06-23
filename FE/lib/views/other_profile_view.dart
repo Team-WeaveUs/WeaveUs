@@ -76,12 +76,15 @@ class OtherProfileView extends GetView<ProfileController> {
                               child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(controller.profile.value.nickname,
+                              Row(
+                              children: [
+                                controller.profile.value.isOwner == 1 ? Icon(HugeIcons.strokeRoundedGift) : SizedBox.shrink(),
+                                Text(controller.profile.value.nickname,
                                   style: const TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black,
-                                      fontFamily: 'Pretendard')),
+                                      fontFamily: 'Pretendard'))]),
                               Row(
                                 children: [
                                   const Icon(HugeIcons.strokeRoundedUser),
@@ -131,8 +134,8 @@ class OtherProfileView extends GetView<ProfileController> {
               const TabBar(
                 tabs: [
                   Tab(text: '게시물'),
-                  Tab(text: '만든 위브'),
-                  Tab(text: '기여한 위브'),
+                  Tab(text: '위브'),
+                  Tab(text: '개인 위브'),
                 ],
               ),
               Expanded(
@@ -167,7 +170,41 @@ class OtherProfileView extends GetView<ProfileController> {
                             );
                           },
                         ),
-                ),
+                ),Obx(
+                          () =>
+                      controller.otherContributedWeaveData.value.message != "성공"
+                          ? const Center(child: CircularProgressIndicator())
+                          : ListView.separated(
+                        itemCount:
+                        controller.otherContributedWeaveList.length,
+                        itemBuilder: (context, index) {
+                          final weave =
+                          controller.otherContributedWeaveList[index];
+                          return ListTile(
+                              onTap: () =>
+                                  Get.toNamed('/weave/${weave.weaveId}?from=${Get.currentRoute}'),
+                              title: Text(weave.title),
+                              subtitle: Text(weave.typeId == 1
+                                  ? 'Global'
+                                  : weave.typeId == 2
+                                  ? 'Join'
+                                  : 'Local'),
+                              trailing: IconButton(
+                                  onPressed: () =>
+                                      controller.goToNewWeave(
+                                          weave.weaveId, weave.title),
+                                  icon: Icon(weave.typeId == 1
+                                      ? Icons.add_circle_outline
+                                      : weave.typeId == 2
+                                      ? HugeIcons.strokeRoundedGift
+                                      : Icons.add_circle_outline)));
+                        },
+                        separatorBuilder: (context, index) => Divider(
+                            color: Colors.grey[350],
+                            height: 1,
+                            thickness: 1),
+                      ),
+                    ),
                 Obx(
                   () => controller.otherWeaveData.value.message != "성공"
                       ? const Center(child: CircularProgressIndicator())
@@ -196,41 +233,6 @@ class OtherProfileView extends GetView<ProfileController> {
                           separatorBuilder: (context, index) => Divider(
                               color: Colors.grey[350], height: 1, thickness: 1),
                         ),
-                ),
-                Obx(
-                  () =>
-                      controller.otherContributedWeaveData.value.message != "성공"
-                          ? const Center(child: CircularProgressIndicator())
-                          : ListView.separated(
-                              itemCount:
-                                  controller.otherContributedWeaveList.length,
-                              itemBuilder: (context, index) {
-                                final weave =
-                                    controller.otherContributedWeaveList[index];
-                                return ListTile(
-                                    onTap: () =>
-                                        Get.toNamed('/weave/${weave.weaveId}?from=${Get.currentRoute}'),
-                                    title: Text(weave.title),
-                                    subtitle: Text(weave.typeId == 1
-                                        ? 'Global'
-                                        : weave.typeId == 2
-                                            ? 'Join'
-                                            : 'Local'),
-                                    trailing: IconButton(
-                                        onPressed: () =>
-                                            controller.goToNewWeave(
-                                                weave.weaveId, weave.title),
-                                        icon: Icon(weave.typeId == 1
-                                            ? Icons.add_circle_outline
-                                            : weave.typeId == 2
-                                            ? HugeIcons.strokeRoundedGift
-                                            : Icons.add_circle_outline)));
-                              },
-                              separatorBuilder: (context, index) => Divider(
-                                  color: Colors.grey[350],
-                                  height: 1,
-                                  thickness: 1),
-                            ),
                 )
               ])),
             ],
