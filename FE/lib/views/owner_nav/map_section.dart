@@ -25,6 +25,8 @@ class MapSection extends GetView<OwnerNewWeaveController> {
               child: FlutterMap(
                   mapController: mapController,
                   options: MapOptions(
+                    maxZoom: 20,
+                    minZoom: 10,
                     interactionOptions:
                     const InteractionOptions(
                         flags: InteractiveFlag.drag),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:weave_us/routes/app_routes.dart';
 import '../../controllers/owner_new_weave_controller.dart';
 
@@ -67,7 +68,147 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                         );
                       },
                     )),
-
+                // ✅ 지급 조건 선택 위젯
+                Obx(
+                  () => controller.selectedRewardText.value == ''
+                      ? const SizedBox.shrink()
+                      : controller.rewardConditionList.isEmpty
+                          ? Container(child: CircularProgressIndicator())
+                          : Column(
+                              children: [
+                                ListTile(
+                                    title: Text('리워드 지급조건 설정'),
+                                    trailing:
+                                        Icon(Icons.arrow_forward_ios_rounded),
+                                    onTap: () {
+                                      Get.dialog(Obx(() => Dialog(
+                                          child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                      TextField(
+                                                        controller: controller
+                                                            .rewardConditionFilter,
+                                                        onChanged: controller
+                                                            .filterRewardCondition,
+                                                      ),
+                                                    ListView(
+                                                      shrinkWrap: true,
+                                                      padding: EdgeInsets.zero,
+                                                      children: controller
+                                                          .filteredRewardConditionList
+                                                          .map((condition) {
+                                                        return ListTile(
+                                                          contentPadding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      8.0),
+                                                          leading: () {
+                                                            final reward = condition;
+                                                            if (reward.type == 'RANDOM_AUTHOR') {
+                                                              return Icon(HugeIcons.strokeRoundedDice,
+                                                                  color: Colors.black54);
+                                                            } else if (reward.type == 'TOP_LIKED') {
+                                                              return Icon(
+                                                                  HugeIcons.strokeRoundedRanking,
+                                                                  color: Colors.black54);
+                                                            } else if (reward.type == 'INSERT') {
+                                                              return Icon(
+                                                                  HugeIcons.strokeRoundedGiveBlood,
+                                                                  color: Colors.black54);
+                                                            } else if (reward.type ==
+                                                                'RANDOM_THRESHOLD') {
+                                                              return Icon(
+                                                                  HugeIcons.strokeRoundedFilterReset,
+                                                                  color: Colors.black54);
+                                                            } else if (reward.type == 'FIRST_N') {
+                                                              return Icon(
+                                                                  HugeIcons
+                                                                      .strokeRoundedMedalFirstPlace,
+                                                                  color: Colors.black54);
+                                                            } else {
+                                                              return Icon(
+                                                                  HugeIcons.strokeRoundedTicketStar,
+                                                                  color: Colors.black54);
+                                                            }
+                                                          }(),
+                                                          title: Text(
+                                                            condition.name,
+                                                            textAlign:
+                                                                TextAlign.left,
+                                                          ),
+                                                          onTap: () {
+                                                            controller
+                                                                    .rewardConditionId
+                                                                    .value =
+                                                                condition.id;
+                                                            controller
+                                                                    .rewardConditionName
+                                                                    .value =
+                                                                condition.name;
+                                                            controller.rewardConditionType.value = condition.type;
+                                                            Get.back();
+                                                          },
+                                                        );
+                                                      }).toList(),
+                                                    )
+                                                  ])))));
+                                    }),
+                                controller.rewardConditionName.value == ""
+                                    ? const SizedBox.shrink()
+                                    : ListTile(
+                                  leading: () {
+                                    final reward = controller.rewardConditionType.value;
+                                    if (reward == 'RANDOM_AUTHOR') {
+                                      return Icon(HugeIcons.strokeRoundedDice,
+                                          color: Colors.black54);
+                                    } else if (reward == 'TOP_LIKED') {
+                                      return Icon(
+                                          HugeIcons.strokeRoundedRanking,
+                                          color: Colors.black54);
+                                    } else if (reward == 'INSERT') {
+                                      return Icon(
+                                          HugeIcons.strokeRoundedGiveBlood,
+                                          color: Colors.black54);
+                                    } else if (reward ==
+                                        'RANDOM_THRESHOLD') {
+                                      return Icon(
+                                          HugeIcons.strokeRoundedFilterReset,
+                                          color: Colors.black54);
+                                    } else if (reward == 'FIRST_N') {
+                                      return Icon(
+                                          HugeIcons
+                                              .strokeRoundedMedalFirstPlace,
+                                          color: Colors.black54);
+                                    } else {
+                                      return Icon(
+                                          HugeIcons.strokeRoundedTicketStar,
+                                          color: Colors.black54);
+                                    }
+                                  }(),
+                                        title: Text(controller
+                                            .rewardConditionName.value),
+                                      )
+                              ],
+                            ),
+                  // DropdownButton<int>(
+                  //     value: controller.rewardConditionId.value,
+                  //     onChanged: (int? newValue) {
+                  //       if (newValue != null) {
+                  //         controller.rewardConditionId.value = newValue;
+                  //       }
+                  //     },
+                  //     items: controller.rewardConditionList.map((item) {
+                  //       return DropdownMenuItem<int>(
+                  //         value: item.id,
+                  //         child: Text(item.name),
+                  //       );
+                  //     }).toList())
+                ),
                 // ✅ 지도 위젯
                 Divider(color: Colors.grey[850], thickness: 1),
                 const SizedBox(height: 10),
@@ -75,57 +216,41 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: GestureDetector(
-                    onTap: () async {
-                      final DateTime? picked = await showDatePicker(
-                        context: context,
-                        initialDate: controller.selectedDate.value,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime(2099),
-                      );
-                      if (picked != null) {
-                        controller.selectedDate.value = picked;
-                        print(controller.selectedDate.value);
-                      }
-                    },
-                    child: Obx(() => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                              "종료 날짜 선택",
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black,)),
-                          Text(
-                              "${controller.selectedDate.value.toString().split(' ')[0]}",
-                              style: const TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontFamily: 'Pretendard',
-                              ))
-
-                        ])))),
+                        onTap: () async {
+                          final DateTime? picked = await showDatePicker(
+                            context: context,
+                            initialDate: controller.selectedDate.value,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2099),
+                          );
+                          if (picked != null) {
+                            controller.selectedDate.value = picked;
+                            print(controller.selectedDate.value);
+                          }
+                        },
+                        child: Obx(() => Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text("종료 날짜 선택",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.black,
+                                      )),
+                                  Text(
+                                      "${controller.selectedDate.value.toString().split(' ')[0]}",
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                        fontFamily: 'Pretendard',
+                                      ))
+                                ])))),
                 const SizedBox(height: 10),
-                // ✅ 지급 조건 선택 위젯
-                Obx(() => controller.selectedRewardId.value == 0
-                    ? const SizedBox.shrink()
-                    : controller.rewardConditionList.isEmpty
-                        ? const Center(child: CircularProgressIndicator())
-                        : DropdownButton<int>(
-                            value: controller.rewardConditionId.value,
-                            onChanged: (int? newValue) {
-                              if (newValue != null) {
-                                controller.rewardConditionId.value = newValue;
-                              }
-                            },
-                            items: controller.rewardConditionList.map((item) {
-                              return DropdownMenuItem<int>(
-                                value: item.id,
-                                child: Text(item.name),
-                              );
-                            }).toList())),
+                Divider(color: Colors.grey[850], thickness: 1),
                 const SizedBox(height: 10),
                 const MapSection(),
-                const SizedBox(height: 30),
+                const SizedBox(height: 10),
+                Divider(color: Colors.grey[850], thickness: 1),
+                const SizedBox(height: 10),
                 // ✅ 생성 버튼
                 Obx(() => SizedBox(
                       width: double.infinity,

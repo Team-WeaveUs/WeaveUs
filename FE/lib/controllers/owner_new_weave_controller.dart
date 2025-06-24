@@ -9,30 +9,6 @@ import '../services/location_service.dart';
 import '../services/token_service.dart';
 
 class OwnerNewWeaveController extends GetxController {
-  final nameController = TextEditingController();
-  final descriptionController = TextEditingController();
-  final nameFocusNode = FocusNode();
-  final descriptionFocusNode = FocusNode();
-
-  final selectedRewardText = ''.obs;
-  final selectedRewardId = 0.obs;
-  final rewardGiveType = ''.obs;
-  final rewardConditionList = <RewardCondition>[].obs;
-
-  final Rx<DateTime> selectedDate = DateTime.now().obs;
-  // final selectedWeave = Rxn<String>();
-  // final selectedRange = Rxn<String>();
-  // final selectedInvite = Rxn<String>();
-
-  final isFormValid = false.obs;
-
-  RxString closestAreaName = ''.obs;
-  Rxn<Position> position = Rxn<Position>();
-  RxBool isLoading = false.obs;
-  RxString error = ''.obs;
-  RxInt rewardConditionId = 0.obs;
-  Rxn<LatLng> selectedLocation = Rxn<LatLng>();
-
   final ApiService apiService;
   final TokenService tokenService;
   final LocationService locationService;
@@ -42,6 +18,34 @@ class OwnerNewWeaveController extends GetxController {
     required this.tokenService,
     required this.locationService,
   });
+
+  final nameController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final rewardConditionFilter = TextEditingController();
+  final nameFocusNode = FocusNode();
+  final descriptionFocusNode = FocusNode();
+
+  final Rx<DateTime> selectedDate = DateTime.now().obs;
+
+  final isFormValid = false.obs;
+
+  RxString closestAreaName = ''.obs;
+  RxString error = ''.obs;
+  RxString selectedRewardText = ''.obs;
+  RxString rewardGiveType = ''.obs;
+  RxString rewardConditionName = ''.obs;
+  RxString rewardConditionType = ''.obs;
+
+  RxInt rewardConditionId = 0.obs;
+  RxInt selectedRewardId = 0.obs;
+
+  RxBool isLoading = false.obs;
+  Rxn<Position> position = Rxn<Position>();
+
+  final rewardConditionList = <RewardCondition>[].obs;
+  RxList<RewardCondition> filteredRewardConditionList = <RewardCondition>[].obs;
+
+  Rxn<LatLng> selectedLocation = Rxn<LatLng>();
 
   @override
   void onInit() {
@@ -77,7 +81,6 @@ class OwnerNewWeaveController extends GetxController {
     selectedRewardId.close();
     closestAreaName.close();
     position.close();
-    rewardConditionList.close();
     super.onClose();
   }
 
@@ -93,6 +96,15 @@ class OwnerNewWeaveController extends GetxController {
     _validateForm();
   }
 
+  void filterRewardCondition(String query) async {
+    if (query.isEmpty) {
+      filteredRewardConditionList.assignAll(rewardConditionList);
+    }
+    filteredRewardConditionList.value = rewardConditionList.where((condition) {
+      return condition.name.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+    print(rewardConditionList.length);
+  }
 
   Future<void> fetchLocation() async {
     isLoading.value = true;
@@ -111,15 +123,19 @@ class OwnerNewWeaveController extends GetxController {
       isLoading.value = false;
     }
   }
+
   Future<void> fetchRewardConditions() async {
     try {
       final userId = await tokenService.loadUserId();
-      final rewardConditions = await apiService.postRequest("reward/condition/get", {
+      final rewardConditions =
+          await apiService.postRequest("reward/condition/get", {
         "user_id": userId,
       });
-      rewardConditionList.value = List<Map<String, dynamic>>.from(rewardConditions['conditions'])
-          .map((e) => RewardCondition.fromJson(e))
-          .toList();
+      rewardConditionList.value =
+          List<Map<String, dynamic>>.from(rewardConditions['conditions'])
+              .map((e) => RewardCondition.fromJson(e))
+              .toList();
+      filteredRewardConditionList.assignAll(rewardConditionList);
       rewardConditionId.value = rewardConditionList.first.id;
     } catch (e) {
       print('Error fetching reward conditions: $e');
@@ -127,7 +143,8 @@ class OwnerNewWeaveController extends GetxController {
   }
 
   Future<void> createJoinWeave() async {
-    final locationString = '${selectedLocation.value!.latitude} ${selectedLocation.value!.longitude}';
+    final locationString =
+        '${selectedLocation.value!.latitude} ${selectedLocation.value!.longitude}';
     final userId = await tokenService.loadUserId();
     final rewardId = selectedRewardId.value;
     final areaId = closestAreaName.value;
