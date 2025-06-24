@@ -134,6 +134,7 @@ class OwnerNewWeaveController extends GetxController {
     final title = nameController.text;
     final description = descriptionController.text;
     final date = selectedDate.value.toString().split(' ')[0];
+    final rewardCondition = rewardConditionId.value;
 
     try {
       final bodies = {
@@ -141,7 +142,7 @@ class OwnerNewWeaveController extends GetxController {
         "title": title,
         "description": description,
         "reward_id": rewardId,
-        "reward_condition_id": 2, // 지급 조건을 만들고, 그 아이디를 넣으면 된다.
+        "reward_condition_id": rewardCondition, // 지급 조건을 만들고, 그 아이디를 넣으면 된다.
         "reward_validity": date, // 날짜 yyyy.mm.dd 형식으로 넣어야 한다.
         "location": locationString,
         "area_id": areaId

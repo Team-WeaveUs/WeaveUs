@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:get/get.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:weave_us/routes/app_routes.dart';
 import '../../controllers/owner_new_weave_controller.dart';
 
@@ -10,13 +7,13 @@ import '../widgets/new_weave_widget/new_name.input.dart';
 import '../widgets/new_weave_widget/weave_explanation.dart';
 import '../widgets/reward_invite_dialog.dart';
 import '../widgets/new_reward_widgets/reward_selector_widget.dart';
+import 'map_section.dart';
 
 class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
   const OwnerNewWeaveView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    MapController mapController = MapController();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -70,113 +67,64 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                         );
                       },
                     )),
-                const SizedBox(height: 30),
+
                 // ✅ 지도 위젯
-                Stack(children: [
-                  Obx(() => controller.position.value == null
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: 300,
-                          child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: FlutterMap(
-                                  mapController: mapController,
-                                  options: MapOptions(
-                                    interactionOptions:
-                                        const InteractionOptions(
-                                            flags: InteractiveFlag.drag),
-                                    onTap: (tapPosition, latLng) {
-                                      controller.selectedLocation.value =
-                                          latLng;
-                                    },
-                                    initialCenter: LatLng(
-                                        controller.position.value!.latitude,
-                                        controller.position.value!.longitude),
-                                    initialZoom: 16,
-                                  ),
-                                  children: [
-                                    TileLayer(
-                                      urlTemplate:
-                                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                      tileProvider:
-                                          CancellableNetworkTileProvider(),
-                                    ),
-                                    MarkerLayer(markers: [
-                                      Marker(
-                                        point:
-                                            controller.selectedLocation.value!,
-                                        child: const Icon(
-                                          Icons.location_on_rounded,
-                                          color: Colors.orange,
-                                          size: 40,
-                                        ),
-                                      )
-                                    ])
-                                  ])))),
-                  Positioned(
-                    bottom: 5,
-                    right: 25,
-                    child: Column(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            final selectedLocation = controller.selectedLocation.value;
-                            final currentZoom = mapController.camera.zoom;
-                            mapController.move(selectedLocation!, currentZoom);
-                          },
-                          icon: const Icon(Icons.location_on_rounded, size: 30)),
-                      IconButton(
-                          onPressed: () {
-                            final currentCenter = mapController.camera.center;
-                            final currentZoom = mapController.camera.zoom + 1;
-                            mapController.move(currentCenter, currentZoom);
-                          },
-                          icon: const Icon(Icons.zoom_in, size: 30)),
-                      IconButton(
-                          onPressed: () {
-                            final currentCenter = mapController.camera.center;
-                            final currentZoom = mapController.camera.zoom - 1;
-                            mapController.move(currentCenter, currentZoom);
-                          },
-                          icon: const Icon(Icons.zoom_out, size: 30)),
-                    ],
-                  ),)
-                ]),
-                const SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: () async {
-                    final DateTime? picked = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime(2099),
-                    );
-                    if (picked != null) {
-                      controller.selectedDate.value = picked;
-                      print(controller.selectedDate.value);
-                    }
-                  },
-                  child: Text("종료 날짜 선택"),
-                ),
-                Obx(() => controller.rewardConditionList.isEmpty
-                    ? const Center(child: CircularProgressIndicator())
-                    : DropdownButton<int>(
-                        value: controller.rewardConditionId.value,
-                        onChanged: (int? newValue) {
-                          if (newValue != null) {
-                            controller.rewardConditionId.value = newValue;
-                          }
-                        },
-                        items: controller.rewardConditionList.map((item) {
-                          return DropdownMenuItem<int>(
-                            value: item.id,
-                            child: Text(item.name),
-                          );
-                        }).toList())),
+                Divider(color: Colors.grey[850], thickness: 1),
+                const SizedBox(height: 10),
+                Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: GestureDetector(
+                    onTap: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: controller.selectedDate.value,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2099),
+                      );
+                      if (picked != null) {
+                        controller.selectedDate.value = picked;
+                        print(controller.selectedDate.value);
+                      }
+                    },
+                    child: Obx(() => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                              "종료 날짜 선택",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.black,)),
+                          Text(
+                              "${controller.selectedDate.value.toString().split(' ')[0]}",
+                              style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontFamily: 'Pretendard',
+                              ))
+
+                        ])))),
+                const SizedBox(height: 10),
+                // ✅ 지급 조건 선택 위젯
+                Obx(() => controller.selectedRewardId.value == 0
+                    ? const SizedBox.shrink()
+                    : controller.rewardConditionList.isEmpty
+                        ? const Center(child: CircularProgressIndicator())
+                        : DropdownButton<int>(
+                            value: controller.rewardConditionId.value,
+                            onChanged: (int? newValue) {
+                              if (newValue != null) {
+                                controller.rewardConditionId.value = newValue;
+                              }
+                            },
+                            items: controller.rewardConditionList.map((item) {
+                              return DropdownMenuItem<int>(
+                                value: item.id,
+                                child: Text(item.name),
+                              );
+                            }).toList())),
+                const SizedBox(height: 10),
+                const MapSection(),
                 const SizedBox(height: 30),
                 // ✅ 생성 버튼
                 Obx(() => SizedBox(
@@ -188,7 +136,7 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                               ? controller.createJoinWeave
                               : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF8000),
+                            backgroundColor: const Color(0xFF434343),
                             disabledBackgroundColor: Colors.grey.shade300,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
