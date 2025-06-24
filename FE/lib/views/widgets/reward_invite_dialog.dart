@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 import '../../controllers/reward_invite_dialog_controller.dart';
 import '../../models/reward_model.dart';
 
@@ -13,6 +14,7 @@ class RewardInviteDialog extends StatelessWidget {
     final controller = Get.find<RewardInviteDialogController>();
 
     return Dialog(
+      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -58,7 +60,7 @@ class RewardInviteDialog extends StatelessWidget {
                     return ListTile(
                       title: Text(user.title),
                       trailing: IconButton(
-                        icon: const Icon(Icons.add_circle_outline),
+                        icon: const Icon(HugeIcons.strokeRoundedGift),
                         onPressed: () {
                           onRewardSelected(user);
                           Get.back();

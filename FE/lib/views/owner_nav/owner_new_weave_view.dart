@@ -50,7 +50,21 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
             ),
             Divider(color: Colors.grey[850], thickness: 1),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(children: [
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  const Text(
+                    '리워드 선택',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Pretendard',
+                    ),
+                  ),
+                ]),
                 // ✅ 리워드 선택 위젯
                 Obx(() => RewardSelector(
                       selectedReward: controller.selectedRewardText.value,
@@ -76,12 +90,14 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                           ? Container(child: CircularProgressIndicator())
                           : Column(
                               children: [
+                                Divider(color: Colors.grey[850], thickness: 1),
                                 ListTile(
                                     title: Text('리워드 지급조건 설정'),
                                     trailing:
                                         Icon(Icons.arrow_forward_ios_rounded),
                                     onTap: () {
                                       Get.dialog(Obx(() => Dialog(
+                                          backgroundColor: Colors.white,
                                           child: Padding(
                                               padding:
                                                   const EdgeInsets.all(16.0),
@@ -89,12 +105,24 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                                                   mainAxisSize:
                                                       MainAxisSize.min,
                                                   children: [
-                                                      TextField(
-                                                        controller: controller
-                                                            .rewardConditionFilter,
-                                                        onChanged: controller
-                                                            .filterRewardCondition,
+                                                    TextField(
+                                                      controller: controller
+                                                          .rewardConditionFilter,
+                                                      onChanged: controller
+                                                          .filterRewardCondition,
+                                                      decoration:
+                                                          InputDecoration(
+                                                        hintText: "리워드 조건 검색",
+                                                        prefixIcon: const Icon(
+                                                            Icons.search),
+                                                        border:
+                                                            OutlineInputBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8)),
                                                       ),
+                                                    ),
                                                     ListView(
                                                       shrinkWrap: true,
                                                       padding: EdgeInsets.zero,
@@ -108,32 +136,53 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                                                                   horizontal:
                                                                       8.0),
                                                           leading: () {
-                                                            final reward = condition;
-                                                            if (reward.type == 'RANDOM_AUTHOR') {
-                                                              return Icon(HugeIcons.strokeRoundedDice,
-                                                                  color: Colors.black54);
-                                                            } else if (reward.type == 'TOP_LIKED') {
+                                                            final reward =
+                                                                condition;
+                                                            if (reward.type ==
+                                                                'RANDOM_AUTHOR') {
                                                               return Icon(
-                                                                  HugeIcons.strokeRoundedRanking,
-                                                                  color: Colors.black54);
-                                                            } else if (reward.type == 'INSERT') {
+                                                                  HugeIcons
+                                                                      .strokeRoundedDice,
+                                                                  color: Colors
+                                                                      .black54);
+                                                            } else if (reward
+                                                                    .type ==
+                                                                'TOP_LIKED') {
                                                               return Icon(
-                                                                  HugeIcons.strokeRoundedGiveBlood,
-                                                                  color: Colors.black54);
-                                                            } else if (reward.type ==
+                                                                  HugeIcons
+                                                                      .strokeRoundedRanking,
+                                                                  color: Colors
+                                                                      .black54);
+                                                            } else if (reward
+                                                                    .type ==
+                                                                'INSERT') {
+                                                              return Icon(
+                                                                  HugeIcons
+                                                                      .strokeRoundedGiveBlood,
+                                                                  color: Colors
+                                                                      .black54);
+                                                            } else if (reward
+                                                                    .type ==
                                                                 'RANDOM_THRESHOLD') {
                                                               return Icon(
-                                                                  HugeIcons.strokeRoundedFilterReset,
-                                                                  color: Colors.black54);
-                                                            } else if (reward.type == 'FIRST_N') {
+                                                                  HugeIcons
+                                                                      .strokeRoundedFilterReset,
+                                                                  color: Colors
+                                                                      .black54);
+                                                            } else if (reward
+                                                                    .type ==
+                                                                'FIRST_N') {
                                                               return Icon(
                                                                   HugeIcons
                                                                       .strokeRoundedMedalFirstPlace,
-                                                                  color: Colors.black54);
+                                                                  color: Colors
+                                                                      .black54);
                                                             } else {
                                                               return Icon(
-                                                                  HugeIcons.strokeRoundedTicketStar,
-                                                                  color: Colors.black54);
+                                                                  HugeIcons
+                                                                      .strokeRoundedTicketStar,
+                                                                  color: Colors
+                                                                      .black54);
                                                             }
                                                           }(),
                                                           title: Text(
@@ -150,7 +199,10 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                                                                     .rewardConditionName
                                                                     .value =
                                                                 condition.name;
-                                                            controller.rewardConditionType.value = condition.type;
+                                                            controller
+                                                                    .rewardConditionType
+                                                                    .value =
+                                                                condition.type;
                                                             Get.back();
                                                           },
                                                         );
@@ -161,53 +213,45 @@ class OwnerNewWeaveView extends GetView<OwnerNewWeaveController> {
                                 controller.rewardConditionName.value == ""
                                     ? const SizedBox.shrink()
                                     : ListTile(
-                                  leading: () {
-                                    final reward = controller.rewardConditionType.value;
-                                    if (reward == 'RANDOM_AUTHOR') {
-                                      return Icon(HugeIcons.strokeRoundedDice,
-                                          color: Colors.black54);
-                                    } else if (reward == 'TOP_LIKED') {
-                                      return Icon(
-                                          HugeIcons.strokeRoundedRanking,
-                                          color: Colors.black54);
-                                    } else if (reward == 'INSERT') {
-                                      return Icon(
-                                          HugeIcons.strokeRoundedGiveBlood,
-                                          color: Colors.black54);
-                                    } else if (reward ==
-                                        'RANDOM_THRESHOLD') {
-                                      return Icon(
-                                          HugeIcons.strokeRoundedFilterReset,
-                                          color: Colors.black54);
-                                    } else if (reward == 'FIRST_N') {
-                                      return Icon(
-                                          HugeIcons
-                                              .strokeRoundedMedalFirstPlace,
-                                          color: Colors.black54);
-                                    } else {
-                                      return Icon(
-                                          HugeIcons.strokeRoundedTicketStar,
-                                          color: Colors.black54);
-                                    }
-                                  }(),
+                                        leading: () {
+                                          final reward = controller
+                                              .rewardConditionType.value;
+                                          if (reward == 'RANDOM_AUTHOR') {
+                                            return Icon(
+                                                HugeIcons.strokeRoundedDice,
+                                                color: Colors.black54);
+                                          } else if (reward == 'TOP_LIKED') {
+                                            return Icon(
+                                                HugeIcons.strokeRoundedRanking,
+                                                color: Colors.black54);
+                                          } else if (reward == 'INSERT') {
+                                            return Icon(
+                                                HugeIcons
+                                                    .strokeRoundedGiveBlood,
+                                                color: Colors.black54);
+                                          } else if (reward ==
+                                              'RANDOM_THRESHOLD') {
+                                            return Icon(
+                                                HugeIcons
+                                                    .strokeRoundedFilterReset,
+                                                color: Colors.black54);
+                                          } else if (reward == 'FIRST_N') {
+                                            return Icon(
+                                                HugeIcons
+                                                    .strokeRoundedMedalFirstPlace,
+                                                color: Colors.black54);
+                                          } else {
+                                            return Icon(
+                                                HugeIcons
+                                                    .strokeRoundedTicketStar,
+                                                color: Colors.black54);
+                                          }
+                                        }(),
                                         title: Text(controller
                                             .rewardConditionName.value),
                                       )
                               ],
                             ),
-                  // DropdownButton<int>(
-                  //     value: controller.rewardConditionId.value,
-                  //     onChanged: (int? newValue) {
-                  //       if (newValue != null) {
-                  //         controller.rewardConditionId.value = newValue;
-                  //       }
-                  //     },
-                  //     items: controller.rewardConditionList.map((item) {
-                  //       return DropdownMenuItem<int>(
-                  //         value: item.id,
-                  //         child: Text(item.name),
-                  //       );
-                  //     }).toList())
                 ),
                 // ✅ 지도 위젯
                 Divider(color: Colors.grey[850], thickness: 1),

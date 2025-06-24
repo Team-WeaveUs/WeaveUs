@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class RewardSelector extends StatelessWidget {
   final String? selectedReward;
@@ -30,7 +31,7 @@ class RewardSelector extends StatelessWidget {
                 ),
               ),
             ),
-            const Icon(Icons.add_circle_outline, color: Colors.black),
+            const Icon(HugeIcons.strokeRoundedGift, color: Colors.black),
           ],
         ),
       ),
