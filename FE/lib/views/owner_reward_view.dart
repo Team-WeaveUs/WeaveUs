@@ -68,7 +68,7 @@ class OwnerRewardView extends GetView<RewardController> {
                           ? const Center(child: CircularProgressIndicator())
                           : Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
+                                  const EdgeInsets.only(left: 10, right: 10, top: 10),
                               child: ListView(
                                   children:
                                       controller.filteredList.map((reward) {

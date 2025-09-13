@@ -14,6 +14,7 @@ class Reward {
   final String description;
   late final String validity;
   final String weaveTitle;
+  final String password;
 
   Reward({
     required this.title,
@@ -31,6 +32,7 @@ class Reward {
     required this.usedAt,
     required this.grantedByNickname,
     required this.weaveTitle,
+    required this.password,
   });
 
   factory Reward.fromJson(Map<String, dynamic> json) {
@@ -54,6 +56,7 @@ class Reward {
       usedAt: json['used_at'] != null ? DateTime.parse(json['used_at']) : null,
       grantedByNickname: json['granted_by_nickname']?.toString() ?? '',
       weaveTitle: json['weave_title']?.toString() ?? '',
+      password: json['password']?.toString() ?? '',
     );
   }
 
@@ -74,6 +77,7 @@ class Reward {
       usedAt: null,
       grantedByNickname: '',
       weaveTitle: '',
+      password: '',
     );
   }
 }

@@ -48,6 +48,9 @@ class RewardController extends GetxController {
           .map((e) => Reward.fromJson(e))
           .toList();
       filteredList.assignAll(rewardList);
+      for (var reward in rewardList) {
+        print(reward.rewardConditionId);
+      }
     } catch (e) {
       print('Error fetching rewards: $e');
     }

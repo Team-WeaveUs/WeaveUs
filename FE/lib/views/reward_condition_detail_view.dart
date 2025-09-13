@@ -9,7 +9,9 @@ class RewardConditionDetailView
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
+          backgroundColor: Colors.white,
             title: Obx(() => controller.rewardCondition.value.type.isEmpty
                 ? const Center(child: CircularProgressIndicator())
                 : Text(controller.rewardCondition.value.name))),

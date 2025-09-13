@@ -7,6 +7,7 @@ import 'token_service.dart';
 class AuthService {
   String? accessToken;
   String? refreshToken;
+  String message = '';
   late Token token;
   final TokenService tokenController = TokenService();
 
@@ -17,7 +18,7 @@ class AuthService {
       body: jsonEncode({'account_id': email, 'password': password}),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
     );
-    var responseData = jsonDecode(lambdaResponse.body);
+    var responseData = jsonDecode(utf8.decode(lambdaResponse.bodyBytes));
     final LambdaResponse response = LambdaResponse.fromJson(responseData);
     try {
       if (response.statusCode == 200) {
@@ -73,13 +74,17 @@ class AuthService {
       }),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
     );
-    var responseData = jsonDecode(lambdaResponse.body);
+    var responseData = jsonDecode(utf8.decode(lambdaResponse.bodyBytes));
     final LambdaResponse response = LambdaResponse.fromJson(responseData);
     try{
       if(response.statusCode == 200){
+        message = response.body['message'];
+        print(message);
         return true;
       }
       else{
+        message = response.body['message'];
+        print(message);
         return false;
       }
     } catch (e){
@@ -103,7 +108,7 @@ class AuthService {
       }),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
     );
-    var responseData = jsonDecode(lambdaResponse.body);
+    var responseData = jsonDecode(utf8.decode(lambdaResponse.bodyBytes));
     final LambdaResponse response = LambdaResponse.fromJson(responseData);
     try{
       if(response.statusCode == 200){

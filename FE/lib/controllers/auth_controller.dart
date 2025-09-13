@@ -163,11 +163,11 @@ class AuthController extends GetxController {
 
     if (success) {
       isLoading.value = false;
-      Get.snackbar("회원가입 성공", "로그인 해주세요");
+      Get.snackbar("회원가입 성공", _authService.message);
       Get.offAllNamed(AppRoutes.LOGIN);
     } else {
       isLoading.value = false;
-      Get.snackbar("회원가입 실패", "회원가입에 실패했습니다");
+      Get.snackbar("회원가입 실패", _authService.message);
     }
   }
 

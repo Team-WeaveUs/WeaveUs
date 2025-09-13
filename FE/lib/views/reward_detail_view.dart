@@ -9,9 +9,13 @@ class RewardDetailView extends GetView<RewardDetailController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
-          centerTitle: true,
-          title: const Text('리워드 상세'),
+          backgroundColor: Colors.white,
+          title: const Text('리워드 상세', style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),),
         ),
         body: Obx(() => controller.reward.value.rewardId == 0
             ? const Center(child: CircularProgressIndicator())
@@ -39,6 +43,16 @@ class RewardDetailView extends GetView<RewardDetailController> {
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    if (controller.reward.value.password != '') ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        '비밀번호 : ${controller.reward.value.password}',
+                        style: const TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center,
+                      )
+                    ]
+                    else ...[
+                    ],
                     if (controller.reward.value.weaveTitle != '') ...[
                       const SizedBox(height: 16),
                       GestureDetector(
