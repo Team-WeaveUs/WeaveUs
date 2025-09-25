@@ -36,7 +36,7 @@ class RegistrationView extends GetView<AuthController> {
               Obx(() => TextField(
                     controller: controller.emailController,
                     keyboardType: TextInputType.emailAddress,
-                    onChanged: (_) => controller.validateEmail(),
+                    // onChanged: (_) => controller.validateEmail(),
                     decoration: InputDecoration(
                       labelText: '이메일',
                       errorText: controller.emailError.value,
@@ -62,22 +62,6 @@ class RegistrationView extends GetView<AuthController> {
                 },
                 controller: controller.nicknameController,
                 decoration: const InputDecoration(labelText: "닉네임"),
-              ),
-              TextField(
-                onChanged: (value) {
-                  controller.updateFormValidity();
-                },
-                controller: controller.numberController,
-                decoration: const InputDecoration(labelText: "전화번호"),
-                keyboardType: TextInputType.phone,
-                inputFormatters: [formatter],
-              ),
-              TextField(
-                onChanged: (value) {
-                  controller.updateFormValidity();
-                },
-                controller: controller.genderController,
-                decoration: const InputDecoration(labelText: "성별"),
               ),
               SizedBox(height: 20),
               Obx(

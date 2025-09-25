@@ -77,9 +77,7 @@ class AuthController extends GetxController {
         emailController.text.trim().isNotEmpty &&
         passwordController.text.trim().isNotEmpty &&
         nameController.text.trim().isNotEmpty &&
-        nicknameController.text.trim().isNotEmpty &&
-        numberController.text.trim().isNotEmpty &&
-        genderController.text.trim().isNotEmpty;
+        nicknameController.text.trim().isNotEmpty;
   }
 
   Future<void> login(String email, String password) async {

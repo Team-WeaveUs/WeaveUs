@@ -68,8 +68,8 @@ class AuthService {
         "pw": pw,
         "name": name,
         "nickname": nickname,
-        "number": number,
-        "gender": gender,
+        "number": "0", //number
+        "gender": "0", //gender
         "is_owner": "0"
       }),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
